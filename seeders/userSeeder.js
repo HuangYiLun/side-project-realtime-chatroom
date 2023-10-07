@@ -42,4 +42,3 @@ async function seedUsers() {
 
 seedUsers()
 
-

@@ -14,16 +14,9 @@ const friendshipSchema = new Schema({
   },
   status: {
     type: String,
-    required: true
-  },
-  createAt: {
-    type: Date,
-    default: Date.now
-  },
-  updateAt: {
-    type: Date,
-    default: Date.now
+    required: true,
+    default: pending
   }
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model('Friendship', friendshipSchema)

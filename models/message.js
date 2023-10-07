@@ -4,22 +4,24 @@ const Schema = mongoose.Schema
 const messageSchema = new Schema({
   content: {
     type: String,
+    trim: true,
     required: true
   },
   senderId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    index: true,
     required: true
   },
-  createAt: {
-    type: Date,
-    default: Date.now
-  },
-  updateAt: {
-    type: Date,
-    default: Date.now
+  receiverId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }
-})
+  chatroomId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Chatroom',
+    require: true
+  }
+}, { timestamps: true })
 
 module.exports = mongoose.model('Message', messageSchema)

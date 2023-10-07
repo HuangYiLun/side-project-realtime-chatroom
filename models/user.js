@@ -26,7 +26,7 @@ const userSchema = new Schema({
   },
   introduction: {
     type: String,
-    required: true
+    default: '沒有留下任何資訊'
   },
   status: {
     type: String,
@@ -34,17 +34,10 @@ const userSchema = new Schema({
   },
   isAdmin: {
     type: Boolean,
-    required: true
-  },
-  createAt: {
-    type: Date,
-    default: Date.now
-  },
-  updateAt: {
-    type: Date,
-    default: Date.now
-  }
-})
+    required: true,
+    default: false
+  } 
+}, { timestamps: true })
 
 const User = mongoose.model('User', userSchema)
 

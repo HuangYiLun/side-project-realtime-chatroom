@@ -7,18 +7,16 @@ const chatroomSchema = new Schema({
     ref: 'User',
     required: true
   }],
-  message: {
-    type: Schema.Types.ObjectId,
-    ref: 'Message',
+  chatroomName: {
+    type: String,
+    require: true,
+    trim: true
   },
-  createAt: {
-    type: Date,
-    default: Date.now
-  },
-  updateAt: {
-    type: Date,
-    default: Date.now
+  isGroup: {
+    type: Boolean,
+    require: true,
+    default: false
   }
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model('Chatroom', chatroomSchema)
