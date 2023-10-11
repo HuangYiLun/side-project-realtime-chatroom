@@ -1,6 +1,58 @@
 body {
-  margin: 0;
   height: 100%;
   width: 100%;
+
+  margin: 0;
+
+  background-color: #ccccff;
   overflow: hidden;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #7B68EE;
+}
+/* Search bar */
+.form-search .search {
+  border-radius: 50px;
+  border: 1px solid #EEEEEE;
+}
+
+.form-search .search .input-search {
+  border-radius: 50px;
+}
+
+.btn-search {
+  border-radius: 50px;
+}
+
+.btn-search:hover {
+  background-color: #ccccff;
+}
+
+/* nav notification bell */
+.nav-notification {
+  width: 40px;
+  height: 40px;
+  
+  text-align: center;
+
+  border-radius: 50px;
+}
+
+.nav-notification:hover {
+  background-color: #ccccff;
+}
+/* nav user  */
+.nav-user {
+  width: 40px;
+  height: 40px;
+
+  text-align: center;
+
+  border-radius: 50px;
+}
+
+.nav-user:hover {
+  background-color: #ccccff
 }
