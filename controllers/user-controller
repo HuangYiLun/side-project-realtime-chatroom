@@ -2,10 +2,18 @@ const User = require('../models/user')
 
 const userController = {
   getSignIn: (req, res) => {
-    res.render('signin')
+    return res.render('signin')
+  },
+  signin: (req, res) => {
+    return res.redirect('/')
+
   },
   getSignUp: (req, res) => {
-    res.render('signup')
+    return res.render('signup')
+  },
+  signout: (req, res) => {
+    req.logOut(() => { })
+    return res.redirect('/signin')
   }
 }
 
