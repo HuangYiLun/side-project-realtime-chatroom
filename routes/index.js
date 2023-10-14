@@ -7,6 +7,7 @@ const userController = require('../controllers/user-controller')
 
 
 router.get('/signin', userController.getSignIn)
+router.get('/signup', userController.getSignUp)
 
 router.get('/', (req, res) => res.render('index'))
 

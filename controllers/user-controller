@@ -3,6 +3,9 @@ const User = require('../models/user')
 const userController = {
   getSignIn: (req, res) => {
     res.render('signin')
+  },
+  getSignUp: (req, res) => {
+    res.render('signup')
   }
 }
 
