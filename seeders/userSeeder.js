@@ -10,9 +10,8 @@ const SEED_USER = Array.from(
     const hashPassword = await bcrypt.hash('12345678', 10)
 
     return {
-      account: `user${i}`,
-      name: faker.name.findName(),
       email: `user${i}@example.com`,
+      name: faker.name.findName(),
       password: hashPassword,
       avatar: `https://loremflickr.com/320/240/avatar,person/?random=${Math.random() * 100}`,
       introduction: faker.lorem.sentences(),

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const userSchema = new Schema({
-  account: {
+  email: {
     type: String,
     required: true,
     unique: true
@@ -10,11 +10,6 @@ const userSchema = new Schema({
   name: {
     type: String,
     required: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true
   },
   password: {
     type: String,
@@ -36,7 +31,7 @@ const userSchema = new Schema({
     type: Boolean,
     required: true,
     default: false
-  } 
+  }
 }, { timestamps: true })
 
 const User = mongoose.model('User', userSchema)
