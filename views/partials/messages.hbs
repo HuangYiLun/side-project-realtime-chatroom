@@ -1,0 +1,19 @@
+{{!-- 錯誤訊息 --}}
+{{#if danger_msg}}
+<div class="danger-message mx-auto my-4">
+  <div class="message-text">
+    {{ danger_msg }}
+  </div>
+  <div class="danger-icon"><i class="fa-solid fa-xmark" style="color: #ff004c;"></i></div>
+</div>
+{{/if}}
+
+{{!-- 成功訊息 --}}
+{{#if success_msg}}
+<div class="light-green-message mx-auto my-4">
+  <div class="message-text">
+    {{ success_msg }}
+  </div>
+  <div class="light-green-icon"><i class="fa-solid fa-check" style="color: #24ff48;"></i></div>
+</div>
+{{/if}}

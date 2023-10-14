@@ -6,7 +6,6 @@ const userController = {
   },
   signin: (req, res) => {
     return res.redirect('/')
-
   },
   getSignUp: (req, res) => {
     return res.render('signup')
