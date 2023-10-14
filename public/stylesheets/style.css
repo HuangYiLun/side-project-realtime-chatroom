@@ -3,6 +3,9 @@ body {
   width: 100%;
 
   margin: 0;
+  padding: 0;
+
+  min-height: 100vh;
 
   background-color: #ccccff;
   overflow: hidden;
@@ -56,3 +59,25 @@ body {
 .nav-user:hover {
   background-color: #ccccff
 }
+
+/* signin page */
+.signin-container {
+  width: 25%;
+  min-width: min-content;
+}
+
+.signin-container .register-link {
+  font-size: 14.5px;
+}
+
+.signin-container p a {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.signin-container p a:hover {
+  text-decoration: underline;
+}
+
+
+
