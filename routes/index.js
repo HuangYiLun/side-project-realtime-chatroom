@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const passport = require('../config/passport')
 const userController = require('../controllers/user-controller')
+const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
 
 
@@ -14,6 +15,6 @@ router.post('/signout', userController.signout)
 router.get('/signup', userController.getSignUp)
 
 router.use('/', generalErrorHandler)
-router.get('/', (req, res) => res.render('index'))
+router.get('/', authenticated, (req, res) => res.render('index'))
 
 module.exports = router
