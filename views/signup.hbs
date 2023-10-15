@@ -1,27 +1,58 @@
 <div class="signin-container row m-auto justify-content-center align-items-cneter rounded-5 p-3 bg-light shadow">
-  <form action="" class="signin-form">
+  <form action="/signup" method="POST" id="form" class="signin-form needs-validation" novalidate>
     <h1 class="text-center">Chatroom</h1>
     <h4 class="text-center">Register</h4>
-
-    <div class="mb-3 mt-5">
-      <label for="InputEmail" class="form-label">Email</label>
-      <input type="email" class="form-control rounded-4" id="InputEmail" name="email">
+    {{#if message}}
+    <div class="wrapper">
+      <div class="mx-auto my-4 text-center">
+        <div class="danger-message" style="color: red;">
+          {{ message }}
+        </div>
+      </div>
+    </div>
+    {{ messages }}
+    {{/if}}
+    <div class="input-item mb-3 mt-5">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" class="form-control rounded-4" id="name" name="name" value="{{ name }}" minlength="1"
+        maxlength="20" required>
+      <div class="invalid-feedback">
+        請輸入名稱
+      </div>
+      <div class="input-minmax"></div>
     </div>
 
-    <div class="mb-3">
-      <label for="InputPassword" class="form-label">Password</label>
-      <input type="password" class="form-control rounded-4" id="InputPassword" name="password">
+    <div class="input-item mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control rounded-4" id="email" name="email" value="{{ email }}" required>
+      <div class="invalid-feedback">
+        請輸入信箱
+      </div>
     </div>
 
-    <div class="mb-3">
-      <label for="InputConfirmPassword" class="form-label">Confirm Password</label>
-      <input type="password" class="form-control rounded-4" id="InputConfirmPassword" name="confirmPassword">
+    <div class="input-item mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input type="text" class="form-control rounded-4" id="password" name="password" value="{{ password }}"
+        minlength="8" maxlength="12" required>
+      <div class="invalid-feedback">
+        請設定8~12位密碼
+      </div>
+      <div class="input-minmax"></div>
     </div>
 
-    <button type="submit" class="btn btn-primary btn-signin mt-4 w-100 rounded-4">Register</button>
+    <div class="input-item mb-3">
+      <label for="confirmPassword" class="form-label">Confirm Password</label>
+      <input type="password" class="form-control rounded-4" id="confirmPassword" name="confirmPassword"
+        value="{{confirmPassword}}" required>
+      <div class="invalid-feedback">
+        密碼不一致
+      </div>
+    </div>
 
+    <button type="submit" id="btn-submit" class="btn btn-primary btn-signin mt-4 w-100 rounded-4">Register</button>
     <div class="register-link text-center mt-2">
       <p>Already have an account?<a href="/signin">Login here</a></p>
   </form>
-
 </div>
+
+<script src="/javascripts/signup.js"></script>

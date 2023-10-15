@@ -13,6 +13,7 @@ router.post('/signout', userController.signout)
 
 // 註冊
 router.get('/signup', userController.getSignUp)
+router.post('/signup', userController.signUp)
 
 router.use('/', generalErrorHandler)
 router.get('/', authenticated, (req, res) => res.render('index'))

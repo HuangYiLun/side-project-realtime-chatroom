@@ -11,10 +11,11 @@ body {
   overflow: hidden;
 }
 
-/* Navbar */
+/* -------------------- Navbar -------------------- */
 .navbar {
   background-color: #7B68EE;
 }
+
 /* Search bar */
 .form-search .search {
   border-radius: 50px;
@@ -37,7 +38,7 @@ body {
 .nav-notification {
   width: 40px;
   height: 40px;
-  
+
   text-align: center;
 
   border-radius: 50px;
@@ -46,6 +47,7 @@ body {
 .nav-notification:hover {
   background-color: #ccccff;
 }
+
 /* nav user  */
 .nav-user {
   width: 40px;
@@ -60,7 +62,7 @@ body {
   background-color: #ccccff
 }
 
-/* signin page */
+/* -------------------- signin page -------------------- */
 .signin-container {
   width: 25%;
   min-width: min-content;
@@ -77,6 +79,19 @@ body {
 
 .signin-container p a:hover {
   text-decoration: underline;
+}
+
+/* -------------------- signup page -------------------- */
+.input-item {
+  position: relative;
+}
+
+.input-minmax {
+  position: absolute;
+  right: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: brown;
 }
 
 /* -------------------- Partial Messages -------------------- */
@@ -165,6 +180,3 @@ body {
   right: 48px;
   color: var(--light-blue);
 }
-
-
-

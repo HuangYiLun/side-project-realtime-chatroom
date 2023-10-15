@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const bcrypt = require('bcryptjs')
 
 const userController = {
   getSignIn: (req, res) => {
@@ -10,11 +11,41 @@ const userController = {
   getSignUp: (req, res) => {
     return res.render('signup')
   },
+  signUp: async (req, res, next) => {
+    const { name, email, password, confirmPassword } = req.body
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      return res.render('signup', { name, email, password, confirmPassword, message: '欄位未正確填寫' })
+    }
+    if (password !== confirmPassword) {
+      return res.render('signup', { name, email, password, confirmPassword, message: '密碼不一致' })
+    }
+
+    try {
+      const usedEmail = await User.findOne({ email })
+      if (usedEmail) {
+        return res.render('signup', { name, email, password, confirmPassword, message: '信箱已被使用' })
+      }
+      const usedName = await User.findOne({ name })
+      if (usedName) {
+        return res.render('signup', { name, email, password, confirmPassword, message: '名稱已被使用' })
+      }
+
+      const hashPassword = await bcrypt.hash(password, 10)
+      await User.create({
+        name,
+        email,
+        password: hashPassword
+      })
+      req.flash('success_msg', '註冊成功，請重新登入')
+      res.redirect('/signin')
+    } catch (err) {
+      return next(err)
+    }
+  },
   signout: (req, res) => {
     req.logOut(() => { })
     return res.redirect('/signin')
   }
 }
-
 
 module.exports = userController

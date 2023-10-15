@@ -17,7 +17,8 @@ const userSchema = new Schema({
   },
   avatar: {
     type: String,
-    required: true
+    required: true,
+    default: 'https://i.imgur.com/VUhtTKV.png'
   },
   introduction: {
     type: String,

@@ -1,22 +1,28 @@
 <div class="signin-container row m-auto justify-content-center align-items-cneter rounded-5 p-3 bg-light shadow">
-  <form action="/signin" method="POST" class="signin-form">
+  <form action="/signin" id="form" method="POST" class="signin-form needs-validation" novalidate>
     <h1 class="text-center">Chatroom</h1>
     <h4 class="text-center">Login</h4>
-
+    {{> messages}}
     <div class="mb-3 mt-5">
-      <label for="InputEmail" class="form-label">Email</label>
-      <input type="text" class="form-control rounded-4" id="InputEmail" name="email">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control rounded-4" id="email" name="email" required>
+      <div class="invalid-feedback">
+        Please provide a valid email.
+      </div>
     </div>
 
     <div class="mb-3">
-      <label for="InputPassword" class="form-label">Password</label>
-      <input type="password" class="form-control rounded-4" id="InputPassword" name="password">
+      <label for="password" class="form-label">Password</label>
+      <input type="password" class="form-control rounded-4" id="password" name="password" required>
+      <div class="invalid-feedback">
+        Please provide a valid password.
+      </div>
     </div>
 
-    <button type="submit" class="btn btn-primary btn-signin mt-4 w-100 rounded-4">Login</button>
-
+    <button type="submit" id="btn-submit" class="btn btn-primary btn-signin mt-4 w-100 rounded-4">Login</button>
     <div class="register-link text-center mt-2">
       <p>Don't have an account?<a href="/signup">Register</a></p>
   </form>
-
 </div>
+
+<script src="/javascripts/signup.js"></script>
