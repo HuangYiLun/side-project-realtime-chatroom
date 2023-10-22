@@ -15,9 +15,18 @@
 </head>
 
 <body class="d-flex flex-column">
+  {{#if loginUser}}
+  {{>header}}
+  {{/if}}
+  <main class="flex-shrink-0" role="main">
+    <div class="album container pt-5">
+      <div class="pt-5">
+        {{> messages}}
+        {{{ body }}}
+      </div>
+    </div>
+  </main>
 
-
-  {{{ body }}}
 
   <script src="https://kit.fontawesome.com/fddd8693b8.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
