@@ -8,6 +8,7 @@ const methodOverride = require('method-override')
 const passport = require('./config/passport')
 const session = require('express-session')
 const flash = require('connect-flash')
+const helpers = require('./helpers/auth-helper')
 
 const routes = require('./routes')
 //連接mongodb
@@ -40,6 +41,8 @@ app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg')
   res.locals.warning_msg = req.flash('warning_msg')
   res.locals.info_msg = req.flash('info_msg')
+  res.locals.loginUser = helpers.getUser(req)
+  
   next()
 })
 

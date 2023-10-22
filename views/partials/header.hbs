@@ -1,46 +1,57 @@
-<header class="w-100">
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+<header>
+  <nav class="navbar navbar-expand-sm navbar-dark fixed-top p-0 ">
+
+    <div class="container-fluid">
+      {{!-- brand name --}}
       <a class="navbar-brand ms-2" href="#">Chatroom</a>
 
-      <form class="d-flex form-search me-auto" role="search">
+      {{!-- search userbar --}}
+      <form class="form-search" role="search">
         <div class="input-group search">
           <input class="form-control input-search" type="search" placeholder="Search User" aria-label="Search">
           <button class="btn btn-search" type="button">
-            <i class="fa-solid fa-magnifying-glass" style="color: #ffffff;"></i>
+            <i class="fa-solid fa-magnifying-glass text-white"></i>
           </button>
         </div>
       </form>
 
-      <ul class="navbar-nav mb-2 mb-lg-0">
-        <li class="nav-item me-2">
-          <a class="nav-link nav-notification" href="#">
-            <i class="fa-solid fa-bell" style="color: #ffffff;"></i>
-          </a>
-        </li>
+      <div class="nav-items me-4">
+        <ul class="navbar-nav mb-2">
+          {{!-- notification --}}
+          <li class="nav-item me-2">
+            <a class="nav-link nav-notification" href="#">
+              <i class="fa-solid fa-bell"></i>
+            </a>
+          </li>
+          {{!-- profile --}}
+          <li class="nav-item dropdown me-2">
+            <a class="nav-link nav-user dropdown-toggle p-0" href="#" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              {{#if loginUser}}
+              <img src={{loginUser.avatar}} alt="" srcset="">
+              {{else}}
+              <i class="fa-solid fa-user"></i>
+              {{/if}}
+            </a>
 
-        <li class="nav-item dropdown me-2">
-          <a class="nav-link nav-user dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            <i class="fa-solid fa-user" style="color: #ffffff;"></i>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#">Profile</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li>
-              <form action="/signout" method="post">
-                <button class="dropdown-item" type="submit">
-                  <i class="fa-solid fa-right-from-bracket" style="color: #7B68EE;"></i><span class="ms-2">LogOut</span>
-                </button>
-              </form>
-            </li>
-          </ul>
-        </li>
-      </ul>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#">Profile</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li>
+                <form action="/signout" method="post">
+                  <button class="dropdown-item" type="submit">
+                    <i class="fa-solid fa-right-from-bracket" style="color: #7B68EE;"></i><span class="ms-2">Log
+                      Out</span>
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
 
-    </div>
     </div>
   </nav>
 </header>

@@ -13,10 +13,10 @@ body {
 
 /* -------------------- Navbar -------------------- */
 .navbar {
+  height: 60px;
   background-color: #7B68EE;
 }
 
-/* Search bar */
 .form-search .search {
   border-radius: 50px;
   border: 1px solid #EEEEEE;
@@ -34,32 +34,30 @@ body {
   background-color: #ccccff;
 }
 
-/* nav notification bell */
-.nav-notification {
+.nav-link {
   width: 40px;
   height: 40px;
-
   text-align: center;
-
   border-radius: 50px;
 }
 
-.nav-notification:hover {
-  background-color: #ccccff;
+.nav-link i {
+  color: #fff;
 }
 
-/* nav user  */
-.nav-user {
+.nav-link:hover {
+  background-color: #fff;
+}
+
+.nav-link:hover i {
+  color: #7B68EE;
+}
+
+.nav-link img {
   width: 40px;
   height: 40px;
-
-  text-align: center;
-
   border-radius: 50px;
-}
-
-.nav-user:hover {
-  background-color: #ccccff
+  object-fit: cover;
 }
 
 /* -------------------- signin page -------------------- */
