@@ -1,5 +1,5 @@
 <header>
-  <nav class="navbar navbar-expand-sm navbar-dark fixed-top p-0 ">
+  <nav class="navbar navbar-expand-sm navbar-dark flex-nowrap fixed-top p-0 ">
 
     <div class="container-fluid">
       {{!-- brand name --}}
@@ -35,7 +35,7 @@
             </a>
 
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#">Profile</a></li>
+              <li><a class="dropdown-item" href="/users/{{loginUser._id}}/profile">Profile</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>

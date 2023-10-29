@@ -1,0 +1,74 @@
+<div class='modal fade user-edit-modal' id='edit-modal' data-bs-backdrop='static' tabindex='-1'
+  aria-labelledby='editModalLabel' aria-hidden='true'>
+  <div class='modal-dialog'>
+    <div class='modal-content'>
+      <form class='input-form validated' action='/users/{{user.id}}?_method=PUT' method='POST'
+        enctype='multipart/form-data' novalidate>
+        <div class='modal-header'>
+          <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'>
+          </button>
+          <h5 class='modal-title flex-grow-1' id='editModalLabel'>Modify Profile</h5>
+          <button type='submit' class='btn btn-primary rounded-pill btn-edit'>Save</button>
+        </div>
+        <div class='modal-body p-0'>
+          <div class='avatar-edit'>
+            <img src='{{avatar}}' class='avatar-img profile-user-img' onerror="this.style.display='block' " />
+            <div class='avatar'>
+              <label class='form-label' for='avatar'>
+                <i class="fa-solid fa-camera"></i>
+              </label>
+              <input class='form-control' type='file' class='form-control-file' id='avatar' name='avatar' />
+            </div>
+          </div>
+
+          <div class='form-text'>
+            {{!-- edit name --}}
+            <div class='name edit-box'>
+              <label class='form-label edit-label' for='name'>Name</label>
+              <input class='form-control edit-input input-name' type='text' name='name' id='name' value=''
+                placeholder='{{name}}' />
+              <div class='invalid-feedback'>字數超過上限 !</div>
+            </div>
+            <div class='name-amount'>/50</div>
+
+            {{!-- edit email --}}
+            <div class='email edit-box'>
+              <label class='form-label edit-label' for='email'>Email</label>
+              <input class='form-control edit-input input-email' type='text' name='email' id='meail' value=''
+                placeholder='{{email}}' />
+              <div class='invalid-feedback'>字數超過上限 !</div>
+            </div>
+
+            <div class="input-item">
+              <label for="password" class="form-label">Password</label>
+              <input type="text" class="form-control rounded-4" id="password" name="password" value="" minlength="8"
+                maxlength="12" required>
+              <div class="invalid-feedback">
+                請設定8~12位密碼
+              </div>
+              <div class="input-minmax"></div>
+            </div>
+
+            <div class="input-item">
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <input type="password" class="form-control rounded-4" id="confirmPassword" name="confirmPassword"
+                required>
+              <div class="invalid-feedback">
+                密碼不一致
+              </div>
+            </div>
+
+            <div class='introduction edit-box'>
+              <label class='form-label edit-label' for='introduction'>introduction</label>
+              <textarea class='form-control edit-input input-introduction' id='introduction' name='introduction'
+                rows='3' value="{{introduction}}"></textarea>
+              <div class='invalid-feedback'>字數超過上限 !</div>
+            </div>
+            <div class='introduction-amount'></div>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

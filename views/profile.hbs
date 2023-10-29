@@ -1,0 +1,50 @@
+<div class="container profile-container">
+  <div class="profile-content rounded mx-auto w-75">
+    <div class="d-flex justify-content-between">
+      <h4>Modify your Profile</h4>
+      <a class="btn btn-secondary rounded-pill" data-bs-toggle="modal" data-bs-target="#edit-modal">Edit Profile</a>
+    </div>
+
+    <div class="row pt-5">
+      <div class="col-4">
+        <div class="profile-img-block">
+          <img class="profile-user-img" src="{{avatar}}" alt="avatar" />
+        </div>
+      </div>
+
+      <div class="col-8">
+        <div class="row">
+          <label class="col-4">User Name</label>
+          <div class="col-8">
+            <p>{{name}}</p>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <label class="col-4">Email</label>
+          <div class="col-8">
+            <p>{{email}}</p>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <label class="col-4">Password</label>
+          <div class="col-8">
+            <p>************</p>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <label class="col-4">Introduction</label>
+          <div class="col-8">
+            <p>{{introduction}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{{!-- partials/modal/ --}}
+{{> modal/modal-edit}}

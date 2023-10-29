@@ -8,7 +8,7 @@ body {
   min-height: 100vh;
 
   background-color: #ccccff;
-  overflow: hidden;
+  /* overflow-y: hidden; */
 }
 
 /* -------------------- Navbar -------------------- */
@@ -91,6 +91,80 @@ body {
   font-weight: 500;
   color: brown;
 }
+
+/* -------------------- profile page -------------------- */
+
+/* Profile container */
+.profile-container {
+  margin: 20px 0;
+}
+
+/* Profile Content */
+.profile-content {
+  padding: 20px;
+  background: #fff;
+  min-height: 460px;
+}
+
+.profile-img-block {
+  text-align: center;
+}
+
+.profile-user-img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* -------------------- Modals -------------------- */
+/* --------------------Modal Edit -------------------- */
+.user-edit-modal .modal-body>.avatar-edit {
+  position: relative;
+  text-align: center;
+  margin-top: 12px;
+}
+
+.user-edit-modal .modal-body .avatar-img {
+  -webkit-filter: brightness(0.5);
+  filter: brightness(0.5);
+}
+
+.user-edit-modal .modal-body>.avatar-edit>.avatar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.user-edit-modal .modal-body>.avatar-edit>.avatar>.form-label {
+  margin: 0;
+  top: 0;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+.user-edit-modal .modal-body>.avatar-edit>.avatar>.form-control {
+  top: 0;
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.user-edit-modal .modal-body>.form-text {
+  margin: 16px;
+}
+
+.user-edit-modal .modal-body>.form-text .name-amount,
+.user-edit-modal .modal-body>.form-text .introduction-amount {
+  text-align: right;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 20px;
+  color: #696974;
+}
+
+
 
 /* -------------------- Partial Messages -------------------- */
 .message-wrapper {
