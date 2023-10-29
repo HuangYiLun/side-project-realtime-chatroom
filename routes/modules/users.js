@@ -7,6 +7,7 @@ const { getUser } = require('../../helpers/auth-helper')
 router.get('/', authenticated)
 
 router.get('/:userId/profile', userController.getProfile)
+router.put('/:userId/profile', )
 
 
 

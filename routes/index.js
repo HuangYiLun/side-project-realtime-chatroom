@@ -10,8 +10,8 @@ const { generalErrorHandler } = require('../middleware/error-handler')
 
 // signin signup logout
 router.use('/', signIn)
-
 router.use('/users', users)
+
 
 router.use('/', generalErrorHandler)
 router.get('/', authenticated, (req, res) => res.render('index'))

@@ -67,6 +67,10 @@ const userController = {
       next(err)
     }
 
+  },
+  putProfile : async(req, res, next) => {
+    console.log('enter put profile')
+
   }
 }
 
