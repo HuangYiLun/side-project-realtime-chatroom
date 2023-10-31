@@ -1,52 +1,29 @@
-
+// 引用通用函式
+import {handleInput, handleConfirmPassword} from './formValidation.js'
 //form validation from front-end
 const form = document.querySelector('#form')
-const submitButton = document.querySelector('#btn-submit')
-const nameInput = document.querySelector('#name')
-const emailInput = document.querySelector('#email')
-const passwordInput = document.querySelector('#password')
-const confirmPasswordInput = document.querySelector('#confirmPassword')
+const btnSumbit = document.querySelector('#btn-submit')
+const inputName = document.querySelector('#name')
+const inputPassword = document.querySelector('#password')
+const inputConfirmPassword = document.querySelector('#confirmPassword')
 
-submitButton.addEventListener('click', function onSubmitClick() {
+// 觸發bootstrap前端form驗證
+btnSumbit.addEventListener('click', function onSubmitClick() {
   form.classList.add('was-validated')
 })
-
-form.addEventListener('submit', function onFormSubmit() {
+// form驗證不通過，阻止事件默認行為＆停止事件冒泡
+form.addEventListener('submit', function onFormSubmit(e) {
   if (!form.checkValidity()) {
-    event.preventDefault()
-    event.stopPropagation()
+    e.preventDefault()
+    e.stopPropagation()
   }
 })
 
-// Name
-nameInput.addEventListener('keyup', function countLetters() {
-  const target = event.target
-  const counter = target.parentElement.lastElementChild
-  counter.innerText = `${target.value.length}/20`
-})
-
-nameInput.addEventListener('keyup', function onInputKeyUp() {
-  if (event.target.value.length > 20) {
-    event.target.setCustomValidity("Invalid field.")
-  } else {
-    event.target.setCustomValidity("")
-  }
-})
-
-// Password
-passwordInput.addEventListener('keyup', function countLetters() {
-  const target = event.target
-  const counter = target.parentElement.lastElementChild
-  counter.innerText = `${target.value.length}/12`
-})
+// 驗證input字數是否超過限制
+handleInput(inputName, 20)
+handleInput(inputPassword, 12)
 
 // Confirm Password
-confirmPasswordInput.addEventListener('keyup', function confirmPassword() {
-  const target = event.target
+// 判斷密碼是否一致
+handleConfirmPassword(inputPassword, inputConfirmPassword)
 
-  if (passwordInput.value !== confirmPasswordInput.value) {
-    event.target.setCustomValidity("Invalid field.")
-  } else {
-    event.target.setCustomValidity("")
-  }
-})

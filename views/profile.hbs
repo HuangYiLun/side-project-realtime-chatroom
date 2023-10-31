@@ -2,13 +2,13 @@
   <div class="profile-content rounded mx-auto w-75">
     <div class="d-flex justify-content-between">
       <h4>Modify your Profile</h4>
-      <a class="btn btn-secondary rounded-pill" id="edit-user-data" data-bs-toggle="modal" data-bs-target="#edit-modal">Edit Profile</a>
+      <button class="btn btn-secondary rounded-pill" id="edit-user-data" data-bs-toggle="modal" data-bs-target="#edit-modal">Edit Profile</button>
     </div>
 
     <div class="row pt-5">
       <div class="col-4">
         <div class="profile-img-block">
-          <img class="profile-user-img" src="{{avatar}}" alt="avatar" />
+          <img class="profile-user-img" src="{{avatar}}" onerror="this.src='https://i.imgur.com/VUhtTKV.png'" />
         </div>
       </div>
 
@@ -49,4 +49,4 @@
 {{!-- partials/modal/ --}}
 {{> modal/modal-edit}}
 
-<script src="/javascripts/profile.js"></script>
+<script type="module" src="/javascripts/profile.js"></script>
