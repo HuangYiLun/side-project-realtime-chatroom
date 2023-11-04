@@ -17,7 +17,7 @@ const form = document.querySelector('#form')
 // 取得url
 const url = window.location.href
 //使用正則表達式，匹配url中的userid
-const matches = url.match(/\/users\/(\w+)\/profile/)
+const matches = url.match(/\/users\/(\w+)/)
 
 const userId = matches[1]
 
@@ -49,19 +49,30 @@ inputUploadImg.addEventListener('change', previewImg)
 
 function previewImg(e) {
   const file = e.target.files[0]
-
-  // 如果file存在
-  if (file) {
-    // 檢查file是否為圖片
-    if (file.type.startsWith('image/')) {
-      // 替換img圖片
-      avatarImg.src = window.URL.createObjectURL(file)
-      // 釋放記憶體
-      avatarImg.onload = function () {
-        URL.revokeObjectURL(avatarImg.src)
-      }
-    }
+  // 圖片不存在
+  if (!file) {
+    return
   }
+  // 上傳檔案不是圖片
+  if (!file.type.startsWith('image/')) {
+    alert('請選擇圖片檔案')
+    e.target.value = ''
+    return
+  }
+  // 檢查圖片檔大小是否超過10MB
+  if (file.size > 10485760) {
+    alert('上傳圖片檔案大小不能超過10MB')
+    e.target.value = ''
+    return
+  }
+
+  // 替換img圖片
+  avatarImg.src = window.URL.createObjectURL(file)
+  // 釋放記憶體
+  avatarImg.onload = function () {
+    URL.revokeObjectURL(avatarImg.src)
+  }
+
 }
 
 

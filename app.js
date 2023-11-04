@@ -23,11 +23,13 @@ const SESSION_SECRET = process.env.SESSION_SECRET
 app.engine('hbs', exphbs.engine({ extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
+// setting body-parser
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
 app.use(express.static('public'))
 app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: false }))
 
-// setting body-parser
-app.use(express.urlencoded({ extended: true }))
 
 // setting passport
 app.use(passport.initialize())

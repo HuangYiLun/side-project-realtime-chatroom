@@ -1,6 +1,7 @@
 const User = require('../models/user')
 const bcrypt = require('bcryptjs')
 const helpers = require('../helpers/auth-helper')
+const { imgurFileHelper } = require('../helpers/file-helper')
 
 const userController = {
   getSignIn: (req, res) => {
@@ -55,22 +56,70 @@ const userController = {
 
     try {
       const user = await User.findById(userId)
-      const { email, name, password, avatar, introduction, createdAt, updatedAt } = user
+      const { _id, email, name, password, avatar, introduction, createdAt, updatedAt } = user
       // 是否查詢到user
       if (!user) {
         req.flash('danger_msg', '該使用者不存在')
         return res.redirect('back')
       }
       // 查詢成功
-      return res.render('profile', { email, name, password, avatar, introduction, createdAt, updatedAt })
+      return res.render('profile', { userId: _id, email, name, password, avatar, introduction, createdAt, updatedAt })
     } catch (err) {
       next(err)
     }
 
   },
-  putProfile : async(req, res, next) => {
-    console.log('enter put profile')
+  putProfile: async (req, res, next) => {
+    // 取得form 資料
+    const { userId } = req.params
+    const avatar = req.file
+    let { name, email, password, confirmPassword, introduction } = req.body
 
+    name = name.trim()
+    email = email.trim()
+    password = password.trim()
+    confirmPassword = confirmPassword.trim()
+    introduction = introduction.trim()
+
+    // 取得目前登入使用者
+    const loginUser = helpers.getUser(req)
+    // 判斷是否本人
+    if (loginUser._id.toString() !== userId) throw new Error('不具修改權限')
+
+    try {
+      // 查詢對應user 
+      const userMongoDB = await User.findById(userId)
+      //user不存在就拋錯
+      if (!userMongoDB) throw new Error('帳號不存在')
+      //轉換javascript objects,方便使用
+      const user = userMongoDB.toObject()
+      // 查詢email是否重複
+      if (email && email !== user.email) {
+        const sameEmailCount = await User.countDocuments({ email, _id: { $ne: userId } })
+        if (sameEmailCount > 0) throw new Error('信箱已重複註冊')
+      }
+      // 檢查資料是否正確
+      if (avatar.size > 10485760) throw new Error('圖片大小超出10MB')
+      if (name?.length > 20) throw new Error('名稱字數超出上限')
+      if (introduction?.length > 160) throw new Error('自介字數超出上限')
+      if (password?.length > 12) throw new Error('密碼長度超出上限')
+      if (password !== confirmPassword) throw new Error('密碼不一致')
+      // update
+      userMongoDB.name = name || user.name
+      userMongoDB.email = email || user.email
+      userMongoDB.introduction = introduction || user.introduction
+      //如果avatar存在，則上傳imgur
+      if (avatar) {
+        userMongoDB.avatar = await imgurFileHelper(avatar) || user.avatar
+      }
+      if (password) {
+        userMongoDB.password = await bcrypt.hash(password, 10) || user.password
+      }
+      await userMongoDB.save()
+      res.redirect('back')
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
