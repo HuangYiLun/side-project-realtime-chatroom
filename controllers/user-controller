@@ -99,7 +99,7 @@ const userController = {
         if (sameEmailCount > 0) throw new Error('信箱已重複註冊')
       }
       // 檢查資料是否正確
-      if (avatar.size > 10485760) throw new Error('圖片大小超出10MB')
+      if (avatar?.size > 10485760) throw new Error('圖片大小超出10MB')
       if (name?.length > 20) throw new Error('名稱字數超出上限')
       if (introduction?.length > 160) throw new Error('自介字數超出上限')
       if (password?.length > 12) throw new Error('密碼長度超出上限')
