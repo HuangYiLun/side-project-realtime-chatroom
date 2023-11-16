@@ -1,9 +1,11 @@
 <header>
   <nav class="navbar navbar-expand-sm navbar-dark flex-nowrap fixed-top p-0 ">
-
     <div class="container-fluid">
-      {{!-- brand name --}}
-      <a class="navbar-brand ms-2" href="#">Chatroom</a>
+      <div class="nav-left">
+        <i class="logo fa-regular fa-comments"></i>
+        {{!-- brand name --}}
+        <a class="brand" href="/"><span>Chatroom</span></a>
+      </div>
 
       {{!-- search userbar --}}
       <form class="form-search" role="search">
@@ -15,43 +17,36 @@
         </div>
       </form>
 
-      <div class="nav-items me-4">
-        <ul class="navbar-nav mb-2">
-          {{!-- notification --}}
-          <li class="nav-item me-2">
-            <a class="nav-link nav-notification" href="#">
-              <i class="fa-solid fa-bell"></i>
-            </a>
-          </li>
-          {{!-- profile --}}
-          <li class="nav-item dropdown me-2">
-            <a class="nav-link nav-user dropdown-toggle p-0" href="#" role="button" data-bs-toggle="dropdown"
-              aria-expanded="false">
-              {{#if loginUser}}
-              <img src={{loginUser.avatar}} alt="" srcset="">
-              {{else}}
-              <i class="fa-solid fa-user"></i>
-              {{/if}}
-            </a>
+      <div class="nav-right">
+        {{!-- notification --}}
+        <a class="nav-link nav-item nav-notification" href="#">
+          <i class="fa-solid fa-bell"></i>
+        </a>
+        {{!-- profile --}}
+        <a class="nav-link nav-item nav-user dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          {{#if loginUser}}
+          <img src={{loginUser.avatar}} alt="" srcset="">
+          {{else}}
+          <i class="fa-solid fa-user"></i>
+          {{/if}}
+        </a>
 
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="/users/{{loginUser._id}}">Profile</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li>
-                <form action="/signout" method="post">
-                  <button class="dropdown-item" type="submit">
-                    <i class="fa-solid fa-right-from-bracket" style="color: #7B68EE;"></i><span class="ms-2">Log
-                      Out</span>
-                  </button>
-                </form>
-              </li>
-            </ul>
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+          <li><a class="dropdown-item" href="/users/{{loginUser._id}}"><i class="fa-solid fa-user m"></i><span class="ms-2">Profile</span></a></li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <form action="/signout" method="post">
+              <button class="dropdown-item" type="submit">
+                <i class="fa-solid fa-right-from-bracket"></i><span class="ms-2">Log
+                  Out</span>
+              </button>
+            </form>
           </li>
         </ul>
       </div>
-
     </div>
   </nav>
 </header>

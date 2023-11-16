@@ -7,14 +7,27 @@ body {
 
   min-height: 100vh;
 
-  background-color: #ccccff;
-  /* overflow-y: hidden; */
+  background-color: #1f253d;
+  overflow-y: hidden;
 }
 
 /* -------------------- Navbar -------------------- */
 .navbar {
   height: 60px;
-  background-color: #7B68EE;
+  background-color: #111827;
+  color: #9ca3af;
+}
+
+.nav-left .logo {
+  width: 30px;
+  font-size: 20px;
+}
+
+.nav-left .brand {
+  text-decoration: none;
+  color: #9ca3af;
+  font-size: 20px;
+  font-weight: 500;
 }
 
 .form-search .search {
@@ -31,31 +44,37 @@ body {
 }
 
 .btn-search:hover {
-  background-color: #ccccff;
+  background-color: #374151;
 }
 
-.nav-link {
+.nav-right {
+  width: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-right: 24px;
+}
+
+.nav-right .nav-item {
   width: 40px;
   height: 40px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50px;
 }
 
-.nav-link i {
+.nav-right .nav-notification:hover {
+  background-color: #374151;
+}
+
+.nav-right .nav-item i {
   color: #fff;
 }
 
-.nav-link:hover {
-  background-color: #fff;
-}
-
-.nav-link:hover i {
-  color: #7B68EE;
-}
-
-.nav-link img {
-  width: 40px;
-  height: 40px;
+.nav-right .nav-item img {
+  width: 100%;
+  height: 100%;
   border-radius: 50px;
   object-fit: cover;
 }
@@ -116,6 +135,68 @@ body {
   object-fit: cover;
   border-radius: 50%;
 }
+
+/* -------------------- search-list -------------------- */
+.search-user-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* -------------------- sidebar-------------------- */
+.sidebar {
+  width: 180px;
+  height: 100vh;
+  background-color: #111827;
+  color: #9ca3af;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebar-center {
+  display: flex;
+  align-items: center;
+  width: 80%;
+  margin-top: 60px;
+}
+
+.sidebar-center .list {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+.sidebar-center .list-item {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.sidebar-center .list-item-icon {
+  width: 30px;
+  font-size: 20px;
+}
+
+.sidebar-center .list-item.active,
+.sidebar-center .list-item:hover {
+  background-color: #374151;
+  color: white;
+}
+
+@media only screen and (max-width: 768px) {
+  .sidebar {
+    width: 50px;
+  }
+
+  .sidebar-center .list-item-text {
+    display: none;
+  }
+}
+
 
 /* -------------------- Modals -------------------- */
 /* --------------------Modal Edit -------------------- */
