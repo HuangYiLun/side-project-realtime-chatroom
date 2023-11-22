@@ -120,6 +120,11 @@ const userController = {
     } catch (err) {
       next(err)
     }
+  },
+  getSearch: (req, res) => {
+    console.log('enter get search')
+    const partialName = 'search'
+    return res.render('index', { partialName })
   }
 }
 

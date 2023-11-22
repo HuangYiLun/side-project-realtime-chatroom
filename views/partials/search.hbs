@@ -1,0 +1,58 @@
+<div class="search h-100">
+  <div class="search-top">
+    <h4>Search User</h4>
+    <form class="form-search" role="search">
+      <div class="input-group search-bar">
+        <input class="form-control input-search" type="search" placeholder="Enter user name or email"
+          aria-label="Search">
+        <button class="btn btn-search" type="button">
+          <i class="fa-solid fa-magnifying-glass text-white"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="search-center">
+    <ul class="search-list">
+      <li class="search-list-item d-flex align-items-center justify-content-between">
+        <div class="search-user-avatar">
+          <img src="https://i.imgur.com/VUhtTKV.png" onerror="this.src='https://i.imgur.com/VUhtTKV.png'"
+            data-bs-toggle="modal" data-bs-target="#show-modal">
+        </div>
+
+        <div class="search-user-name">
+          <h4 data-bs-toggle="modal" data-bs-target="#show-modal">allen huang</h4>
+        </div>
+
+        <div class="add-friend-btn">
+          <button class="btn btn-outline-info">
+            <i class="fa-solid fa-heart-circle-plus"></i>
+            Add Friend
+          </button>
+        </div>
+      </li>
+
+      <li class="search-list-item d-flex align-items-center justify-content-between">
+        <div class="search-user-avatar">
+          <img src="https://i.imgur.com/VUhtTKV.png" onerror="this.src='https://i.imgur.com/VUhtTKV.png'"
+            data-bs-toggle="modal" data-bs-target="#show-modal">
+        </div>
+
+        <div class="search-user-name">
+          <h4 data-bs-toggle="modal" data-bs-target="#show-modal">allen huang</h4>
+        </div>
+
+        <div class="add-friend-btn">
+          <button class="btn btn-outline-info">
+            <i class="fa-solid fa-heart-circle-plus"></i>
+            Add Friend
+          </button>
+        </div>
+      </li>
+
+    </ul>
+
+  </div>
+
+</div>
+
+{{> modal/modal-show}}

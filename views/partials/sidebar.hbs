@@ -1,7 +1,7 @@
-<div class="sidebar">
+<div class="sidebar h-100">
   <div class="sidebar-center">
     <ul class="list">
-      <li class="list-item active">
+      <li class="list-item">
         <i class="list-item-icon fa-solid fa-comment"></i>
         <span class="list-item-text">1 on 1</span>
       </li>
@@ -9,10 +9,12 @@
         <i class="list-item-icon fa-solid fa-comments"></i>
         <span class="list-item-text">Rooms</span>
       </li>
-      <li class="list-item">
-        <i class="list-item-icon fa-solid fa-search"></i>
-        <span class="list-item-text">Search</span>
-      </li>
+      <a href="/users/search">
+        <li class="list-item {{#ifCond route 'search'}}active{{/ifCond}}">
+          <i class="list-item-icon fa-solid fa-search"></i>
+          <span class="list-item-text">Search</span>
+        </li>
+      </a>
       <li class="list-item">
         <i class="list-item-icon fa-solid fa-heart"></i>
         <span class="list-item-text">Friends</span>

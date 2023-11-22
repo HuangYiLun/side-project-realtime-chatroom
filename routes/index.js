@@ -18,6 +18,9 @@ router.use('/users', users)
 
 
 router.use('/', generalErrorHandler)
-router.get('/', authenticated, (req, res) => res.render('index'))
+router.get('/', authenticated, (req, res) => {
+  console.log('redirect users/search')
+  res.redirect('/users/search')
+})
 
 module.exports = router

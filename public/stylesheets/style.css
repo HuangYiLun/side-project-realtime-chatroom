@@ -1,4 +1,4 @@
-body {
+body{
   height: 100%;
   width: 100%;
 
@@ -28,23 +28,6 @@ body {
   color: #9ca3af;
   font-size: 20px;
   font-weight: 500;
-}
-
-.form-search .search {
-  border-radius: 50px;
-  border: 1px solid #EEEEEE;
-}
-
-.form-search .search .input-search {
-  border-radius: 50px;
-}
-
-.btn-search {
-  border-radius: 50px;
-}
-
-.btn-search:hover {
-  background-color: #374151;
 }
 
 .nav-right {
@@ -136,12 +119,6 @@ body {
   border-radius: 50%;
 }
 
-/* -------------------- search-list -------------------- */
-.search-user-avatar img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
 
 /* -------------------- sidebar-------------------- */
 .sidebar {
@@ -176,6 +153,10 @@ body {
   border-radius: 10px;
 }
 
+.sidebar a {
+  text-decoration: none;
+}
+
 .sidebar-center .list-item-icon {
   width: 30px;
   font-size: 20px;
@@ -196,6 +177,71 @@ body {
     display: none;
   }
 }
+
+/* -------------------- search -------------------- */
+.search-user-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.search {
+  min-width: 350px;
+  border: 1px solid #9ca3af;
+}
+
+.search-top {
+  display: flex;
+  flex-direction: column;
+  height: 120px;
+  margin-top: 10px;
+  padding: 10px 20px;
+}
+
+.search-top h4 {
+  color: #9ca3af;
+}
+
+.form-search .search-bar {
+  border-radius: 50px;
+  border: 1px solid #EEEEEE;
+}
+
+.form-search .search .input-search {
+  border-radius: 50px;
+}
+
+.btn-search {
+  border-radius: 50px;
+}
+
+.btn-search:hover {
+  background-color: #374151;
+}
+
+.search-center {
+  height: 80%;
+  overflow-y: auto;
+}
+
+.search-list,
+.search-list-item {
+  margin-top: 10px;
+}
+
+.search-list {
+  padding: 0px 32px;
+}
+
+.search-list-item {
+  height: 60px;
+  border-top: 1px solid #9ca3af;
+}
+
+.search-user-name {
+  color: #9ca3af;
+}
+
 
 
 /* -------------------- Modals -------------------- */

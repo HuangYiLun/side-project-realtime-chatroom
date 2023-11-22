@@ -8,6 +8,8 @@ const methodOverride = require('method-override')
 const passport = require('./config/passport')
 const session = require('express-session')
 const flash = require('connect-flash')
+// helpers
+const handlebarsHelpers = require('./helpers/handlebars-helper')
 const helpers = require('./helpers/auth-helper')
 
 const routes = require('./routes')
@@ -20,7 +22,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET
 
 
 //setting template engine
-app.engine('hbs', exphbs.engine({ extname: '.hbs' }))
+app.engine('hbs', exphbs.engine({ extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')
 
 // setting body-parser
