@@ -121,10 +121,36 @@ const userController = {
       next(err)
     }
   },
-  getSearch: (req, res) => {
-    console.log('enter get search')
-    const partialName = 'search'
-    return res.render('index', { partialName })
+  search: async (req, res, next) => {
+    const keyword = req.query.keyword
+    // const partialName = 'search'
+    try {
+      const usersMongoDB = await User.find({
+        // 搜尋條件 
+        $or: [
+          { name: { $regex: keyword, $options: 'i' } },
+          { email: keyword }
+        ]
+        // 回傳資料欄位
+      }, { name: 1, avatar: 1, introduction: 1 })
+        .sort({ name: 1 }) //降冪排序
+
+      const users = usersMongoDB.map(user => {
+        const userObject = user.toObject();
+        userObject._id = userObject._id.toString();
+        return userObject;
+      })
+
+      console.log('search users', users)
+
+      res.json({ users })
+
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ error: 'Internal Server Error' })
+      // next(err)
+    }
+
   }
 }
 

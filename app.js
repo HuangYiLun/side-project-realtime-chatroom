@@ -19,10 +19,14 @@ require('./config/mongoose')
 const app = express()
 const port = process.env.PORT
 const SESSION_SECRET = process.env.SESSION_SECRET
-
+//setting handlebars
+const hbs = exphbs.create({
+  extname: '.hbs',
+  helpers: handlebarsHelpers
+})
 
 //setting template engine
-app.engine('hbs', exphbs.engine({ extname: '.hbs', helpers: handlebarsHelpers }))
+app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')
 
 // setting body-parser
@@ -46,7 +50,7 @@ app.use((req, res, next) => {
   res.locals.warning_msg = req.flash('warning_msg')
   res.locals.info_msg = req.flash('info_msg')
   res.locals.loginUser = helpers.getUser(req)
-  
+
   next()
 })
 

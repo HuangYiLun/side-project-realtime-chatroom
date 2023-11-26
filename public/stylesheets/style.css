@@ -179,14 +179,8 @@ body{
 }
 
 /* -------------------- search -------------------- */
-.search-user-avatar img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-
 .search {
-  min-width: 350px;
+  min-width: 360px;
   border: 1px solid #9ca3af;
 }
 
@@ -207,7 +201,7 @@ body{
   border: 1px solid #EEEEEE;
 }
 
-.form-search .search .input-search {
+.form-search .search-bar .input-search {
   border-radius: 50px;
 }
 
@@ -234,12 +228,20 @@ body{
 }
 
 .search-list-item {
-  height: 60px;
+  height: 80px;
   border-top: 1px solid #9ca3af;
+}
+
+.search-user-avatar img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 .search-user-name {
   color: #9ca3af;
+  cursor: pointer;
 }
 
 

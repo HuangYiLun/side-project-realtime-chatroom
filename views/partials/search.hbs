@@ -1,11 +1,11 @@
 <div class="search h-100">
   <div class="search-top">
     <h4>Search User</h4>
-    <form class="form-search" role="search">
+    <form class="form-search" action="/users/search" method="GET" role="search">
       <div class="input-group search-bar">
-        <input class="form-control input-search" type="search" placeholder="Enter user name or email"
-          aria-label="Search">
-        <button class="btn btn-search" type="button">
+        <input class="form-control input-search" type="search" id="keyword" name="keyword"
+          placeholder="Enter user name or email" aria-label="Search" required>
+        <button class="btn btn-search" type="submit">
           <i class="fa-solid fa-magnifying-glass text-white"></i>
         </button>
       </div>
@@ -13,14 +13,18 @@
   </div>
   <div class="search-center">
     <ul class="search-list">
-      <li class="search-list-item d-flex align-items-center justify-content-between">
+      {{#each users}}
+      <li class="search-list-item d-flex align-items-center justify-content-between"
+        data-user='{"_id":"{{this._id}}","name":"{{this.name}}","avatar":"{{this.avatar}}","introduction":"{{this.introduction}}" }'>
         <div class="search-user-avatar">
-          <img src="https://i.imgur.com/VUhtTKV.png" onerror="this.src='https://i.imgur.com/VUhtTKV.png'"
-            data-bs-toggle="modal" data-bs-target="#show-modal">
+          <img src="{{#if this.avatar}}{{this.avatar}}{{else}}https://i.imgur.com/VUhtTKV.png{{/if}}"
+            data-bs-toggle="modal" data-bs-target="#show-modal" onerror="this.src=' https://i.imgur.com/VUhtTKV.png'">
         </div>
 
         <div class="search-user-name">
-          <h4 data-bs-toggle="modal" data-bs-target="#show-modal">allen huang</h4>
+          <h4 data-bs-toggle="modal" data-bs-target="#show-modal" onclick="openModal(this)">{{#if
+            this.name}}{{this.name}}{{else}}allen
+            huang{{/if}}</h4>
         </div>
 
         <div class="add-friend-btn">
@@ -29,25 +33,9 @@
             Add Friend
           </button>
         </div>
+
       </li>
-
-      <li class="search-list-item d-flex align-items-center justify-content-between">
-        <div class="search-user-avatar">
-          <img src="https://i.imgur.com/VUhtTKV.png" onerror="this.src='https://i.imgur.com/VUhtTKV.png'"
-            data-bs-toggle="modal" data-bs-target="#show-modal">
-        </div>
-
-        <div class="search-user-name">
-          <h4 data-bs-toggle="modal" data-bs-target="#show-modal">allen huang</h4>
-        </div>
-
-        <div class="add-friend-btn">
-          <button class="btn btn-outline-info">
-            <i class="fa-solid fa-heart-circle-plus"></i>
-            Add Friend
-          </button>
-        </div>
-      </li>
+      {{/each}}
 
     </ul>
 
@@ -56,3 +44,5 @@
 </div>
 
 {{> modal/modal-show}}
+
+<script type="module" src="/javascripts/searchList.js" defer></script>

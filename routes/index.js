@@ -4,6 +4,7 @@ const passport = require('../config/passport')
 const userController = require('../controllers/user-controller')
 const signIn = require('./modules/signin')
 const users = require('./modules/users')
+const search = require('./modules/search')
 const api = require('./modules/api')
 const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
@@ -14,13 +15,14 @@ router.use('/', signIn)
 
 router.use('/api', api)
 
+router.use('/search', search)
+
 router.use('/users', users)
 
 
 router.use('/', generalErrorHandler)
 router.get('/', authenticated, (req, res) => {
-  console.log('redirect users/search')
-  res.redirect('/users/search')
+  res.redirect('/search')
 })
 
 module.exports = router
