@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const friendshipSchema = new Schema({
+const invitationSchema = new Schema({
   inviter: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -14,9 +14,10 @@ const friendshipSchema = new Schema({
   },
   status: {
     type: String,
-    required: true,
-    default: pending
+    enum: ['pending', 'accepted', 'rejected'],
+    default: 'pending',
+    required: true
   }
 }, { timestamps: true })
 
-module.exports = mongoose.model('Friendship', friendshipSchema)
+module.exports = mongoose.model('Invitation', invitationSchema)
