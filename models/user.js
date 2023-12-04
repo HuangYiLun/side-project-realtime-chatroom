@@ -24,10 +24,11 @@ const userSchema = new Schema({
     type: String,
     default: '沒有留下任何資訊'
   },
-  status: {
-    type: String,
+  friends: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User',
     required: false
-  },
+  }],
   isAdmin: {
     type: Boolean,
     required: true,
