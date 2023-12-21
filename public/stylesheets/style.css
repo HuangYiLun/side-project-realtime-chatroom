@@ -180,7 +180,7 @@ body{
 
 /* -------------------- search -------------------- */
 .search {
-  min-width: 360px;
+  min-width: 450px;
   border: 1px solid #9ca3af;
 }
 
@@ -242,6 +242,11 @@ body{
 .search-user-name {
   color: #9ca3af;
   cursor: pointer;
+}
+
+.none-pointer-friend-btn {
+  pointer-events: none;
+
 }
 
 

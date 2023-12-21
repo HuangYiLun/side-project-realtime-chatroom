@@ -2,6 +2,7 @@ const User = require('../models/user')
 const bcrypt = require('bcryptjs')
 const helpers = require('../helpers/auth-helper')
 const { imgurFileHelper } = require('../helpers/file-helper')
+const mongoose = require('mongoose')
 
 const userController = {
   getSignIn: (req, res) => {
@@ -123,6 +124,8 @@ const userController = {
   },
   search: async (req, res, next) => {
     const keyword = req.query.keyword
+    const loginUser = helpers.getUser(req)
+    const { sentFriendsRequest, friends } = loginUser
 
     try {
       const usersMongoDB = await User.find({
@@ -132,12 +135,16 @@ const userController = {
           { email: keyword }
         ]
         // 回傳資料欄位
-      }, { name: 1, avatar: 1, introduction: 1 })
-        .sort({ name: 1 }) //降冪排序
+      }, { name: 1, avatar: 1, introduction: 1 }).sort({ name: 1 }) //降冪排序
 
       const users = usersMongoDB.map(user => {
         const userObject = user.toObject();
         userObject._id = userObject._id.toString();
+        // 判斷是否已發送邀請/朋友/本人
+        userObject.hasSentRequest = sentFriendsRequest.some(invitation => invitation.toUser.toString() === userObject._id)
+        userObject.isFriend = friends.some(friend => friend._id.toString() === userObject._id)
+        userObject.isLoginUser = loginUser._id.toString() === userObject._id
+
         return userObject;
       })
 
@@ -147,8 +154,51 @@ const userController = {
       console.error(err)
       res.status(500).json({ error: 'Internal Server Error' })
     }
+  },
+  sendRequest: async (req, res) => {
+    console.log('enter sendrequest')
+    const friendId = req.params.userId
+    const userId = helpers.getUser(req)._id.toString()
+    //確認邀請對象不是自己
+    if (friendId !== userId) {
+      const session = await mongoose.startSession()
+      try {
+        await session.withTransaction(async () => {
+          const operations = [
+            {
+              updateOne: {
+                filter: { _id: userId },
+                update: { $push: { sentFriendsRequest: { toUser: friendId, status: 'pending' } } }
+              }
+            },
+            {
+              updateOne: {
+                filter: { _id: friendId },
+                update: { $push: { getFriendsRequest: { fromUser: userId, status: 'pending' } } }
+              }
+            }
+          ]
+          await User.bulkWrite(operations, { session })
+          res.status(200).json({ message: 'friend request sent successfully.', success: true })
+        })
+      } catch (err) {
+        console.error('Bulk write failed. Error:', err);
+        res.status(500).json({ message: 'failed to send friend request.', success: false })
+      } finally {
+        await session.endSession()
+      }
+    }
+  },
+  cancelRequest: (req, res) => {
+
+  },
+  acceptRequest: (req, res) => {
+
+  },
+  rejectRequest: (req, res) => {
 
   }
+
 }
 
 module.exports = userController

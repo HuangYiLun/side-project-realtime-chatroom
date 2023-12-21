@@ -46,15 +46,51 @@ function renderSearchList(users) {
   
           <div class="search-user-name">
             <h4 class="search-user-name-h4" data-bs-toggle="modal" data-bs-target="#show-modal">${user.name}</h4>
-          </div>
-  
-          <div class="add-friend-btn">
-            <button class="btn btn-outline-info">
-              <i class="fa-solid fa-heart-circle-plus"></i>Add Friend
+          </div>`
+
+      switch (true) {
+        case user.hasSentRequest:
+          rawHTML += `
+          <div class="friend-btn">
+            <button class="btn btn-outline-secondary none-pointer-friend-btn">
+              Add Friend
             </button>
           </div>
-        </li>
-      `
+        </li>`
+          break
+
+        case user.isFriend:
+          rawHTML += `
+        <div class="friend-btn">
+          <button class="btn btn-outline-success none-pointer-friend-btn">
+            Friend
+          </button>
+        </div>
+      </li>`
+          break
+
+        case user.isLoginUser:
+          rawHTML += `
+        <div class="friend-btn">
+          <button class="btn btn-outline-light none-pointer-friend-btn">
+            Yourself
+          </button>
+        </div>
+      </li>`
+          break
+
+        default:
+          rawHTML += `
+        <div class="friend-btn">
+          <button class="btn btn-outline-info add-friend-btn" data-id="${user._id}">
+            <i class="fa-solid fa-heart-circle-plus"></i>Add Friend
+          </button>
+        </div>
+      </li>`
+          break
+      }
+
+
     })
   } else {
     rawHTML = renderInvalidSearchList()
@@ -74,17 +110,26 @@ function renderInvalidSearchList() {
   return rawHTML
 }
 
-// show modal 點擊監聽器
+// showList 監聽器
 searchList.addEventListener('click', function onSearchListClicked(e) {
   const target = e.target
 
-  if (target.matches('.search-user-avatar-img') || target.matches('.search-user-name-h4')) {
-    const userId = target.closest('.search-list-item').dataset.id
-    const user = filterUsers.find(user => user._id == userId)
+  switch (true) {
+    case target.matches('.search-user-avatar-img') || target.matches('.search-user-name-h4'):
+      const userId = target.closest('.search-list-item').dataset.id
+      const user = filterUsers.find(user => user._id == userId)
+      if (user) {
+        showModal(user)
+      }
+      break
 
-    if (user) {
-      showModal(user)
-    }
+    case target.matches('.add-friend-btn'):
+      addFriendRequest(target)
+      break
+
+    default:
+      // 如果點擊目標不符合任何條件
+      break
   }
 })
 
@@ -98,6 +143,27 @@ function showModal(user) {
   showUserName.innerText = user.name
   showUserIntroduction.innerText = user.introduction
 }
+
+//加入朋友
+async function addFriendRequest(self) {
+  const friendId = self.dataset.id
+
+  const result = await axios.put(BASE_URL + `/users/${friendId}/friends/send`)
+
+  if (result.data.success) {
+    renderFriendButton(self)
+  }
+}
+
+function renderFriendButton(self) {
+  const friendButton = self.closest('.friend-btn')
+  friendButton.innerHTML = `
+    <button class="btn btn-outline-secondary">
+      Add Friend
+    </button>
+  `
+}
+
 
 
 
