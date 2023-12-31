@@ -5,6 +5,7 @@ const userController = require('../controllers/user-controller')
 const signIn = require('./modules/signin')
 const users = require('./modules/users')
 const search = require('./modules/search')
+const friends = require('./modules/friends')
 const api = require('./modules/api')
 const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
@@ -19,10 +20,11 @@ router.use('/search', search)
 
 router.use('/users', users)
 
+router.use('/friends', friends)
 
 router.use('/', generalErrorHandler)
 router.get('/', authenticated, (req, res) => {
-  res.redirect('/search')
+  res.redirect('/friends')
 })
 
 module.exports = router

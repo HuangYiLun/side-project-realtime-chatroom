@@ -30,28 +30,14 @@ const userSchema = new Schema({
     required: false
   }, { _id: false }],
   sentFriendsRequest: [{
-    toUser: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    },
-    status: {
-      type: String,
-      enum: ['pending', 'accepted', 'rejected'],
-      default: 'pending'
-    }
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }, { _id: false }],
   getFriendsRequest: [{
-    fromUser: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    },
-    status: {
-      type: String,
-      enum: ['pending', 'accepted', 'rejected'],
-      default: 'pending'
-    }
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }, { _id: false }],
   isAdmin: {
     type: Boolean,

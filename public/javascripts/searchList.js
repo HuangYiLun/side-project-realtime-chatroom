@@ -148,7 +148,7 @@ function showModal(user) {
 async function addFriendRequest(self) {
   const friendId = self.dataset.id
 
-  const result = await axios.put(BASE_URL + `/users/${friendId}/friends/send`)
+  const result = await axios.put(BASE_URL + `/friends/${friendId}/send`)
 
   if (result.data.success) {
     renderFriendButton(self)
@@ -158,7 +158,7 @@ async function addFriendRequest(self) {
 function renderFriendButton(self) {
   const friendButton = self.closest('.friend-btn')
   friendButton.innerHTML = `
-    <button class="btn btn-outline-secondary">
+    <button class="btn btn-outline-secondary none-pointer-friend-btn">
       Add Friend
     </button>
   `

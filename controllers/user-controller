@@ -4,6 +4,10 @@ const helpers = require('../helpers/auth-helper')
 const { imgurFileHelper } = require('../helpers/file-helper')
 const mongoose = require('mongoose')
 
+const FRIENDS_URL = '/friends'
+const SENT_FRIENDS_TYPE = 'sent'
+const RECEIVED_FRIENDS_TYPE = 'received'
+
 const userController = {
   getSignIn: (req, res) => {
     return res.render('signin')
@@ -141,13 +145,12 @@ const userController = {
         const userObject = user.toObject();
         userObject._id = userObject._id.toString();
         // 判斷是否已發送邀請/朋友/本人
-        userObject.hasSentRequest = sentFriendsRequest.some(invitation => invitation.toUser.toString() === userObject._id)
+        userObject.hasSentRequest = sentFriendsRequest.some(invitation => invitation._id.toString() === userObject._id)
         userObject.isFriend = friends.some(friend => friend._id.toString() === userObject._id)
         userObject.isLoginUser = loginUser._id.toString() === userObject._id
 
         return userObject;
       })
-
       res.json({ users })
 
     } catch (err) {
@@ -155,29 +158,63 @@ const userController = {
       res.status(500).json({ error: 'Internal Server Error' })
     }
   },
+  getFriendPage: (req, res) => {
+    const partialName = 'friends'
+    const loginUser = helpers.getUser(req)
+    const type = req.query.type || ''
+    const { friends, sentFriendsRequest, getFriendsRequest } = loginUser
+    let users = []
+    let isFriends = false
+    let isSendInvitation = false
+    let isReceivedInvitation = false
+
+    //解構賦值取出user屬性
+    const mapUser = ({ _id, name, avatar, introduction }) => ({
+      _id: _id.toString(),
+      name,
+      avatar,
+      introduction
+    });
+
+    if (type === 'sent') {
+      isSendInvitation = true
+      users = sentFriendsRequest.map(mapUser)
+
+    } else if (type === 'received') {
+      isReceivedInvitation = true
+      users = getFriendsRequest.map(mapUser)
+    } else {
+      isFriends = true
+      users = friends.map(mapUser)
+    }
+    return res.render('index', { partialName, users, isFriends, isSendInvitation, isReceivedInvitation })
+  },
   sendRequest: async (req, res) => {
-    console.log('enter sendrequest')
     const friendId = req.params.userId
     const userId = helpers.getUser(req)._id.toString()
     //確認邀請對象不是自己
     if (friendId !== userId) {
+      //開啟新的session 
       const session = await mongoose.startSession()
       try {
+        //使用session執行all or noting
         await session.withTransaction(async () => {
+          // 定義session中的操作
           const operations = [
             {
               updateOne: {
                 filter: { _id: userId },
-                update: { $push: { sentFriendsRequest: { toUser: friendId, status: 'pending' } } }
+                update: { $push: { sentFriendsRequest: friendId } }
               }
             },
             {
               updateOne: {
                 filter: { _id: friendId },
-                update: { $push: { getFriendsRequest: { fromUser: userId, status: 'pending' } } }
+                update: { $push: { getFriendsRequest: userId } }
               }
             }
           ]
+          // 使用 bulkWrite 執行操作
           await User.bulkWrite(operations, { session })
           res.status(200).json({ message: 'friend request sent successfully.', success: true })
         })
@@ -185,18 +222,191 @@ const userController = {
         console.error('Bulk write failed. Error:', err);
         res.status(500).json({ message: 'failed to send friend request.', success: false })
       } finally {
-        await session.endSession()
+        try {
+          // 關閉mongoose session
+          await session.endSession();
+        } catch (sessionErr) {
+          console.error('Error ending session:', sessionErr);
+          return next(sessionErr);
+        }
       }
     }
   },
-  cancelRequest: (req, res) => {
+  cancelRequest: async (req, res) => {
+    const friendId = req.params.userId
+    const userId = helpers.getUser(req)._id.toString()
+    //開啟新的session 
+    const session = await mongoose.startSession()
+    try {
+      //使用session執行all or noting
+      await session.withTransaction(async () => {
+        // 定義session中的操作
+        const operations = [
+          {
+            updateOne: {
+              filter: { _id: userId },
+              update: { $pull: { sentFriendsRequest: friendId } }
+            }
+          },
+          {
+            updateOne: {
+              filter: { _id: friendId },
+              update: { $pull: { getFriendsRequest: userId } }
+            }
+          }
+        ]
+        // 使用 bulkWrite 執行操作
+        await User.bulkWrite(operations, { session })
+        res.redirect(`${FRIENDS_URL}?type=${SENT_FRIENDS_TYPE}`)
+      })
+    } catch (err) {
+      return next(err)
+    } finally {
+      try {
+        // 關閉session
+        await session.endSession();
+      } catch (sessionErr) {
+        console.error('Error ending session:', sessionErr);
+        return next(sessionErr);
+      }
+    }
 
   },
-  acceptRequest: (req, res) => {
-
+  acceptRequest: async (req, res) => {
+    const friendId = req.params.userId
+    const userId = helpers.getUser(req)._id.toString()
+    //開啟新的session 
+    const session = await mongoose.startSession()
+    try {
+      //使用session執行all or noting
+      await session.withTransaction(async () => {
+        // 定義session中的操作
+        const operations = [
+          // 本人同意收到的朋友請求，更新friends跟getFriendsRequest
+          {
+            updateOne: {
+              filter: { _id: userId },
+              update: {
+                $pull: { getFriendsRequest: friendId },
+                $addToSet: { friends: friendId }
+              }
+            }
+          },
+          // 對方的發出的朋友請求被接受，更新friends跟sentFriendsRequest
+          {
+            updateOne: {
+              filter: { _id: friendId },
+              update: {
+                $pull: { sentFriendsRequest: userId },
+                $addToSet: { friends: userId }
+              }
+            }
+          }
+        ]
+        // 使用 bulkWrite 執行操作
+        await User.bulkWrite(operations, { session })
+        res.redirect(`${FRIENDS_URL}?type=${RECEIVED_FRIENDS_TYPE}`)
+      })
+    } catch (err) {
+      return next(err)
+    } finally {
+      try {
+        // 關閉mongoose session
+        await session.endSession();
+      } catch (sessionErr) {
+        console.error('Error ending session:', sessionErr);
+        return next(sessionErr);
+      }
+    }
   },
-  rejectRequest: (req, res) => {
-
+  rejectRequest: async (req, res) => {
+    const friendId = req.params.userId
+    const userId = helpers.getUser(req)._id.toString()
+    //開啟新的session 
+    const session = await mongoose.startSession()
+    try {
+      //使用session執行all or noting
+      await session.withTransaction(async () => {
+        // 定義session中的操作
+        const operations = [
+          // 本人拒絕收到的朋友請求，更新本人的getFriendsRequest array
+          {
+            updateOne: {
+              filter: { _id: userId },
+              update: {
+                $pull: { getFriendsRequest: friendId },
+              }
+            }
+          },
+          // 對方的發出的朋友請求被拒絕，更新對方的sentFriendsRequest array
+          {
+            updateOne: {
+              filter: { _id: friendId },
+              update: {
+                $pull: { sentFriendsRequest: userId },
+              }
+            }
+          }
+        ]
+        // 使用 bulkWrite 執行操作
+        await User.bulkWrite(operations, { session })
+        res.redirect(`${FRIENDS_URL}?type=${RECEIVED_FRIENDS_TYPE}`)
+      })
+    } catch (err) {
+      return next(err)
+    } finally {
+      try {
+        // 關閉mongoose session
+        await session.endSession();
+      } catch (sessionErr) {
+        console.error('Error ending session:', sessionErr);
+        return next(sessionErr);
+      }
+    }
+  },
+  removeFriend: async (req, res) => {
+    const friendId = req.params.userId
+    const userId = helpers.getUser(req)._id.toString()
+    //開啟新的session 
+    const session = await mongoose.startSession()
+    try {
+      //使用session執行all or noting
+      await session.withTransaction(async () => {
+        // 定義session中的操作
+        const operations = [
+          {
+            updateOne: {
+              filter: { _id: userId },
+              update: {
+                $pull: { friends: friendId },
+              }
+            }
+          },
+          {
+            updateOne: {
+              filter: { _id: friendId },
+              update: {
+                $pull: { friends: userId },
+              }
+            }
+          }
+        ]
+        // 使用 bulkWrite 執行操作
+        await User.bulkWrite(operations, { session })
+        res.redirect(`${FRIENDS_URL}`)
+      })
+    } catch (err) {
+      console.error(err)
+      return next(err)
+    } finally {
+      try {
+        // 關閉mongoose session
+        await session.endSession();
+      } catch (sessionErr) {
+        console.error('Error ending session:', sessionErr);
+        return next(sessionErr);
+      }
+    }
   }
 
 }

@@ -20,14 +20,13 @@
   {{#if loginUser}}
   {{>header}}
   {{/if}}
-  <main class="flex-shrink-0 h-100" role="main">
-    <div class="pt-5 h-100">
-      <div class="d-flex h-100">
-        {{> messages}}
-        {{{ body }}}
-      </div>
-    </div>
-  </main>
+
+  <div class="body-wrapper">
+    {{> messages}}
+    {{{ body }}}
+  </div>
+
+
 
 
   <script src="https://kit.fontawesome.com/fddd8693b8.js" crossorigin="anonymous"></script>

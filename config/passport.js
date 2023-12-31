@@ -30,6 +30,18 @@ passport.serializeUser((user, cb) => {
 passport.deserializeUser(async (id, cb) => {
   try {
     const user = await User.findById(id)
+      .populate({
+        path: 'sentFriendsRequest',
+        select: '_id avatar name introduction'
+      })
+      .populate({
+        path: 'friends',
+        select: '_id avatar name introduction'
+      })
+      .populate({
+        path: 'getFriendsRequest',
+        select: '_id avatar name introduction'
+      })
     return cb(null, user.toJSON())
   } catch (err) {
     return cb(err)

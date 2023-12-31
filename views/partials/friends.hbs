@@ -1,0 +1,80 @@
+<div class="container h-100">
+  <div class="friends h-100">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link {{#if isFriends}}active{{/if}}" href="/friends">Friends</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link  {{#if isSendInvitation}}active{{/if}}" href="/friends?type=sent">Sent
+          Invitations</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link  {{#if isReceivedInvitation}}active{{/if}}" href="/friends?type=received">Received
+          Invitations</a>
+      </li>
+    </ul>
+
+    <!-- 朋友列表 -->
+    <div class="content mt-2">
+      {{#if isFriends}}<h5 class="text-white">人數:{{users.length}}位</h5>{{/if}}
+      {{#if isSendInvitation}}<h5 class="text-white">人數:{{users.length}}位</h5>{{/if}}
+      {{#if isReceivedInvitation}}<h5 class="text-white">人數:{{users.length}}位</h5>{{/if}}
+
+      <ul class="list">
+        <!-- 在這裡顯示朋友列表的內容 -->
+        {{#each users}}
+        <li class="list-item d-flex align-items-center justify-content-between" data-id="{{this._id}}" data-name="
+          {{this.name}}" data-avatar="{{this.avatar}}" data-introduction="{{this.introduction}}">
+          <div class="user-avatar">
+            <img class="user-avatar-img" src="{{this.avatar}}" data-bs-toggle="modal" data-bs-target="#show-modal"
+              onerror="this.src=' https://i.imgur.com/VUhtTKV.png'">
+          </div>
+
+          <div class="user-name">
+            <h4 class="user-name-h4" data-bs-toggle="modal" data-bs-target="#show-modal">{{this.name}}
+            </h4>
+          </div>
+
+          <div class="friend-btn">
+            {{#if ../isFriends}}
+            <form action="/friends/{{this._id}}/remove?_method=PUT" method="POST">
+              <button class="btn btn-outline-warning remove-friend-btn">
+                Remove
+              </button>
+            </form>
+            {{/if}}
+
+            {{#if ../isSendInvitation}}
+            <form action="/friends/{{this._id}}/cancel?_method=PUT" method="POST">
+              <button type="submit" class="btn btn-outline-warning cancel-friend-btn">
+                Cancel
+              </button>
+            </form>
+            {{/if}}
+
+            {{#if ../isReceivedInvitation}}
+            <form action="/friends/{{this._id}}/accept?_method=PUT" method="POST">
+              <button class="btn btn-outline-success accept-friend-btn">
+                Accept
+              </button>
+            </form>
+            <form action="/friends/{{this._id}}/reject?_method=PUT" method="POST">
+              <button class="btn btn-outline-warning reject-friend-btn">
+                Reject
+              </button>
+            </form>
+            {{/if}}
+
+          </div>
+        </li>
+        {{/each}}
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+
+{{> modal/modal-show}}
+
+<script type="module" src="/javascripts/friends.js" defer></script>
