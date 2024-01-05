@@ -1,8 +1,0 @@
-const searchController = {
-  getSearch: (req, res) => {
-    const partialName = 'search'
-    return res.render('index', { partialName })
-  }
-}
-
-module.exports = searchController

@@ -1,10 +1,10 @@
 <div class="search col-7 h-100">
   <div class="search-top">
     <h4>Search User</h4>
-    <form class="form-search" action="/users/search" method="GET" role="search">
+    <form class="form-search" action="/search" role="search">
       <div class="input-group search-bar">
         <input class="form-control input-search" type="search" id="keyword" name="keyword"
-          placeholder="Enter user name or email" aria-label="Search" required>
+          placeholder="Enter user name or email" aria-label="Search" value="{{keyword}}" required>
         <button class="btn btn-search" type="submit">
           <i class="fa-solid fa-magnifying-glass text-white"></i>
         </button>
@@ -12,33 +12,57 @@
     </form>
   </div>
   <div class="search-center">
+    {{#if users}}
+    <h5 class="text-white">符合搜尋:{{users.length}}位</h5>
+    {{/if}}
     <ul class="search-list">
       {{#each users}}
-      <li class="search-list-item d-flex align-items-center justify-content-between"
-        data-user='{"_id":"{{this._id}}","name":"{{this.name}}","avatar":"{{this.avatar}}","introduction":"{{this.introduction}}" }'>
+      <li class="search-list-item d-flex align-items-center justify-content-between" data-id="{{this._id}}" data-name="
+          {{this.name}}" data-avatar="{{this.avatar}}" data-introduction="{{this.introduction}}">
         <div class="search-user-avatar">
-          <img src="{{#if this.avatar}}{{this.avatar}}{{else}}https://i.imgur.com/VUhtTKV.png{{/if}}"
-            data-bs-toggle="modal" data-bs-target="#show-modal" onerror="this.src=' https://i.imgur.com/VUhtTKV.png'">
+          <img class="search-user-avatar-img" src="{{this.avatar}}" data-bs-toggle="modal" data-bs-target="#show-modal"
+            onerror="this.src=' https://i.imgur.com/VUhtTKV.png'">
         </div>
 
         <div class="search-user-name">
-          <h4 data-bs-toggle="modal" data-bs-target="#show-modal" onclick="openModal(this)">{{#if
-            this.name}}{{this.name}}{{else}}allen
-            huang{{/if}}</h4>
+          <h4 class="user-name-h4" data-bs-toggle="modal" data-bs-target="#show-modal">{{this.name}}</h4>
         </div>
 
-        <div class="add-friend-btn">
-          <button class="btn btn-outline-info">
-            <i class="fa-solid fa-heart-circle-plus"></i>
+        {{#if this.hasSentRequest}}
+        <div class="friend-btn">
+          <button class="btn btn-outline-secondary none-pointer-friend-btn">
             Add Friend
           </button>
         </div>
+        {{/if}}
+
+        {{#if this.isFriend}}
+        <div class="friend-btn">
+          <button class="btn btn-outline-success none-pointer-friend-btn">
+            Friend
+          </button>
+        </div>
+        {{/if}}
+
+        {{#if this.isLoginUser}}
+        <div class="friend-btn">
+          <button class="btn btn-outline-light none-pointer-friend-btn">
+            Yourself
+          </button>
+        </div>
+        {{/if}}
+
+        {{#if this.isDefault}}
+        <div class="friend-btn">
+          <button class="btn btn-outline-info add-friend-btn" data-id="{{this._id}}">
+            <i class="fa-solid fa-heart-circle-plus"></i>Add Friend
+          </button>
+        </div>
+        {{/if}}
 
       </li>
       {{/each}}
-
     </ul>
-
   </div>
 
 </div>

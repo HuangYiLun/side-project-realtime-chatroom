@@ -127,9 +127,16 @@ const userController = {
     }
   },
   search: async (req, res, next) => {
-    const keyword = req.query.keyword
+    const partialName = 'search'
+    const keyword = req.query.keyword ? req.query.keyword.trim() : ""
     const loginUser = helpers.getUser(req)
     const { sentFriendsRequest, friends } = loginUser
+
+    // 沒有搜尋關鍵字
+    if (!keyword) {
+      console.log('enter search query')
+      return res.render('index', { partialName })
+    }
 
     try {
       const usersMongoDB = await User.find({
@@ -149,10 +156,12 @@ const userController = {
         userObject.isFriend = friends.some(friend => friend._id.toString() === userObject._id)
         userObject.isLoginUser = loginUser._id.toString() === userObject._id
 
+        // 如果都不是已發送邀請/朋友/本人
+        userObject.isDefault = !userObject.hasSentRequest && !userObject.isFriend && !userObject.isLoginUser
+
         return userObject;
       })
-      res.json({ users })
-
+      return res.render('index', { partialName, users, keyword })
     } catch (err) {
       console.error(err)
       res.status(500).json({ error: 'Internal Server Error' })

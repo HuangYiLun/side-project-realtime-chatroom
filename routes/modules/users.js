@@ -8,7 +8,7 @@ const upload = require('../../middleware/multer')
 router.use('/', authenticated)
 
 // 搜尋使用者
-router.get('/search', userController.search)
+// router.get('/search', userController.search)
 
 //編輯頁面
 router.get('/:userId', userController.getProfile)
