@@ -6,6 +6,7 @@ const signIn = require('./modules/signin')
 const users = require('./modules/users')
 const search = require('./modules/search')
 const friends = require('./modules/friends')
+const chatrooms = require('./modules/chatrooms')
 const api = require('./modules/api')
 const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
@@ -21,6 +22,8 @@ router.use('/search', search)
 router.use('/users', users)
 
 router.use('/friends', friends)
+
+router.use('/chatroom', chatrooms)
 
 router.use('/', generalErrorHandler)
 router.get('/', authenticated, (req, res) => {

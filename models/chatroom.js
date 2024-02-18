@@ -2,20 +2,23 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const chatroomSchema = new Schema({
-  members: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  }],
-  chatroomName: {
+  name: {
     type: String,
     require: true,
     trim: true
   },
-  isGroup: {
+  isPublic: {
     type: Boolean,
     require: true,
     default: false
+  },
+  members: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  lastMessage: {
+    type: Schema.Types.ObjectId,
+    ref: "Message"
   }
 }, { timestamps: true })
 

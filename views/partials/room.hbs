@@ -1,0 +1,78 @@
+<div class="container-fluid h-100">
+  <div class="chatroom">
+    <div class="row h-100">
+      <div class="col-3 min-w-175px border-end">
+        <div class="mt-2 mx-2 p-2 ">
+          <a href="/chatroom/public" class="text-decoration-none">
+            <i class="fa-solid fa-chevron-left text-primary"></i>
+            <span class="text-white">Back To Chatrooms List</span>
+          </a>
+        </div>
+        <ul class="list px-2 mb-0 h-[calc(100vh-163px)] overflow-scroll">
+          <li class="d-flex pt-2 sticky-top bg-dark-blue  align-items-center border-bottom border-top">
+            <h5 class="text-white sticky-top">online:200</h5>
+          </li>
+          <li class="d-flex align-items-center border-bottom pb-2 pt-2">
+            <img class="h-40px w-40px rounded-circle" src="	https://i.imgur.com/YKUbX7n.png" data-bs-toggle="modal"
+              data-bs-target="#show-modal" onerror="this.src='https://i.imgur.com/VUhtTKV.png'">
+            <div class="flex-grow-1 ms-3 text-white-50">testname</div>
+          </li>
+          <li class="d-flex align-items-center border-bottom pb-2 pt-2">
+            <img class="h-40px w-40px rounded-circle" src="	https://i.imgur.com/YKUbX7n.png" data-bs-toggle="modal"
+              data-bs-target="#show-modal" onerror="this.src='https://i.imgur.com/VUhtTKV.png'">
+            <div class="flex-grow-1 ms-3 text-white-50">testname-end</div>
+          </li>
+        </ul>
+
+      </div>
+      <div class="col p-0">
+        <div class="chat-header h-52px mx-3 border-bottom">
+          <div class="row ">
+            <h1 class="text-white">{{roomName}} Chat Room</h1>
+          </div>
+        </div>
+
+        <div class="messages mt-2 mx-3">
+          <ul class="d-flex flex-column gap-3 h-[calc(100vh-180px)] overflow-scroll" id="messages">
+
+            <div class="d-flex justify-content-end align-items-end gap-3">
+              <div class="p-3 border-top-start-radius bg-primary">
+                <div class="rounded-5 overflow-hidden">
+                  <img class="h-100 w-100 object-cover" src="https://i.imgur.com/YKUbX7n.png" alt="msg_img">
+                </div>
+                <p class="fw-normal text-white text-break">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+                <p class="fw-lighter text-white fs-sm text-end mb-0">24 days ago
+                </p>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-start align-items-end gap-3">
+              <img src="https://i.imgur.com/YKUbX7n.png" class="h-40px w-40px rounded-circle ">
+              <div class="p-3 border-top-end-radius bg-secondary bg-opacity-50">
+                <p class="fw-semibold mb-1 text-danger">two</p>
+                <div class="rounded-5 overflow-hidden">
+                  <img class="h-100 w-100 object-cover" src="https://i.imgur.com/YKUbX7n.png" alt="msg_img">
+                </div>
+                <p class="fw-normal text-white text-break">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+                <p class="fw-lighter text-white fs-sm text-end mb-0">24 days ago</p>
+              </div>
+            </div>
+          </ul>
+        </div>
+
+        <div class="container m-0 p-0">
+          <form class="d-flex p-2" id="form" action="">
+            <label
+              class="text-white d-flex justify-content-center align-items-center btn-regular h-40px w-40px rounded-circle"
+              for="attachments">
+              <i class="fa-solid fa-paperclip"></i>
+            </label>
+            <input id="input" autocomplete="off" />
+            <button type="submit" class="btn btn-outline-light">Send</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

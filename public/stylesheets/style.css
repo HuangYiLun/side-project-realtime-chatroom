@@ -22,6 +22,65 @@ header {
   height: calc(100% - 60px);
 }
 
+/* height */
+
+.h-40px {
+  height: 40px;
+}
+
+.h-52px {
+  height: 52px;
+}
+
+.h-\[calc\(100vh-180px\)\] {
+  height: calc(100vh - 180px);
+}
+
+.h-\[calc\(100vh-163px\)\] {
+  height: calc(100vh - 163px);
+}
+
+/* width */
+.w-40px {
+  width: 40px;
+}
+
+.min-w-175px {
+  min-width: 175px;
+}
+
+/* border */
+.border-top-end-radius {
+  border-top-right-radius: 30px;
+  border-top-left-radius: 30px;
+  border-end-end-radius: 30px;
+}
+
+.border-top-start-radius {
+  border-top-right-radius: 30px;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+}
+
+/* font-size */
+.fs-sm {
+  font-size: small;
+}
+
+/* background-color */
+.bg-dark-blue {
+  background-color: #1f253d;
+}
+
+/* object-cover */
+.object-cover {
+  object-fit: cover;
+}
+
+.btn-regular:hover {
+  background-color: #374151;
+}
+
 /* -------------------- Navbar -------------------- */
 .navbar {
   height: 60px;
@@ -291,8 +350,6 @@ header {
 
 .friends .list {
   padding: 0px 32px 0px 0px;
-
-
 }
 
 .friends .list-item {
@@ -316,6 +373,55 @@ header {
   display: flex;
   /* 設定按鈕之間的間距 */
   gap: 10px;
+}
+
+/* -------------------- Chatrooms list -------------------- */
+.chatrooms-list .card:hover {
+  box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.8);
+}
+
+/* --------------------rooms -------------------- */
+
+.chatroom {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chatroom #form {
+  background: rgba(0, 0, 0, 0.15);
+  height: 4rem;
+}
+
+.chatroom #input {
+  border: none;
+  padding: 0 1rem;
+  flex-grow: 1;
+  border-radius: 2rem;
+  margin: 0.25rem;
+}
+
+.chatroom #input:focus {
+  outline: none;
+}
+
+.chatroom #messages {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* .chatroom #messages>li {
+  padding: 0.5rem 1rem;
+} */
+
+/* .chatroom #messages>li:nth-child(odd) {
+  background: #efefef;
+} */
+
+.chatroom .user-avatar img {
+  width: 40px;
+  height: 40px;
 }
 
 
