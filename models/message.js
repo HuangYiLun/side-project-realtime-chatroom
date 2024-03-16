@@ -7,7 +7,7 @@ const messageSchema = new Schema({
     ref: 'User',
     required: true
   },
-  content: {
+  message: {
     type: String
   },
   attachment: {

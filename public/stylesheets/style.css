@@ -1,5 +1,5 @@
 * {
-  box-sizing: border-box
+  box-sizing: border-box;
 }
 
 body {
@@ -23,7 +23,6 @@ header {
 }
 
 /* height */
-
 .h-40px {
   height: 40px;
 }
@@ -47,6 +46,10 @@ header {
 
 .min-w-175px {
   min-width: 175px;
+}
+
+.max-w-70 {
+  max-width: 70%;
 }
 
 /* border */
@@ -88,9 +91,15 @@ header {
   color: #9ca3af;
 }
 
+.nav-left {
+  display: flex;
+  justify-content: space-between;
+}
+
 .nav-left .logo {
   width: 30px;
   font-size: 20px;
+  margin-left: 2px;
 }
 
 .nav-left .brand {
@@ -189,7 +198,6 @@ header {
   border-radius: 50%;
 }
 
-
 /* -------------------- sidebar-------------------- */
 .sidebar {
   display: flex;
@@ -227,7 +235,6 @@ header {
   padding: 10px;
   border-radius: 10px;
 }
-
 
 .sidebar-center .list-item-icon {
   width: 30px;
@@ -269,7 +276,7 @@ header {
 
 .form-search .search-bar {
   border-radius: 50px;
-  border: 1px solid #EEEEEE;
+  border: 1px solid #eeeeee;
 }
 
 .form-search .search-bar .input-search {
@@ -322,7 +329,6 @@ header {
 
 .none-pointer-friend-btn {
   pointer-events: none;
-
 }
 
 /* -------------------- friends -------------------- */
@@ -388,12 +394,12 @@ header {
   height: 100%;
 }
 
-.chatroom #form {
+.chatroom #chat-form {
   background: rgba(0, 0, 0, 0.15);
   height: 4rem;
 }
 
-.chatroom #input {
+.chatroom #message-input {
   border: none;
   padding: 0 1rem;
   flex-grow: 1;
@@ -401,33 +407,54 @@ header {
   margin: 0.25rem;
 }
 
-.chatroom #input:focus {
+.chatroom #message-input:focus {
   outline: none;
 }
 
-.chatroom #messages {
+.chatroom #message-list {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-/* .chatroom #messages>li {
-  padding: 0.5rem 1rem;
-} */
-
-/* .chatroom #messages>li:nth-child(odd) {
-  background: #efefef;
-} */
-
-.chatroom .user-avatar img {
-  width: 40px;
-  height: 40px;
+.chatroom .back-to-prev-icon {
+  width: 16px;
+  height: 16px;
 }
 
+.chatroom form {
+  position: relative;
+}
+
+.chatroom .image-box {
+  position: absolute;
+  bottom: 64px;
+
+  height: 120px;
+  width: 100%;
+
+  background-color: gray;
+}
+
+.chatroom .image-wrapper {
+  position: relative;
+  
+  width: 80px;
+  height: 80px;
+}
+
+.chatroom .hide-image-icon {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+
+  width: 20px;
+  height: 20px;
+}
 
 /* -------------------- Modals -------------------- */
 /* --------------------Modal Edit -------------------- */
-.user-edit-modal .modal-body>.avatar-edit {
+.user-edit-modal .modal-body > .avatar-edit {
   position: relative;
   text-align: center;
   margin-top: 12px;
@@ -438,40 +465,39 @@ header {
   filter: brightness(0.5);
 }
 
-.user-edit-modal .modal-body>.avatar-edit>.avatar {
+.user-edit-modal .modal-body > .avatar-edit > .avatar {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-.user-edit-modal .modal-body>.avatar-edit>.avatar>.form-label {
+.user-edit-modal .modal-body > .avatar-edit > .avatar > .form-label {
   margin: 0;
   top: 0;
-  color: #FFFFFF;
+  color: #ffffff;
   cursor: pointer;
 }
 
-.user-edit-modal .modal-body>.avatar-edit>.avatar>.form-control {
+.user-edit-modal .modal-body > .avatar-edit > .avatar > .form-control {
   top: 0;
   width: 0;
   opacity: 0;
   pointer-events: none;
 }
 
-.user-edit-modal .modal-body>.form-text {
+.user-edit-modal .modal-body > .form-text {
   margin: 16px;
 }
 
-.user-edit-modal .modal-body>.form-text .name-amount,
-.user-edit-modal .modal-body>.form-text .introduction-amount {
+.user-edit-modal .modal-body > .form-text .name-amount,
+.user-edit-modal .modal-body > .form-text .introduction-amount {
   text-align: right;
   font-weight: 500;
   font-size: 12px;
   line-height: 20px;
   color: #696974;
 }
-
 
 /* -------------------- Partial Messages -------------------- */
 .message-wrapper {
@@ -482,7 +508,7 @@ header {
 .message-text {
   width: 300px;
   padding-left: 24px;
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
@@ -496,8 +522,9 @@ header {
   position: relative;
   width: 394px;
   height: 96px;
-  background: #FFFFFF;
-  box-shadow: 0px 4px 4px rgba(51, 51, 51, 0.04), 0px 4px 16px rgba(51, 51, 51, 0.08);
+  background: #ffffff;
+  box-shadow: 0px 4px 4px rgba(51, 51, 51, 0.04),
+    0px 4px 16px rgba(51, 51, 51, 0.08);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -512,7 +539,7 @@ header {
   right: 24px;
   width: 56px;
   height: 56px;
-  content: '';
+  content: "";
   border-radius: 50%;
 }
 

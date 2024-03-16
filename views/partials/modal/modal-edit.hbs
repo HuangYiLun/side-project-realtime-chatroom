@@ -1,64 +1,126 @@
-<div class='modal fade user-edit-modal' id='edit-modal' data-bs-backdrop='static' tabindex='-1'
-  aria-labelledby='editModalLabel' aria-hidden='true'>
-  <div class='modal-dialog'>
-    <div class='modal-content'>
-      <form class='input-form needs-validation' id="form" action='/users/{{userId}}?_method=PUT' method='POST'
-        enctype='multipart/form-data' novalidate>
-        <div class='modal-header'>
-          <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-          <h5 class='modal-title flex-grow-1' id='editModalLabel'>Modify Profile</h5>
-          <button type='submit' id="btn-submit" class='btn btn-primary rounded-pill'>Save</button>
+<div
+  class="modal fade user-edit-modal"
+  id="edit-modal"
+  data-bs-backdrop="static"
+  tabindex="-1"
+  aria-labelledby="editModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form
+        class="input-form needs-validation"
+        id="form"
+        action="/users/{{userId}}?_method=PUT"
+        method="POST"
+        enctype="multipart/form-data"
+        novalidate
+      >
+        <div class="modal-header">
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+          <h5 class="modal-title flex-grow-1" id="editModalLabel">Modify Profile</h5>
+          <button
+            type="submit"
+            id="btn-submit"
+            class="btn btn-primary rounded-pill"
+          >Save</button>
         </div>
-        <div class='modal-body p-0'>
-          <div class='avatar-edit'>
-            <img src='' class='avatar-img profile-user-img' onerror="this.src='https://i.imgur.com/VUhtTKV.png'"/>
-            <div class='avatar'>
-              <label class='form-label' for='avatar'><i class="fa-solid fa-camera"></i></label>
-              <input class='form-control input-upload-img' type='file' class='form-control-file' id='avatar'
-                name='avatar' accept="image/*" />
+        <div class="modal-body p-0">
+          <div class="avatar-edit">
+            <img
+              src=""
+              class="avatar-img profile-user-img"
+              onerror="this.src='https://i.imgur.com/VUhtTKV.png'"
+            />
+            <div class="avatar">
+              <label class="form-label" for="avatar"><i
+                  class="fa-solid fa-camera"
+                ></i></label>
+              <input
+                class="form-control input-upload-img"
+                type="file"
+                class="form-control-file"
+                id="avatar"
+                name="avatar"
+                accept="image/*"
+              />
             </div>
           </div>
 
-          <div class='form-text'>
-            {{!-- edit name --}}
-            <div class='input-item'>
-              <label class='form-label' for='name'>Name</label>
-              <input class='form-control rounded-4 input-name' type='text' name='name' id='name' value=''
-                placeholder='' maxlength="20"/>
-              <div class='invalid-feedback'>字數超過上限 !</div>
-              <div class='input-minmax'></div>
+          <div class="form-text">
+            {{! edit name }}
+            <div class="input-item">
+              <label class="form-label" for="name">Name</label>
+              <input
+                class="form-control rounded-4 input-name"
+                type="text"
+                name="name"
+                id="name"
+                value=""
+                placeholder=""
+                maxlength="20"
+              />
+              <div class="invalid-feedback">字數超過上限 !</div>
+              <div class="input-minmax"></div>
             </div>
 
-            {{!-- edit email --}}
-            <div class='input-item'>
-              <label class='form-label' for='email'>Email</label>
-              <input class='form-control rounded-4 input-email' type='email' name='email' id='email' value=''
-                placeholder='' />
+            {{! edit email }}
+            <div class="input-item">
+              <label class="form-label" for="email">Email</label>
+              <input
+                class="form-control rounded-4 input-email"
+                type="email"
+                name="email"
+                id="email"
+                value=""
+                placeholder=""
+              />
               <div class="invalid-feedback">請輸入信箱地址</div>
             </div>
 
-            {{!-- set new password --}}
+            {{! set new password }}
             <div class="input-item">
               <label for="password" class="form-label">New Password</label>
-              <input type="text" class="form-control rounded-4" id="password" name="password" minlength="8"
-                maxlength="12">
+              <input
+                type="text"
+                class="form-control rounded-4"
+                id="password"
+                name="password"
+                minlength="8"
+                maxlength="12"
+              />
               <div class="invalid-feedback">請設定8~12位密碼</div>
               <div class="input-minmax"></div>
             </div>
 
-            {{!-- confirm new password --}}
+            {{! confirm new password }}
             <div class="input-item">
               <label for="confirmPassword" class="form-label">Confirm Password</label>
-              <input type="password" class="form-control rounded-4" id="confirmPassword" name="confirmPassword">
+              <input
+                type="password"
+                class="form-control rounded-4"
+                id="confirmPassword"
+                name="confirmPassword"
+              />
               <div class="invalid-feedback">密碼不一致</div>
             </div>
 
-            {{!-- edit introduction --}}
-            <div class='input-item'>
-              <label class='form-label' for='introduction'>Introduction</label>
-              <textarea class='form-control rounded-4 input-introduction' id='introduction' name='introduction' rows='3'
-                maxlength="161"></textarea>
-              <div class='invalid-feedback'>字數超過上限 !</div>
+            {{! edit introduction }}
+            <div class="input-item">
+              <label class="form-label" for="introduction">Introduction</label>
+              <textarea
+                class="form-control rounded-4 input-introduction"
+                id="introduction"
+                name="introduction"
+                rows="3"
+                maxlength="161"
+              ></textarea>
+              <div class="invalid-feedback">字數超過上限 !</div>
               <div class="input-minmax"></div>
             </div>
 

@@ -5,8 +5,8 @@ const { authenticated } = require('../../middleware/auth')
 
 router.use('/', authenticated)
 
-router.get('/public/:roomName' , chatController.getChatRoom)
+router.get('/public/:roomId' , chatController.getChatRoom)
 
-router.get('/public', chatController.getChatRooms)
+router.get("/public", chatController.getChatRooms);
 
 module.exports = router

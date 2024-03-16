@@ -2,72 +2,157 @@
   <div class="chatroom">
     <div class="row h-100">
       <div class="col-3 min-w-175px border-end">
-        <div class="mt-2 mx-2 p-2 ">
-          <a href="/chatroom/public" class="text-decoration-none">
-            <i class="fa-solid fa-chevron-left text-primary"></i>
+        <div class="mt-2 mx-2 p-2">
+          <a href="/chatroom/public" class="text-decoration-none d-flex">
+            <div class="back-to-prev-icon me-1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                <path
+                  fill="#0d6efd"
+                  d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"
+                />
+              </svg>
+            </div>
             <span class="text-white">Back To Chatrooms List</span>
           </a>
         </div>
-        <ul class="list px-2 mb-0 h-[calc(100vh-163px)] overflow-scroll">
-          <li class="d-flex pt-2 sticky-top bg-dark-blue  align-items-center border-bottom border-top">
-            <h5 class="text-white sticky-top">online:200</h5>
-          </li>
-          <li class="d-flex align-items-center border-bottom pb-2 pt-2">
-            <img class="h-40px w-40px rounded-circle" src="	https://i.imgur.com/YKUbX7n.png" data-bs-toggle="modal"
-              data-bs-target="#show-modal" onerror="this.src='https://i.imgur.com/VUhtTKV.png'">
-            <div class="flex-grow-1 ms-3 text-white-50">testname</div>
-          </li>
-          <li class="d-flex align-items-center border-bottom pb-2 pt-2">
-            <img class="h-40px w-40px rounded-circle" src="	https://i.imgur.com/YKUbX7n.png" data-bs-toggle="modal"
-              data-bs-target="#show-modal" onerror="this.src='https://i.imgur.com/VUhtTKV.png'">
-            <div class="flex-grow-1 ms-3 text-white-50">testname-end</div>
-          </li>
-        </ul>
 
+        <div
+          class="d-flex pt-2 sticky-top bg-dark-blue align-items-center border-bottom border-top"
+        >
+          <h5 class="text-white sticky-top">online:
+            <span id="online-number"></span>
+          </h5>
+        </div>
+
+        <ul
+          id="users-list"
+          class="list px-2 mb-0 h-[calc(100vh-163px)] overflow-scroll"
+        >
+        </ul>
       </div>
+
       <div class="col p-0">
         <div class="chat-header h-52px mx-3 border-bottom">
-          <div class="row ">
-            <h1 class="text-white">{{roomName}} Chat Room</h1>
+          <div class="row">
+            <h1 class="text-white">
+              <span id="room-name">{{chatroom.name}}</span>
+              Chat Room
+            </h1>
           </div>
         </div>
 
         <div class="messages mt-2 mx-3">
-          <ul class="d-flex flex-column gap-3 h-[calc(100vh-180px)] overflow-scroll" id="messages">
-
-            <div class="d-flex justify-content-end align-items-end gap-3">
-              <div class="p-3 border-top-start-radius bg-primary">
-                <div class="rounded-5 overflow-hidden">
-                  <img class="h-100 w-100 object-cover" src="https://i.imgur.com/YKUbX7n.png" alt="msg_img">
+          <ul
+            class="d-flex flex-column gap-3 h-[calc(100vh-180px)] overflow-scroll"
+            id="message-list"
+            data-id="{{loginUser._id}}"
+          >
+            {{#each messages}}
+              {{#ifCond ../loginUser._id this.senderId._id}}
+                <div class="d-flex justify-content-end align-items-end gap-3">
+                  <div class="p-3 border-top-start-radius bg-primary max-w-70">
+                    {{#if this.attachment}}
+                      <div class="rounded-5 overflow-hidden mb-2">
+                        <img
+                          class="h-100 w-100 object-cover"
+                          src="{{this.attachment}}"
+                          alt="msg_img"
+                        />
+                      </div>
+                    {{/if}}
+                    {{#if this.message}}
+                    <p
+                      class="fw-normal text-white text-break"
+                    >{{this.message}}</p>
+                    {{/if}}
+                    <p class="fw-lighter text-white fs-sm text-end mb-0">{{time this.createdAt}}
+                    </p>
+                  </div>
                 </div>
-                <p class="fw-normal text-white text-break">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
-                <p class="fw-lighter text-white fs-sm text-end mb-0">24 days ago
-                </p>
-              </div>
-            </div>
-
-            <div class="d-flex justify-content-start align-items-end gap-3">
-              <img src="https://i.imgur.com/YKUbX7n.png" class="h-40px w-40px rounded-circle ">
-              <div class="p-3 border-top-end-radius bg-secondary bg-opacity-50">
-                <p class="fw-semibold mb-1 text-danger">two</p>
-                <div class="rounded-5 overflow-hidden">
-                  <img class="h-100 w-100 object-cover" src="https://i.imgur.com/YKUbX7n.png" alt="msg_img">
+              {{else}}
+                <div class="d-flex justify-content-start align-items-end gap-3">
+                  <img
+                    src={{this.senderId.avatar}}
+                    class="h-40px w-40px rounded-circle"
+                  />
+                  <div
+                    class="p-3 border-top-end-radius bg-secondary bg-opacity-50 max-w-70"
+                  >
+                    <p class="fw-semibold mb-1 text-danger">{{this.senderId.name}}</p>
+                    {{#if this.attachment}}
+                    <div class="rounded-5 overflow-hidden mb-2">
+                      <img
+                        class="h-100 w-100 object-cover"
+                        src="{{this.attachment}}"
+                        alt="msg_img"
+                      />
+                    </div>
+                    {{/if}}
+                    {{#if this.message}}
+                    <p
+                      class="fw-normal text-white text-break"
+                    >{{this.message}}</p>
+                    {{/if}}
+                    <p class="fw-lighter text-white fs-sm text-end mb-0">{{time this.createdAt}}</p>
+                  </div>
                 </div>
-                <p class="fw-normal text-white text-break">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
-                <p class="fw-lighter text-white fs-sm text-end mb-0">24 days ago</p>
-              </div>
-            </div>
+              {{/ifCond}}
+            {{/each}}
+
           </ul>
         </div>
 
         <div class="container m-0 p-0">
-          <form class="d-flex p-2" id="form" action="">
-            <label
-              class="text-white d-flex justify-content-center align-items-center btn-regular h-40px w-40px rounded-circle"
-              for="attachments">
-              <i class="fa-solid fa-paperclip"></i>
-            </label>
-            <input id="input" autocomplete="off" />
+          <form
+            class="d-flex p-2"
+            id="chat-form"
+            data-userid={{loginUser._id}}
+            data-roomid={{chatroom._id}}
+          >
+            <div class="d-none align-items-center p-3 image-box">
+              <div class="image-wrapper">
+                <div class="d-flex hide-image-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path
+                      fill="#ff0000"
+                      d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232H328c13.3 0 24 10.7 24 24s-10.7 24-24 24H184c-13.3 0-24-10.7-24-24s10.7-24 24-24z"
+                    />
+                  </svg>
+                </div>
+                <img
+                  class="h-100 w-100 object-cover"
+                  id="attachment-image"
+                  src="https://i.imgur.com/YKUbX7n.png"
+                />
+              </div>
+            </div>
+
+            <div
+              class="d-flex justify-content-center align-items-center btn-regular h-40px w-40px rounded-circle"
+            >
+              <label for="attachment">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="20"
+                  width="17.5"
+                  viewBox="0 0 512 512"
+                >
+                  <path
+                    fill="#ffffff"
+                    d="M448 80c8.8 0 16 7.2 16 16V415.8l-5-6.5-136-176c-4.5-5.9-11.6-9.3-19-9.3s-14.4 3.4-19 9.3L202 340.7l-30.5-42.7C167 291.7 159.8 288 152 288s-15 3.7-19.5 10.1l-80 112L48 416.3l0-.3V96c0-8.8 7.2-16 16-16H448zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm80 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"
+                  />
+                </svg>
+              </label>
+              <input
+                class="d-none"
+                type="file"
+                id="attachment"
+                name="attachment"
+                accept="image/*"
+              />
+            </div>
+
+            <input id="message-input" autocomplete="off" />
             <button type="submit" class="btn btn-outline-light">Send</button>
           </form>
         </div>
@@ -76,3 +161,6 @@
     </div>
   </div>
 </div>
+
+<script type="module" src="/javascripts/socket.js"></script>
+<script src="/javascripts/room.js"></script>
