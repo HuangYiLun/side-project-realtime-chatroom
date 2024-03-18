@@ -3,8 +3,6 @@ const socket = io()
 
 
 import { postMessage } from "./api/message.js"
-// import { socket } from "./socketConnect.js"
-
 const roomName = document.getElementById("room-name")
 const onlineNumber = document.getElementById("online-number")
 const userList = document.getElementById("users-list")

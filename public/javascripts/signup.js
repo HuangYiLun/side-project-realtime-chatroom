@@ -1,5 +1,5 @@
 // 引用通用函式
-import {handleInput, handleConfirmPassword} from './formValidation.js'
+import { handleInputCounter, handleConfirmPassword } from "./formValidation.js"
 //form validation from front-end
 const form = document.querySelector('#form')
 const btnSumbit = document.querySelector('#btn-submit')
@@ -20,10 +20,9 @@ form.addEventListener('submit', function onFormSubmit(e) {
 })
 
 // 驗證input字數是否超過限制
-handleInput(inputName, 20)
-handleInput(inputPassword, 12)
+handleInputCounter(inputName, 20)
+handleInputCounter(inputPassword, 12)
 
-// Confirm Password
 // 判斷密碼是否一致
 handleConfirmPassword(inputPassword, inputConfirmPassword)
 

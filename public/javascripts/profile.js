@@ -1,5 +1,5 @@
 // 引用通用函式
-import { handleInput, handleConfirmPassword } from "./formValidation.js"
+import { handleInputCounter, handleConfirmPassword } from "./formValidation.js"
 
 const inputConfirmPassword = document.querySelector('#confirmPassword')
 const inputUploadImg = document.querySelector('.input-upload-img')
@@ -8,7 +8,6 @@ const editUserData = document.querySelector('#edit-user-data')
 const inputPassword = document.querySelector('#password')
 const avatarImg = document.querySelector('.avatar-img')
 const btnSumbit = document.querySelector('#btn-submit')
-const btnClose = document.querySelector('.btn-close')
 const inputEmail = document.querySelector('#email')
 const inputName = document.querySelector('#name')
 const form = document.querySelector('#form')
@@ -89,9 +88,9 @@ form.addEventListener('submit', function onFormSubmit(e) {
 })
 
 // 驗證input字數是否超過限制
-handleInput(inputName, 20)
-handleInput(inputPassword, 12)
-handleInput(inputIntroduction, 160)
+handleInputCounter(inputName, 20)
+handleInputCounter(inputPassword, 12)
+handleInputCounter(inputIntroduction, 160)
 
 // Confirm Password
 // 判斷密碼是否一致

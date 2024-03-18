@@ -14,6 +14,7 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script src='https://unpkg.com/axios@1.1.2/dist/axios.min.js'></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 </head>
 
@@ -22,9 +23,14 @@
   {{>header}}
   {{/if}}
 
+  {{> messages}}
   <div class="body-wrapper">
-    {{> messages}}
+    {{#if loginUser}}
+    {{>sidebar route = (lookupPartial partialName)}}
+    {{/if}}
+    <div class="w-100 h-100">
     {{{ body }}}
+    </div>
   </div>
 
   <script src="https://kit.fontawesome.com/fddd8693b8.js" crossorigin="anonymous"></script>

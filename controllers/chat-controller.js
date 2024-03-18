@@ -13,7 +13,7 @@ const chatController = {
       chatroom.toObject()
     )
 
-    res.render("index", { partialName, publicChatrooms })
+    res.render("roomsList", { partialName, publicChatrooms })
   },
   getChatRoom: async (req, res, next) => {
     const partialName = "room"
@@ -34,7 +34,11 @@ const chatController = {
 
     console.log("foundMessages", foundMessages)
 
-    res.render("index", { partialName, chatroom: foundChatroom, messages: foundMessages })
+    res.render("room", {
+      partialName,
+      chatroom: foundChatroom,
+      messages: foundMessages,
+    })
   },
 }
 

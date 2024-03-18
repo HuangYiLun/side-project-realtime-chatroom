@@ -236,9 +236,8 @@ header {
   border-radius: 10px;
 }
 
-.sidebar-center .list-item-icon {
-  width: 30px;
-  font-size: 20px;
+.sidebar-center .list-item .icon {
+  fill: #9ca3af;
 }
 
 .sidebar-center .list-item.active,
@@ -438,7 +437,7 @@ header {
 
 .chatroom .image-wrapper {
   position: relative;
-  
+
   width: 80px;
   height: 80px;
 }
@@ -500,89 +499,15 @@ header {
 }
 
 /* -------------------- Partial Messages -------------------- */
-.message-wrapper {
-  position: relative;
-  left: -32px;
-}
 
-.message-text {
-  width: 300px;
-  padding-left: 24px;
-  font-family: "Roboto";
-  font-style: normal;
+.flash-message {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999;
+
+  width: 200px;
+  height: 80px;
+
   font-weight: 700;
-  font-size: 20px;
-  line-height: 28px;
-}
-
-.light-green-message,
-.danger-message,
-.warning-message,
-.light-blue-message {
-  position: relative;
-  width: 394px;
-  height: 96px;
-  background: #ffffff;
-  box-shadow: 0px 4px 4px rgba(51, 51, 51, 0.04),
-    0px 4px 16px rgba(51, 51, 51, 0.08);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.light-green-message::before,
-.danger-message::before,
-.warning-message::before,
-.light-blue-message::before {
-  position: absolute;
-  right: 24px;
-  width: 56px;
-  height: 56px;
-  content: "";
-  border-radius: 50%;
-}
-
-.light-green-message::before {
-  border: 2px solid var(--light-green);
-}
-
-.danger-message::before {
-  border: 2px solid var(--danger);
-}
-
-.warning-message::before {
-  border: 2px solid var(--warning);
-}
-
-.light-blue-message::before {
-  border: 2px solid var(--light-blue);
-}
-
-.danger-icon,
-.light-green-icon,
-.warning-icon,
-.light-blue-icon {
-  position: absolute;
-  transform: scale(0.5);
-}
-
-.light-green-icon {
-  right: 35px;
-  color: var(--light-green);
-}
-
-.danger-icon {
-  right: 38px;
-  color: var(--danger);
-}
-
-.warning-icon {
-  right: 49px;
-  color: var(--warning);
-}
-
-.light-blue-icon {
-  right: 48px;
-  color: var(--light-blue);
 }
