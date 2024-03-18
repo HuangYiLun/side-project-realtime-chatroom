@@ -9,4 +9,6 @@ router.get('/public/:roomId' , chatController.getChatRoom)
 
 router.get("/public", chatController.getChatRooms);
 
+router.get("/private", chatController.getPrivateRoom)
+
 module.exports = router

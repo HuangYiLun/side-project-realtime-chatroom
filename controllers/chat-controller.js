@@ -40,6 +40,10 @@ const chatController = {
       messages: foundMessages,
     })
   },
+  getPrivateRoom: (req, res, next) => {
+    const partialName = "1on1"
+    res.render("1on1", { partialName })
+  },
 }
 
 module.exports = chatController
