@@ -3,7 +3,7 @@ const searchForm = document.querySelector('.form-search')
 const searchInput = document.querySelector('.input-search')
 const searchList = document.querySelector('.search-list')
 
-const BASE_URL = 'http://localhost:3000'
+const BASE_URL = 'http://localhost:3100'
 
 searchForm.addEventListener('submit', function onSearchFormSubmited(e) {
   const inputValue = searchInput.value.trim()
@@ -17,20 +17,15 @@ searchForm.addEventListener('submit', function onSearchFormSubmited(e) {
 searchList.addEventListener('click', function onSearchListClicked(e) {
   const target = e.target
 
-  switch (true) {
-    case target.matches('.search-user-avatar-img') || target.matches('.search-user-name-h4'):
-      const { name, avatar, introduction } = target.closest('.search-list-item').dataset
+    if (target.matches(".search-user-avatar-img") || target.matches(".user-name-h4")) {
+      const { name, avatar, introduction } =
+        target.closest(".search-list-item").dataset
       showModal(name, avatar, introduction)
-      break
+    }
 
-    case target.matches('.add-friend-btn'):
+    if (target.matches('.add-friend-btn')) {
       addFriendRequest(target)
-      break
-
-    default:
-      // 如果點擊目標不符合任何條件
-      break
-  }
+    }
 })
 
 
@@ -38,7 +33,7 @@ searchList.addEventListener('click', function onSearchListClicked(e) {
 async function addFriendRequest(self) {
   const friendId = self.dataset.id
 
-  const result = await axios.put(BASE_URL + `/friends/${friendId}/send`)
+  const result = await axios.put(`${BASE_URL}/friends/${friendId}/send`)
 
   if (result.data.success) {
     renderFriendButton(self)
