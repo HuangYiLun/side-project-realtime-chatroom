@@ -1,5 +1,8 @@
 const Chatroom = require("../models/chatroom")
 const Message = require("../models/message")
+const { getUser } = require("../helpers/auth-helper")
+const chatroomService = require("../services/chatroom-services")
+const messageServices = require("../services/message-services")
 
 const chatController = {
   getChatRooms: async (req, res, next) => {
@@ -40,9 +43,44 @@ const chatController = {
       messages: foundMessages,
     })
   },
-  getPrivateRoom: (req, res, next) => {
+  getPrivateRooms: async (req, res, next) => {
     const partialName = "1on1"
-    res.render("1on1", { partialName })
+    const currentId = getUser(req)._id
+
+    const allPrivateChats = await chatroomService.getAllPrivateChats(currentId)
+
+    res.render("1on1", { partialName, allPrivateChats })
+  },
+  getPrivateRoom: async (req, res, next) => {
+    const partialName = "1on1"
+    const currentId = getUser(req)._id
+    const { receivedId } = req.params
+
+    // 無法跟自己聊天
+    if (currentId === receivedId) {
+      req.flash("danger_msg", "你無法跟自己聊天")
+      return res.redirect("back")
+    }
+
+    try {
+      const currentChat = await chatroomService.findOrCreatePrivateChatroom(
+        currentId,
+        receivedId
+      )
+      const allPrivateChats = await chatroomService.getAllPrivateChats(
+        currentId
+      )
+      const messages = await messageServices.getMessages(currentChat._id)
+
+      return res.render("1on1", {
+        partialName,
+        currentChat,
+        messages,
+        allPrivateChats,
+      })
+    } catch (err) {
+      next(err)
+    }
   },
 }
 

@@ -7,7 +7,7 @@ module.exports = {
   lookupPartial: function (partialName) {
     return partialName
   },
-  time: function(a) {
+  time: function (a) {
     return formatTime(a)
-  }
+  },
 }

@@ -2,45 +2,75 @@
   <div class="chatroom">
     <div class="row h-100">
       <div class="col-3 min-w-175px border-end">
-        <form
+        <div
           class="py-4 px-2 d-flex justify-content-between align-items-center gap-2"
         >
           <input
             placeholder="Search"
-            class="w-100 rounded-4 py-2 px-2 bg-light text-white flex-grow-1 border-0"
+            class="w-100 rounded-4 py-2 px-2 bg-dark text-white border border-light flex-grow-1"
+            id="search-private-chats-input"
             value=""
           />
           <button
             class="rounded-4 bg-primary text-white py-2 px-2 flex-shrink-0 border-0"
           >+ Add
           </button>
-        </form>
+
+        </div>
+        {{!-- <form
+          class="py-4 px-2 d-flex justify-content-between align-items-center gap-2"
+          id="search-private-chats-form"
+          data-userid="{{loginUser_id}}"
+        > --}}
+
+        {{! </form> }}
         <ul
           id="users-list"
           class="list px-2 mb-0 h-[calc(100vh-163px)] overflow-scroll"
         >
+          {{#each allPrivateChats}}
+            <li
+              class="my-1 p-3 private-chat-list-item {{#ifCond this.chatId ../currentChat.chatId}}active{{/ifCond}}"
+              data-chatId="{{this.chatId}}"
+              data-receiverId="{{this.receiverId}}"
+            >
+            <a class="text-decoration-none" href="/chatroom/private/{{this.receiverId}}">
+            <div class="d-flex align-items-center justify-content-center">
+              <img class="h-40px w-40px rounded-circle" src="{{this.avatar}}" />
+              <div class="flex-grow-1 ms-3">
+                <p class="mb-0">{{this.name}}</p>
+                {{#if this.lastMessage}}
+                  <p class="mb-0 ellipsis">{{this.lastMessage}}</p>
+                {{/if}}
+              </div>
+            </div>
+            </a>
+            </li>
+          {{/each}}
         </ul>
       </div>
+
+      {{#if currentChat}}
       <div class="col p-0">
-        <div class="w-100 h-100 text-white d-flex justify-content-center align-items-center">
-          Please select or add chat
-        </div>
-
-      </div>
-
-      {{!-- <div class="col p-0">
-        <div class="chat-header h-52px mx-3 border-bottom">
-          <div class="row">
-            <h1 class="text-white">
-              <span id="room-name">{{chatroom.name}}</span>
-              Chat Room
-            </h1>
+        <div
+          class="chat-header h-84px mx-3 d-flex align-items-center border-bottom"
+        >
+          <img
+            class="h-40px w-40px rounded-circle"
+            src="{{currentChat.avatar}}"
+          />
+          <div class="ms-3 flex-grow-1">
+            <p
+              class="text-white fw-bold m-0"
+              id="room-name"
+            >{{currentChat.name}}</p>
+            <small class="text-white m-0">{{currentChat.email}}</small>
           </div>
         </div>
 
         <div class="messages mt-2 mx-3">
           <ul
-            class="d-flex flex-column gap-3 h-[calc(100vh-180px)] overflow-scroll"
+            class="d-flex flex-column gap-3 h-[calc(100vh-212px)] overflow-scroll"
             id="message-list"
             data-id="{{loginUser._id}}"
           >
@@ -104,7 +134,7 @@
             class="d-flex p-2"
             id="chat-form"
             data-userid={{loginUser._id}}
-            data-roomid={{chatroom._id}}
+            data-roomid={{currentChat.chatId}}
           >
             <div class="d-none align-items-center p-3 image-box">
               <div class="image-wrapper">
@@ -154,11 +184,21 @@
           </form>
         </div>
 
-      </div> --}}
+      </div>
+      {{else}}
+        <div class="col p-0">
+          <div
+            class="w-100 h-100 text-white d-flex justify-content-center align-items-center"
+          >
+            Please select or add chat
+          </div>
+        </div>
+      {{/if}}
 
     </div>
   </div>
 </div>
 
-{{!-- <script type="module" src="/javascripts/socket.js"></script>
-<script src="/javascripts/room.js"></script> --}}
+{{! <script type="module" src="/javascripts/socket.js"></script>
+<script src="/javascripts/room.js"></script> }}
+<script type="module" src="/javascripts/privateRoom.js"></script>

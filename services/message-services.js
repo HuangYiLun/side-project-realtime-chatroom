@@ -22,6 +22,22 @@ const messageServices = {
 
     return msg
   },
+  getMessages: async (chatroomId) => {
+    const foundMessages = await Message.find({
+      chatroomId
+    })
+      .populate({
+        path: "senderId",
+        select: "_id avatar name",
+      })
+      .lean()
+
+    foundMessages.forEach((message) => {
+      message.senderId._id = message.senderId._id.toString()
+    })
+
+    return foundMessages
+  },
 }
 
 module.exports = messageServices

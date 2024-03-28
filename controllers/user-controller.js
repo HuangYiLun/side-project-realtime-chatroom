@@ -14,7 +14,7 @@ const userController = {
   },
   signIn: (req, res) => {
     req.flash("success_msg", "成功登入")
-    res.redirect("/")
+    res.redirect("/friends")
   },
   getSignUp: (req, res) => {
     return res.render("signup")

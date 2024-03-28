@@ -9,6 +9,8 @@ router.get('/public/:roomId' , chatController.getChatRoom)
 
 router.get("/public", chatController.getChatRooms);
 
-router.get("/private", chatController.getPrivateRoom)
+router.get("/private", chatController.getPrivateRooms)
+
+router.get("/private/:receivedId", chatController.getPrivateRoom)
 
 module.exports = router
