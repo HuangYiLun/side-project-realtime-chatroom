@@ -1,9 +1,7 @@
 <div class="container-fluid h-100">
   <div class="chatroom">
     <div class="row h-100">
-      {{>public-chatroom-users-list}}
-
-      {{!-- <div class="col-3 min-w-175px border-end">
+      <div class="col-3 min-w-175px border-end">
         <div class="mt-2 mx-2 p-2">
           <a href="/chatroom/public" class="text-decoration-none d-flex">
             <div class="back-to-prev-icon me-1">
@@ -31,7 +29,7 @@
           class="list px-2 mb-0 h-[calc(100vh-163px)] overflow-scroll"
         >
         </ul>
-      </div> --}}
+      </div>
 
       <div class="col p-0">
         <div class="chat-header h-52px mx-3 border-bottom">
@@ -165,5 +163,5 @@
   </div>
 </div>
 
-<script type="module" src="/javascripts/socket.js"></script>
+<script type="module" src="/javascripts/publicSocket.js"></script>
 <script src="/javascripts/room.js"></script>

@@ -1,70 +1,4 @@
-//front is served on the same domain as server
-const socket = io()
-
-
-import { postMessage } from "./api/message.js"
-const roomName = document.getElementById("room-name")
-const onlineNumber = document.getElementById("online-number")
-const userList = document.getElementById("users-list")
-const chatForm = document.getElementById("chat-form")
-const msgList = document.getElementById("message-list")
-const msgInput = document.getElementById("message-input")
-const attachmentInput = document.getElementById("attachment")
-const attachmentImg = document.getElementById("attachment-image")
-const imgBox = document.querySelector(".image-box")
-const hideImgIcon = document.querySelector(".hide-image-icon")
-
-// 加入聊天室
-if (roomName) {
-  emitWithRetry(socket, "joinRoom", roomName.textContent)
-} else {
-  console.log("現在執行一次socket.js")
-}
-
-// console.log("有發送joinroom", roomName.textContent);
-socket.on("usersList", (data) => {
-  const users = data.users
-  updateUserList(users)
-  onlineNumber.innerHTML = users.length
-})
-
-chatForm.addEventListener("submit", async (e) => {
-  e.preventDefault()
-  let msg = msgInput.value
-  const file = attachmentInput.files[0]
-  const roomId = chatForm.dataset.roomid
-
-  msg = msg.trim()
-
-  // 沒有文字也沒有圖片
-  if (!msg && !file) {
-    return
-  }
-
-  const response = await postMessage(roomId, msg, file)
-  const{message,attachment,time} = response
-  socket.emit("message", {
-    message,
-    attachment,
-    time,
-  })
-
-  // 清空input
-  msgInput.value = ""
-  attachmentInput.value = ""
-})
-
-socket.on("message", (data) => {
-  const userId = chatForm.dataset.userid
-  console.log("frontend msg", data)
-  const { user, message, attachment, time } = data
-  appendChatMessage(userId, user, message, attachment, time)
-})
-
-attachmentInput.addEventListener("change", previewImg)
-hideImgIcon.addEventListener("click", hidePreviewImg)
-
-function emitWithRetry(socket, event, room) {
+export function emitWithRetry(socket, event, room) {
   socket.emit(event, room, (response) => {
     console.log("EmitWithRetry", response)
     if (response === "success") {
@@ -78,31 +12,6 @@ function emitWithRetry(socket, event, room) {
   })
 }
 
-function updateUserList(users) {
-  userList.innerHTML = ""
-  users.forEach((user) => appendUser(user))
-}
-
-function appendUser(user) {
-  const li = document.createElement("li")
-  li.className = "d-flex align-items-center border-bottom pb-2 pt-2"
-
-  const img = document.createElement("img")
-  img.className = "h-40px w-40px rounded-circle"
-  img.src = user.avatar
-  img.dataset.bsToggle = "modal"
-  img.dataset.bsTarget = "#show-modal"
-  img.onerror = () => (img.src = "https://i.imgur.com/VUhtTKV.png")
-
-  const div = document.createElement("div")
-  div.className = "flex-grow-1 ms-3 text-white-50"
-  div.textContent = user.name
-
-  li.appendChild(img)
-  li.appendChild(div)
-  userList.appendChild(li)
-}
-
 function createElementWithClass(tagName, className) {
   const element = document.createElement(tagName)
   element.className = className
@@ -110,7 +19,14 @@ function createElementWithClass(tagName, className) {
 }
 
 // 生成聊天室messages內容
-function appendChatMessage(oneselfId, user, message, attachment, time) {
+export function appendChatMessage(
+  list,
+  oneselfId,
+  user,
+  message,
+  attachment,
+  time
+) {
   const isSender = oneselfId == user.id
 
   const li = createElementWithClass(
@@ -182,12 +98,13 @@ function appendChatMessage(oneselfId, user, message, attachment, time) {
     li.appendChild(avatarImg)
     li.appendChild(div)
   }
-  msgList.appendChild(li)
+  list.appendChild(li)
   // 滑到對話底部
-  msgList.scrollTop = msgList.scrollHeight
+  list.scrollTop = list.scrollHeight
 }
 
-function previewImg(e) {
+// show 聊天室預覽圖片
+export function previewImg(e, imgBox, attachmentImg) {
   const file = e.target.files[0]
 
   if (!file) {
@@ -206,14 +123,13 @@ function previewImg(e) {
     return
   }
 
+  // 設置圖片預覽src
   attachmentImg.src = window.URL.createObjectURL(file)
   attachmentImg.onload = function () {
     URL.revokeObjectURL(this.src)
   }
-  showImgBox()
-}
 
-function showImgBox() {
+  // show圖片容器
   const imgBoxClassList = imgBox.classList
   console.log("contains d-none", imgBoxClassList.contains("d-none"))
   if (imgBoxClassList.contains("d-none")) {
@@ -221,11 +137,92 @@ function showImgBox() {
   }
 }
 
-function hidePreviewImg() {
+// hide 聊天室預覽圖片
+export function hidePreviewImg(imgBox, attachmentInput) {
   const imgBoxClassList = imgBox.classList
-  console.log("contains d-flex", imgBoxClassList.contains("d-flex"))
+
   if (imgBoxClassList.contains("d-flex")) {
     imgBoxClassList.replace("d-flex", "d-none")
     attachmentInput.value = ""
   }
+}
+
+// 更新public聊天室 online users
+export function updateUserList(list, users) {
+  list.innerHTML = ""
+  users.forEach((user) => appendUser(list, user))
+}
+
+// 添加public聊天室 list item
+function appendUser(list, user) {
+  const li = document.createElement("li")
+  li.className = "d-flex align-items-center border-bottom pb-2 pt-2"
+
+  const img = document.createElement("img")
+  img.className = "h-40px w-40px rounded-circle"
+  img.src = user.avatar
+  img.dataset.bsToggle = "modal"
+  img.dataset.bsTarget = "#show-modal"
+  img.onerror = () => (img.src = "https://i.imgur.com/VUhtTKV.png")
+
+  const div = document.createElement("div")
+  div.className = "flex-grow-1 ms-3 text-white-50"
+  div.textContent = user.name
+
+  li.appendChild(img)
+  li.appendChild(div)
+  list.appendChild(li)
+}
+
+// 添加1on1聊天室 聊天對象
+export function appendPrivateChat(list, chat, receiverId) {
+  //創建外部li
+  let li = document.createElement("li")
+
+  // 判斷是否當前聊天對象
+  if (chat.receiverId == receiverId) {
+    li.className = "my-1 p-3 private-chat-list-item active"
+  } else {
+    li.className = "my-1 p-3 private-chat-list-item"
+  }
+
+  li.dataset.chatid = chat.chatId
+  li.dataset.receiverid = chat.receiverId
+
+  // 創建<a>標籤，並設置href屬性
+  let a = document.createElement("a")
+  a.className = "text-decoration-none"
+  a.href = `/chatroom/private/${chat.receiverId}`
+
+  //創建頭像跟名字容器
+  let avatarAndNameContainer = document.createElement("div")
+  avatarAndNameContainer.className =
+    "d-flex align-items-center justify-content-center"
+
+  //創建頭像img
+  let img = document.createElement("img")
+  img.className = "h-40px w-40px rounded-circle"
+  img.src = chat.avatar
+
+  //創建姓名container
+  let nameContainer = document.createElement("div")
+  nameContainer.className = "flex-grow-1 ms-3"
+
+  //創建姓名p
+  let p = document.createElement("p")
+  p.className = "mb-0"
+  p.textContent = chat.name
+
+  //<li>添加姓名及頭像
+  nameContainer.append(p)
+  avatarAndNameContainer.append(img, nameContainer)
+
+  // 將avatarAndNameContainer添加到<a>標籤中
+  a.append(avatarAndNameContainer)
+
+  // 將<a>標籤添加到<li>標籤中
+  li.append(a)
+
+  //添加<li>
+  list.append(li)
 }

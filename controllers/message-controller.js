@@ -16,6 +16,7 @@ const messageController = {
         message,
         attachment
       )
+
       res.status(200).json({ status: "success", data: msg })
       
     } catch (err) {

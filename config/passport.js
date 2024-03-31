@@ -39,15 +39,15 @@ passport.deserializeUser(async (id, cb) => {
     const user = await User.findById(id)
       .populate({
         path: "sentFriendsRequest",
-        select: "_id avatar name introduction",
+        select: "_id avatar name email introduction",
       })
       .populate({
         path: "friends",
-        select: "_id avatar name introduction",
+        select: "_id avatar name email introduction",
       })
       .populate({
         path: "getFriendsRequest",
-        select: "_id avatar name introduction",
+        select: "_id avatar name email introduction",
       })
     // toJSON()會調用userSchem自定義的toJSON處理
     return cb(null, user.toJSON())

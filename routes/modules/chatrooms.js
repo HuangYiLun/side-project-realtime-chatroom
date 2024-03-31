@@ -13,4 +13,6 @@ router.get("/private", chatController.getPrivateRooms)
 
 router.get("/private/:receivedId", chatController.getPrivateRoom)
 
+router.post('/private', chatController.postPrivateRoom)
+
 module.exports = router

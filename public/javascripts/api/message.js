@@ -1,16 +1,16 @@
-const baseUrl = "http://localhost:3100"
+const BASE_URL = "http://localhost:3100"
 
 export const postMessage = async (chatroomId, message, attachment) => {
-  const url = `${baseUrl}/messages/`
-  const formData = new FormData()
+  const URL = `${BASE_URL}/messages/`
 
+  const formData = new FormData()
   formData.append("chatroomId", chatroomId)
   formData.append("message", message)
   formData.append("attachment", attachment)
 
   const config = {
     method: "post",
-    url: url,
+    url: URL,
     data: formData,
     headers: {
       "Content-Type": "multipart/form-data",

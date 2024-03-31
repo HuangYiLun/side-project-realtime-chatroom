@@ -13,17 +13,56 @@
           />
           <button
             class="rounded-4 bg-primary text-white py-2 px-2 flex-shrink-0 border-0"
+            data-bs-toggle="modal"
+            data-bs-target="#createChatModal"
           >+ Add
           </button>
 
+          <!-- Modal -->
+          <div
+            class="modal fade"
+            id="createChatModal"
+            aria-labelledby="createChatModalLabel"
+            aria-hidden="true"
+          >
+            <div
+              class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+            >
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="createChatModalLabel">
+                    Create 1 on 1 Chantroom
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <form action="/chatroom/private" method="POST">
+                <div class="modal-body">
+                  <!-- Your select element -->
+                  <select name="selectedFriendId" id="friendsSelect" style="width: 100%;">
+                    {{#each loginUser.friends}}
+                    <option value="{{this._id}}">{{this.name}}({{this.email}})</option>
+                    {{/each}}
+                  </select>
+                </div>
+                <div class="modal-footer d-flex justify-content-around">
+                  <button
+                    type="button"
+                    class="btn btn-secondary rounded-pill"
+                    data-bs-dismiss="modal"
+                  >Close</button>
+                  <button type="submit" class="btn btn-primary rounded-pill">Create</button>
+                </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
-        {{!-- <form
-          class="py-4 px-2 d-flex justify-content-between align-items-center gap-2"
-          id="search-private-chats-form"
-          data-userid="{{loginUser_id}}"
-        > --}}
 
-        {{! </form> }}
         <ul
           id="users-list"
           class="list px-2 mb-0 h-[calc(100vh-163px)] overflow-scroll"
@@ -199,6 +238,23 @@
   </div>
 </div>
 
-{{! <script type="module" src="/javascripts/socket.js"></script>
-<script src="/javascripts/room.js"></script> }}
+<script>
+  $(document).ready(function () { 
+    // 當 modal 顯示時，對 modal 內的 select元素套用 Select2 
+    $('#createChatModal').on('shown.bs.modal', function () { 
+      //確保在 modal 顯示時，只對 modal 內的 select 元素套用 Select2 
+      // 避免重複套用
+      if (!$('#friendsSelect').hasClass('select2-hidden-accessible')) {
+          $('#friendsSelect').select2({ dropdownParent: $('#createChatModal') });
+        } 
+    }); 
+  // modal 關閉時，移除 modal 內的 select 元素的 Select2 套用
+    $('#createChatModal').on('hidden.bs.modal', function () {
+        $('#friendsSelect').select2('destroy'); 
+      }); 
+  });
+</script>
+
+<script type="module" src="/javascripts/privateSocket.js"></script>
 <script type="module" src="/javascripts/privateRoom.js"></script>
+<script src="/javascripts/room.js"></script>

@@ -58,13 +58,11 @@ const apiController = {
   searchPrivateChats: async (req, res, next) => {
     const keyword = req.query.keyword ? req.query.keyword.trim() : ""
     const currentId = getUser(req)._id
-    console.log("🍀🍀🍀🍀🍀🍀🍀THE KEY WORD", keyword)
+
     try {
-      console.log("🍀🍀🍀🍀🍀🍀🍀進入searchPrivateChats try")
       const allPrivateChats = await chatroomService.getAllPrivateChats(
         currentId
       )
-
       // 如果keyword為空，則不進行篩選，直接返回所有私人聊天室
       if (!keyword) {
         return res.json({ status: "success", data: allPrivateChats })
@@ -75,7 +73,7 @@ const apiController = {
           chat.name.toLowerCase().includes(keyword.toLowerCase()) ||
           chat.email.toLowerCase() === keyword.toLowerCase()
       )
-      console.log("filterPrivateChats", filterPrivateChats)
+      
       return res.json({ status: "success", data: filterPrivateChats })
     } catch (err) {
       return res

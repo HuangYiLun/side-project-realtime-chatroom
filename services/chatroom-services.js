@@ -31,7 +31,7 @@ const chatroomService = {
 
     if (foundChatroom) {
       const processedFoundChatroom = processPrivateChat(foundChatroom)
-      console.log("processedFoundChatroom", processedFoundChatroom)
+
       return processedFoundChatroom
     } else {
       // 還沒聊天過則新增
@@ -44,13 +44,12 @@ const chatroomService = {
       await newChatroom.populate(populatePrivateOptions(currentId))
 
       const processedNewChatroom = processPrivateChat(newChatroom)
-      console.log("processedNewChatroom", processedNewChatroom)
+
       return processedNewChatroom
     }
   },
   getAllPrivateChats: async (currentId) => {
     // 搜尋包含currentId的所有私人聊天
-    console.log("🍀🍀🍀🍀🍀🍀🍀進入getallprivatechats")
     const foundPrivateChats = await Chatroom.find({
       isPublic: false,
       members: {
@@ -66,8 +65,28 @@ const chatroomService = {
     const processedPrivateChats = foundPrivateChats.map((chat) =>
       processPrivateChat(chat)
     )
-    console.log("🍀🍀🍀🍀🍀🍀🍀processedPrivateChats", processedPrivateChats)
+
     return processedPrivateChats
+  },
+  findPrivateChatroom: async (currentId, receivedId) => {
+    // 查看聊天記錄
+    const foundChatroom = await Chatroom.findOne({
+      isPublic: false,
+      members: { $all: [currentId, receivedId] },
+    })
+      .populate(populatePrivateOptions(currentId))
+      .lean()
+
+    return foundChatroom
+  },
+  createPrivateChatroom: async (currentId, receivedId) => {
+    const newChatroom = await Chatroom.create({
+      name: privateChatroomName,
+      isPublic: false,
+      members: [currentId, receivedId],
+    })
+
+    return newChatroom
   },
 }
 

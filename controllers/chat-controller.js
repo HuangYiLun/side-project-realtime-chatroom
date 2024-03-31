@@ -35,8 +35,6 @@ const chatController = {
       message.senderId._id = message.senderId._id.toString()
     })
 
-    console.log("foundMessages", foundMessages)
-
     res.render("room", {
       partialName,
       chatroom: foundChatroom,
@@ -70,7 +68,7 @@ const chatController = {
       const allPrivateChats = await chatroomService.getAllPrivateChats(
         currentId
       )
-      const messages = await messageServices.getMessages(currentChat._id)
+      const messages = await messageServices.getMessages(currentChat.chatId)
 
       return res.render("1on1", {
         partialName,
@@ -78,6 +76,29 @@ const chatController = {
         messages,
         allPrivateChats,
       })
+    } catch (err) {
+      next(err)
+    }
+  },
+  postPrivateRoom: async (req, res, next) => {
+    console.log("enter post room")
+    console.log("req.body", req.body)
+    const currentId = getUser(req)._id
+    // 選擇要聊天的朋友id
+    const { selectedFriendId } = req.body
+    try {
+      const existingPrivateChatroom = await chatroomService.findPrivateChatroom(
+        currentId,
+        selectedFriendId
+      )
+
+      if (existingPrivateChatroom) {
+        req.flash("danger_msg", "已經創建過聊天室")
+      } else {
+        await chatroomService.createPrivateChatroom(currentId, selectedFriendId)
+        req.flash("success_msg", "新增聊天室成功")
+      }
+      return res.redirect("back")
     } catch (err) {
       next(err)
     }
