@@ -145,7 +145,30 @@ header {
   background-color: #374151;
 }
 
-.nav-right .nav-item i {
+.nav-notification {
+  position: relative;
+}
+
+.nav-notification .notification-list {
+  position: absolute;
+  top: 100%;
+  right: 50%;
+  width: 300px;
+  max-height: 300px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+}
+
+.notification-list li {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  background-color: rgba(0, 0, 0, 0.45);
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0.25);
+}
+
+.nav-right .nav-item {
   color: #fff;
 }
 
