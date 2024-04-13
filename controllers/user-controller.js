@@ -21,34 +21,34 @@ const userController = {
   },
   signUp: async (req, res, next) => {
     const { name, email, password, confirmPassword } = req.body
-    if (!name.trim() || !email.trim() || !password.trim()) { 
+    if (!name.trim() || !email.trim() || !password.trim()) {
       return res.render("signup", {
         name,
         email,
         password,
         confirmPassword,
-        danger_msg: "欄位不得空白"
+        danger_msg: "欄位不得空白",
       })
     }
-    if (password !== confirmPassword) {  
+    if (password !== confirmPassword) {
       return res.render("signup", {
         name,
         email,
         password,
         confirmPassword,
-        danger_msg: "密碼不一致"
+        danger_msg: "密碼不一致",
       })
     }
 
     try {
       const usedEmail = await User.findOne({ email })
-      if (usedEmail) { 
+      if (usedEmail) {
         return res.render("signup", {
           name,
           email,
           password,
           confirmPassword,
-          danger_msg: "信箱已被使用"
+          danger_msg: "信箱已被使用",
         })
       }
       const usedName = await User.findOne({ name })
@@ -58,7 +58,7 @@ const userController = {
           email,
           password,
           confirmPassword,
-          danger_msg: "名稱已被使用"
+          danger_msg: "名稱已被使用",
         })
       }
 
@@ -383,17 +383,25 @@ const userController = {
         ]
         // 使用 bulkWrite 執行操作
         await User.bulkWrite(operations, { session })
-        res.redirect(`${FRIENDS_URL}?type=${RECEIVED_FRIENDS_TYPE}`)
+        // res.redirect(`${FRIENDS_URL}?type=${RECEIVED_FRIENDS_TYPE}`)
+        res.json({
+          status: "success",
+          message: "accept friend successfully.",
+        })
       })
     } catch (err) {
-      return next(err)
+      return res
+        .status(500)
+        .json({ status: "error", message: "accept friend error" })
     } finally {
       try {
         // 關閉mongoose session
         await session.endSession()
       } catch (sessionErr) {
         console.error("Error ending session:", sessionErr)
-        return next(sessionErr)
+        return res
+          .status(500)
+          .json({ status: "error", message: "資料庫錯誤，請稍後再試" })
       }
     }
   },

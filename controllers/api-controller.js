@@ -1,6 +1,9 @@
 const { getUser } = require("../helpers/auth-helper")
 const User = require("../models/user")
+const Notification = require("../models/notification")
 const chatroomService = require("../services/chatroom-services")
+const formatTime = require("../utilities/formatTime")
+const notificationService = require("../services/notification-services")
 
 const apiController = {
   getUserAccount: async (req, res, next) => {
@@ -73,12 +76,92 @@ const apiController = {
           chat.name.toLowerCase().includes(keyword.toLowerCase()) ||
           chat.email.toLowerCase() === keyword.toLowerCase()
       )
-      
+
       return res.json({ status: "success", data: filterPrivateChats })
     } catch (err) {
       return res
         .status(500)
         .json({ status: "error", message: "資料庫錯誤，請稍後再試" })
+    }
+  },
+  getNotifications: async (req, res, next) => {
+    const userId = getUser(req)._id
+
+    try {
+      const notifications = await Notification.find({
+        toUserId: userId,
+      })
+        .populate({
+          path: "fromUserId",
+          select: "_id avatar name",
+        })
+        .lean()
+
+      notifications.forEach((notification) => {
+        notification.createdAt = formatTime(notification.createdAt)
+      })
+
+      return res.json({ status: "success", data: notifications })
+    } catch (err) {
+      return res
+        .status(500)
+        .json({ status: "error", message: "資料庫錯誤，請稍後再試" })
+    }
+  },
+  postNotification: async (req, res, next) => {
+    const currentUser = getUser(req)
+    const { toUserId, toUserName, type } = req.body
+
+    if (type === "friendRequest") {
+      try {
+        const newNotification = await notificationService.postFriendRequest(
+          currentUser._id,
+          currentUser.name,
+          toUserId,
+          type
+        )
+        console.log("api new sent notification", newNotification)
+        return res.json({ status: "success", message: "新增通知成功" })
+      } catch (err) {
+        return res
+          .status(500)
+          .json({ status: "error", message: "新增通知失敗" })
+      }
+    } else if (type === "friendAccepted") {
+      try {
+        const newNotifications = await notificationService.postAcceptFriend(
+          currentUser._id,
+          currentUser.name,
+          toUserId,
+          toUserName,
+          type
+        )
+        console.log("api new accept notification", newNotifications)
+        return res.json({ status: "success", message: "新增通知成功" })
+      } catch (err) {
+        console.error('accept notification error', err)
+        return res
+          .status(500)
+          .json({ status: "error", message: "新增通知失敗" })
+      }
+    }
+  },
+  deleteNotification: async (req, res, next) => {
+    const { deleteId } = req.params
+
+    try {
+      const deletedNotification = await Notification.deleteOne({
+        _id: deleteId,
+      })
+      if (deletedNotification.deletedCount > 0) {
+        return res.json({ status: "success", message: "刪除通知成功" })
+      } else {
+        return res
+          .status(500)
+          .json({ status: "error", message: "刪除通知失敗" })
+      }
+    } catch (err) {
+      return res.status(500).json({ status: "error", message: "刪除通知失敗" })
     }
   },
 }

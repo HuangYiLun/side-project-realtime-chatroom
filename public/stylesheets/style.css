@@ -145,14 +145,27 @@ header {
   background-color: #374151;
 }
 
-.nav-notification {
+.notification-button {
   position: relative;
+  border: none;
+  background-color: transparent;
 }
 
-.nav-notification .notification-list {
+.text-notification {
+  position: relative;
+  width: 180px;
+}
+
+.text-notification .delete-button {
+  position: absolute;
+  right: -40px;
+  top: 10px;
+}
+
+.notification-list {
   position: absolute;
   top: 100%;
-  right: 50%;
+  right: 110px;
   width: 300px;
   max-height: 300px;
   overflow-y: auto;
@@ -163,9 +176,26 @@ header {
 .notification-list li {
   display: flex;
   align-items: center;
-  height: 60px;
+  height: 80px;
   background-color: rgba(0, 0, 0, 0.45);
   border-bottom: 1px solid hsla(0, 0%, 100%, 0.25);
+}
+
+.notification-list li a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+}
+
+.notification {
+
+  transition: transform 0.5s;
+}
+
+.notification.deleting {
+
+  transform: translateX(100%);
 }
 
 .nav-right .nav-item {

@@ -9,7 +9,6 @@ const imgurFileHelper = file => {
       .uploadFile(file.path)
       .then(img => {
         resolve(img?.link || null)
-        console.log("✨✨✨完成imgur linke✨✨✨✨")
       })
       .catch(err => regject(err))
   })

@@ -20,7 +20,7 @@
       {{#if isSendInvitation}}<h5 class="text-white">人數:{{users.length}}位</h5>{{/if}}
       {{#if isReceivedInvitation}}<h5 class="text-white">人數:{{users.length}}位</h5>{{/if}}
 
-      <ul class="list">
+      <ul class="friends-list">
         <!-- 在這裡顯示朋友列表的內容 -->
         {{#each users}}
         <li class="list-item d-flex align-items-center justify-content-between" data-id="{{this._id}}" data-name="
@@ -34,9 +34,7 @@
             <h4 class="user-name-h4" data-bs-toggle="modal" data-bs-target="#show-modal">{{this.name}}
             </h4>
           </div>
-          {{#if ../isFriends}}
 
-          {{/if}}
           <div class="friend-btn">
             {{#if ../isFriends}}
             <button class="btn btn-outline-info rounded-circle message-btn">
@@ -63,11 +61,9 @@
             {{/if}}
 
             {{#if ../isReceivedInvitation}}
-            <form action="/friends/{{this._id}}/accept?_method=PUT" method="POST">
-              <button class="btn btn-outline-success accept-friend-btn">
+            <button class="btn btn-outline-success accept-friend-btn" data-friend-id="{{this._id}}" data-friend-name="{{this.name}}" data-user-id="{{loginUser._id}}" data-user-name="{{loginUser.name}}">
                 Accept
-              </button>
-            </form>
+            </button>
             <form action="/friends/{{this._id}}/reject?_method=PUT" method="POST">
               <button class="btn btn-outline-warning reject-friend-btn">
                 Reject
