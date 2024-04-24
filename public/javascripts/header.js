@@ -1,67 +1,105 @@
+import {
+  deleteNotification,
+  getNotifications,
+  patchNotifications,
+} from "./api/notification.js"
+import { socket } from "./socketManger.js"
+
 const notificationList = document.querySelector(".notification-list")
 const notificationBtn = document.querySelector(".notification-button")
-import { deleteNotification, getNotifications } from "./api/notification.js"
+const unReadNotificationsBadge = document.querySelector(".badge")
+const userId = notificationList.dataset.userid
 
-notificationList.addEventListener("click", async function (e) {
-  if (e.target.closest(".delete-button")) {
-    e.preventDefault()
-    e.stopPropagation()
+let notifications = []
+let unreadNotificationIds = []
 
-    const deleteNotificationId = e.target.closest(".delete-button").dataset.id
+if (socket) {
+  socket.emit("newUser", userId)
+}
 
-    try {
-      const response = await deleteNotification(deleteNotificationId)
-
-      if (response.status === "success") {
-        const notificationElement = e.target.closest(".notification")
-        notificationElement.classList.add("deleting")
-        setTimeout(() => {
-          notificationElement.remove()
-        }, 500)
-      }
-    } catch (err) {
-      console.error("deleteNotificationError", err)
-    }
-  }
+socket.on("receiveNotification", () => {
+  loadNotifications(notificationList)
 })
 
-try {
-  const response = await getNotifications()
-  const notifications = response.data
-  console.log("notifications", notifications)
-  notificationList.innerHTML = ""
+document.addEventListener("DOMContentLoaded", () => {
+  loadNotifications(notificationList)
+})
 
+// 載入notifications
+async function loadNotifications(notificationList) {
+  try {
+    notifications = await fetchNotifications()
+
+    unreadNotificationIds = notifications.reduce((acc, notification) => {
+      if (!notification.isRead) {
+        acc.push(notification._id)
+      }
+      return acc
+    }, [])
+
+    handleUnreadNotificationsBadge()
+    renderNotifications(notifications, notificationList)
+  } catch (err) {
+    console.error("Failed to load notifications:", err)
+    notificationList.innerHTML = ""
+    notificationList.innerHTML = `<li class="notification d-flex align-items-center justify-content-center px-2 gap-2"><p style="color:red">資料庫錯誤，請稍後再試<<p></li>`
+  }
+}
+
+// 取得notificaions
+async function fetchNotifications() {
+  try {
+    const response = await getNotifications()
+    return response.data
+  } catch (err) {
+    console.error("Failed to fetch notifications:", err)
+    throw err
+  }
+}
+
+// 渲染notifications
+function renderNotifications(notifications, notificationList) {
+  notificationList.innerHTML = ""
   if (notifications?.length > 0) {
+    appendNotificationTop(notificationList)
     notifications.forEach((notification) =>
       appendNotification(notificationList, notification)
     )
   } else {
-    notificationList.innerHTML = `<li class="px-2 gap-2"><p style="color:white">目前沒有通知<p></li>`
+    notificationList.innerHTML = `<li class="notification d-flex align-items-center justify-content-center px-2 gap-2"><p style="color:white">目前沒有通知<p></li>`
   }
-} catch (err) {
-  console.error(err)
-  notificationList.innerHTML = `<li class="px-2 gap-2"><p style="color:red">資料庫錯誤，請稍後再試<<p></li>`
 }
 
-notificationBtn.addEventListener("click", (e) => {
-  const isDisplay = notificationList.classList.contains("d-none")
-
-  if (isDisplay) {
-    notificationList.classList.remove("d-none")
-  } else {
-    notificationList.classList.add("d-none")
-  }
+// 顯示notification-list按鈕
+notificationBtn.addEventListener("click", () => {
+  notificationList.classList.toggle("d-none")
 })
 
+// 添加 notification read button list items
+function appendNotificationTop(list) {
+  const li = document.createElement("li")
+  li.className = "notification notification-top"
+
+  const button = document.createElement("button")
+  button.className = "notification-read-button btn btn-secondary rounded-pill"
+  button.textContent = "全部已讀"
+
+  li.appendChild(button)
+  list.appendChild(li)
+}
+
+// 添加notification list items
 function appendNotification(list, notification) {
   // 創建<li>元素
   const li = document.createElement("li")
-  li.className = "notification p-2 gap-2"
+  li.className = notification.isRead
+    ? "notification p-2 gap-2"
+    : "notification unread p-2 gap-2"
 
   // 創建<a>元素，並設置 href 屬性
-  const link = document.createElement("a")
-  link.className = "gap-2"
-  link.href = "/friends?type=received"
+  const a = document.createElement("a")
+  a.className = "gap-2"
+  a.href = notification.redirectUrl
 
   // 創建圖片容器<div>元素
   const imgDiv = document.createElement("div")
@@ -79,54 +117,90 @@ function appendNotification(list, notification) {
   const textDiv = document.createElement("div")
   textDiv.className = "text-notification"
 
-  // 創建文字<div>元素
-  const text = document.createElement("div")
-  text.className = "text"
-  text.textContent = notification.message
-
-  // 創建時間<div>元素
-  const time = document.createElement("div")
-  time.className = "time"
-  time.textContent = notification.createdAt
-
-  // 創建刪除按鈕<div>元素
-  const deleteBtn = document.createElement("div")
-  deleteBtn.className = "delete-button"
-  deleteBtn.dataset.id = notification._id
-
-  // 創建刪除按鈕的 SVG 元素
-  const deleteSvg = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "svg"
-  )
-  deleteSvg.setAttribute("height", "20")
-  deleteSvg.setAttribute("width", "15")
-  deleteSvg.setAttribute("viewBox", "0 0 384 512")
-
-  const deletePath = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "path"
-  )
-  deletePath.setAttribute("fill", "#ffffff")
-  deletePath.setAttribute(
-    "d",
-    "M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"
-  )
-
-  deleteSvg.appendChild(deletePath)
-  deleteBtn.appendChild(deleteSvg)
-
-  // 將文字和時間<div>元素插入到文字容器<div>元素中
-  textDiv.appendChild(text)
-  textDiv.appendChild(time)
-  textDiv.appendChild(deleteBtn)
-
-  // 將圖片容器<div>元素和文字容器<div>元素插入到<a>元素中
-  link.appendChild(imgDiv)
-  link.appendChild(textDiv)
-
-  li.appendChild(link)
-
-  // 將<li>元素插入到容器元素中
+  textDiv.innerHTML = `
+    <div class="text">${notification.message}</div>
+    <div class="time">${notification.createdAt}</div>
+    <div class="delete-button" data-id="${notification._id}">
+      <svg height="20" width="15" viewBox="0 0 384 512">
+        <path fill="#ffffff" d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"></path>
+      </svg>
+    </div>
+ `
+  a.appendChild(imgDiv)
+  a.appendChild(textDiv)
+  li.appendChild(a)
   list.appendChild(li)
+}
+
+setupNotificationListListener(notificationList)
+
+// 設置notificationList事件監聽器
+function setupNotificationListListener(notificationList) {
+  notificationList.addEventListener("click", async (e) => {
+    if (e.target.closest(".delete-button")) {
+      e.preventDefault()
+      e.stopPropagation()
+
+      const deleteNotificationId = e.target.closest(".delete-button").dataset.id
+      try {
+        const isDeleted = await deleteNotificationHandler(deleteNotificationId)
+
+        if (isDeleted) {
+          const notificationElement = e.target.closest(".notification")
+          animateElementRemoval(notificationElement)
+          notifications = notifications.filter(
+            (notification) => notification._id !== deleteNotificationId
+          )
+          unreadNotificationIds = notifications.reduce((acc, notification) => {
+            if (!notification.isRead) {
+              acc.push(notification._id)
+            }
+            return acc
+          }, [])
+          handleUnreadNotificationsBadge()
+
+          if (notifications.length === 0) {
+            renderNotifications(notifications, notificationList)
+          }
+        }
+      } catch (err) {
+        console.error("Error deleting notification:", err)
+      }
+    }
+
+    if (e.target.closest(".notification-read-button")) {
+      try {
+        const response = await patchNotifications(unreadNotificationIds)
+
+        if ((response.status = "success")) {
+          loadNotifications(notificationList)
+        }
+      } catch (err) {
+        console.error("Failed to turn unreadNotifications to read:", err)
+      }
+    }
+  })
+}
+
+// 移除notification動畫效果
+function animateElementRemoval(element) {
+  element.classList.add("deleting")
+  setTimeout(() => element.remove(), 500)
+}
+
+// 刪除notification
+async function deleteNotificationHandler(notificationId) {
+  try {
+    const response = await deleteNotification(notificationId)
+    return response.status === "success"
+  } catch (err) {
+    console.error("deleteNotificationError", err)
+    return false
+  }
+}
+
+// 控制unreadNotification紅點
+function handleUnreadNotificationsBadge() {
+  unReadNotificationsBadge.style.display =
+    unreadNotificationIds.length === 0 ? "none" : "inline-block"
 }

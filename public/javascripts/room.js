@@ -1,5 +1,7 @@
 const messageList = document.getElementById("message-list")
 
-messageList.scrollTop = messageList.scrollHeight
+if (messageList) {
+  messageList.scrollTop = messageList.scrollHeight
+}
 
 

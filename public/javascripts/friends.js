@@ -1,4 +1,5 @@
 import { postNotification } from "./api/notification.js"
+import { sendNotification } from "./socketManger.js"
 const friendsList = document.querySelector(".friends-list")
 const tabContent = document.querySelector(".content")
 
@@ -40,6 +41,7 @@ function handleListItemClick(e) {
 async function acceptFriendRequest(buttonElement, baseUrl, notificationType) {
   const friendId = buttonElement.dataset.friendId
   const friendName = buttonElement.dataset.friendName
+  const redirectUrl = "/friends"
 
   try {
     //接受朋友邀請
@@ -52,8 +54,11 @@ async function acceptFriendRequest(buttonElement, baseUrl, notificationType) {
       const notificationResponse = await postNotification(
         friendId,
         friendName,
-        notificationType
+        notificationType,
+        redirectUrl
       )
+
+      sendNotification({ userId: friendId })
 
       //發送朋友通知成功，就重新整理頁面
       if (notificationResponse.status === "success") {

@@ -151,6 +151,12 @@ header {
   background-color: transparent;
 }
 
+.notification-button .badge {
+  position: absolute;
+  left: 0.9rem;
+  top: 0.1rem;
+}
+
 .text-notification {
   position: relative;
   width: 180px;
@@ -173,29 +179,68 @@ header {
   padding: 0;
 }
 
-.notification-list li {
+/* .notification-list li {
   display: flex;
   align-items: center;
   height: 80px;
   background-color: rgba(0, 0, 0, 0.45);
   border-bottom: 1px solid hsla(0, 0%, 100%, 0.25);
-}
+} */
 
-.notification-list li a {
+/* .notification-list li a {
   display: flex;
   align-items: center;
   text-decoration: none;
   color: #fff;
-}
+} */
 
 .notification {
-
+  display: flex;
+  align-items: center;
+  height: 80px;
+  background-color: rgba(0, 0, 0, 0.45);
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0.25);
   transition: transform 0.5s;
 }
 
-.notification.deleting {
+.notification a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+  padding-left: 10px;
+}
 
+.notification.unread a {
+  position: relative;
+}
+
+.notification.unread a::before {
+  content: ""; /* 必需的，用於創建虛擬元素 */
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  background-color: lightseagreen;
+  border-radius: 50%;
+}
+
+.notification.deleting {
   transform: translateX(100%);
+}
+.notification-top {
+  height: 40px;
+  justify-content: end;
+  padding: 10px;
+  font-size: 6px;
+  position: sticky;
+  top: 0;
+}
+
+.notification-read-button {
+  font-size: 12px;
 }
 
 .nav-right .nav-item {

@@ -14,4 +14,5 @@ router.get('/search/chatroom/private', apiController.searchPrivateChats)
 router.post('/notifications',apiController.postNotification)
 router.get('/notifications',apiController.getNotifications)
 router.delete('/notifications/:deleteId',apiController.deleteNotification)
+router.patch('/notifications', apiController.patchNotification)
 module.exports = router

@@ -20,6 +20,15 @@ const notificationSchema = new Schema(
       enum: ["friendRequest", "friendAccepted"],
       required: true,
     },
+    isRead: {
+      type: Boolean,
+      default: false,
+      require: true,
+    },
+    redirectUrl: {
+      type: String,
+      require: true,
+    },
   },
   { timestamps: true }
 )

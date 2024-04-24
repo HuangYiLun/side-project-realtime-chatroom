@@ -1,5 +1,6 @@
 import { showModal } from "./showModal.js"
 import { postNotification } from "./api/notification.js"
+import { sendNotification } from "./socketManger.js"
 const searchForm = document.querySelector(".form-search")
 const searchInput = document.querySelector(".input-search")
 const searchList = document.querySelector(".search-list")
@@ -24,6 +25,7 @@ searchList.addEventListener("click", function onSearchListClicked(e) {
   ) {
     const { name, avatar, introduction } =
       target.closest(".search-list-item").dataset
+      
     showModal(name, avatar, introduction)
   }
 
@@ -37,6 +39,7 @@ async function addFriendRequest(self) {
   const friendId = self.dataset.id
   const userName = self.dataset.name
   const notificationType = "friendRequest"
+  const redirectUrl = "/friends?type=received"
 
   // 修改user model sentfriendsrequest
   const result = await axios.put(`${BASE_URL}/friends/${friendId}/send`)
@@ -44,7 +47,17 @@ async function addFriendRequest(self) {
   // 發出交友邀請通知
   if (result.data.success) {
     renderFriendButton(self)
-    await postNotification(friendId, userName, notificationType)
+    const response = await postNotification(
+      friendId,
+      userName,
+      notificationType,
+      redirectUrl
+    )
+    console.log("post notification response", response)
+
+    if ((response.status = "success")) {
+      sendNotification({ userId: friendId })
+    }
   }
 }
 

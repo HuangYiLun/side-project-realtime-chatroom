@@ -1,22 +1,42 @@
 const User = require("../models/user")
 const formatTime = require("../utilities/formatTime")
 
+// 記錄上線users
+let onlineUsers = []
+
+// 記錄聊天室users
 const usersState = {
   users: [],
   setUsers: function (newUsersArray) {
     this.users = newUsersArray
   },
 }
+
 module.exports = (io) => {
   io.on("connection", async (socket) => {
+
+    socket.on("newUser", (userId) => {
+      console.log(`${userId} add online users`)
+      addOnlineUser(userId, socket.id)
+      console.log("onlineusers", onlineUsers)
+    })
+
+    socket.on("sendNotification", (data) => {
+      console.log("on send notification", data)
+      console.log("data", data)
+      const user = getOnlineUser(data.userId)
+      console.log("onlineuser", user)
+      socket.to(user.socketId).emit("receiveNotification", data)
+    })
+
     const activeUser = socket.request.user
     console.log(`User ${activeUser.name} connected`)
 
-    socket.on("joinRoom", (room, callback) => {
+    socket.on("joinRoom", (room) => {
       console.log("enter joinroom")
+      console.log('room',room)
       socket.join(room)
       console.log(`${activeUser.name} joined room ${room}`)
-      callback("success")
 
       // 檢查是否已在usersState中
       const prevUser = getUser(activeUser._id)
@@ -69,6 +89,8 @@ module.exports = (io) => {
     // 中斷聊天室連線
     socket.on("disconnect", () => {
       console.log("enter disconnect")
+      removeOnlineUser(socket.id)
+
       const user = getUser(activeUser._id)
 
       if (user) {
@@ -82,7 +104,7 @@ module.exports = (io) => {
   })
 }
 
-// 加入聊天室上線user
+// 加入聊天室
 function userJoinRoom(id, name, avatar, introduction, room) {
   const user = { id, name, avatar, introduction, room }
   usersState.setUsers([
@@ -91,7 +113,7 @@ function userJoinRoom(id, name, avatar, introduction, room) {
   ])
   return user
 }
-// 刪除聊天室離線user
+// 離開聊天室
 function userLeaveRoom(id) {
   usersState.setUsers(usersState.users.filter((user) => user.id !== id))
 }
@@ -99,11 +121,29 @@ function userLeaveRoom(id) {
 function getRoomUsers(room) {
   return usersState.users.filter((user) => user.room === room)
 }
-// 查詢user
+// 查詢聊天室user
 function getUser(id) {
   return usersState.users.find((user) => user.id === id)
 }
 
+// 加入onlineUsers
+function addOnlineUser(userId, socketId) {
+  !onlineUsers.some((user) => user.userId === userId) &&
+    onlineUsers.push({ userId, socketId })
+}
+
+// 離開onlineUsers
+function removeOnlineUser(socketId) {
+  onlineUsers = onlineUsers.filter((user) => user.socketId !== socketId)
+  console.log("removeonlineusers", onlineUsers)
+}
+
+// 查詢上線user
+function getOnlineUser(userId) {
+  return onlineUsers.find((user) => user.userId === userId)
+}
+
+// 建立聊天訊息
 function buildMsg(user, message, attachment, time) {
   return {
     user,

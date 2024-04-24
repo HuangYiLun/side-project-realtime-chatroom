@@ -4,10 +4,10 @@ const API_NOTIFICATION_URL = "/api/notifications/"
 export const postNotification = async (
   toUserId,
   toUserName,
-  type = "friendRequest"
+  type = "friendRequest",
+  redirectUrl
 ) => {
   const URL = `${BASE_URL}${API_NOTIFICATION_URL}`
-  console.log("enter fronted postnotification")
 
   const config = {
     method: "post",
@@ -15,7 +15,7 @@ export const postNotification = async (
     headers: {
       "Content-Type": "application/json",
     },
-    data: JSON.stringify({ toUserId, toUserName, type }),
+    data: JSON.stringify({ toUserId, toUserName, type, redirectUrl }),
   }
 
   try {
@@ -40,6 +40,26 @@ export const deleteNotification = async (notificationId) => {
     const response = await axios.delete(
       `${API_NOTIFICATION_URL}${notificationId}`
     )
+    return response.data
+  } catch (err) {
+    throw err
+  }
+}
+
+export const patchNotifications = async (unReadNotificationIds) => {
+  const URL = `${BASE_URL}${API_NOTIFICATION_URL}`
+
+  const config = {
+    method: "patch",
+    url: URL,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify({ unReadNotificationIds }),
+  }
+
+  try {
+    const response = await axios(config)
     return response.data
   } catch (err) {
     throw err

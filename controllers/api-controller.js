@@ -1,12 +1,12 @@
-const { getUser } = require("../helpers/auth-helper")
-const User = require("../models/user")
-const Notification = require("../models/notification")
-const chatroomService = require("../services/chatroom-services")
-const formatTime = require("../utilities/formatTime")
 const notificationService = require("../services/notification-services")
+const chatroomService = require("../services/chatroom-services")
+const Notification = require("../models/notification")
+const { getUser } = require("../helpers/auth-helper")
+const formatTime = require("../utilities/formatTime")
+const User = require("../models/user")
 
 const apiController = {
-  getUserAccount: async (req, res, next) => {
+  getUserAccount: async (req, res) => {
     const { userId } = req.params
     const loginUser = getUser(req)
 
@@ -30,7 +30,7 @@ const apiController = {
         .json({ status: "error", message: "資料庫錯誤，請稍後再試" })
     }
   },
-  getAllPrivateChats: async (req, res, next) => {
+  getAllPrivateChats: async (req, res) => {
     const currentId = getUser(req)._id
     try {
       const allPrivateChats = await chatroomService.getAllPrivateChats(
@@ -44,7 +44,7 @@ const apiController = {
         .json({ status: "error", message: "資料庫錯誤，請稍後再試" })
     }
   },
-  getCurrentPrivateChat: async (req, res, next) => {
+  getCurrentPrivateChat: async (req, res) => {
     const currentId = getUser(req)._id
     const { receiverId } = req.params
     try {
@@ -58,7 +58,7 @@ const apiController = {
         .json({ status: "error", message: "資料庫錯誤，請稍後再試" })
     }
   },
-  searchPrivateChats: async (req, res, next) => {
+  searchPrivateChats: async (req, res) => {
     const keyword = req.query.keyword ? req.query.keyword.trim() : ""
     const currentId = getUser(req)._id
 
@@ -84,7 +84,7 @@ const apiController = {
         .json({ status: "error", message: "資料庫錯誤，請稍後再試" })
     }
   },
-  getNotifications: async (req, res, next) => {
+  getNotifications: async (req, res) => {
     const userId = getUser(req)._id
 
     try {
@@ -108,9 +108,9 @@ const apiController = {
         .json({ status: "error", message: "資料庫錯誤，請稍後再試" })
     }
   },
-  postNotification: async (req, res, next) => {
+  postNotification: async (req, res) => {
     const currentUser = getUser(req)
-    const { toUserId, toUserName, type } = req.body
+    const { toUserId, toUserName, type, redirectUrl } = req.body
 
     if (type === "friendRequest") {
       try {
@@ -118,7 +118,8 @@ const apiController = {
           currentUser._id,
           currentUser.name,
           toUserId,
-          type
+          type,
+          redirectUrl
         )
         console.log("api new sent notification", newNotification)
         return res.json({ status: "success", message: "新增通知成功" })
@@ -134,19 +135,20 @@ const apiController = {
           currentUser.name,
           toUserId,
           toUserName,
-          type
+          type,
+          redirectUrl
         )
         console.log("api new accept notification", newNotifications)
         return res.json({ status: "success", message: "新增通知成功" })
       } catch (err) {
-        console.error('accept notification error', err)
+        console.error("accept notification error", err)
         return res
           .status(500)
           .json({ status: "error", message: "新增通知失敗" })
       }
     }
   },
-  deleteNotification: async (req, res, next) => {
+  deleteNotification: async (req, res) => {
     const { deleteId } = req.params
 
     try {
@@ -162,6 +164,26 @@ const apiController = {
       }
     } catch (err) {
       return res.status(500).json({ status: "error", message: "刪除通知失敗" })
+    }
+  },
+  patchNotification: async (req, res) => {
+    const { unReadNotificationIds } = req.body
+    console.log("enter pach notificationIds", unReadNotificationIds)
+    try {
+      const patchNotifications =
+        await notificationService.updateMultipleNotificationsToRead(
+          unReadNotificationIds
+        )
+      console.log("patchNotifications", patchNotifications)
+      if (patchNotifications.modifiedCount > 0) {
+        return res.json({ status: "success", message: "已讀通知成功" })
+      } else {
+        return res
+          .status(500)
+          .json({ status: "error", message: "已讀通知失敗" })
+      }
+    } catch (err) {
+      return res.status(500).json({ status: "error", message: "已讀通知失敗" })
     }
   },
 }
