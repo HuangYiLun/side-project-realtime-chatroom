@@ -8,7 +8,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #1f253d;
+  background-color: #161b22;
   overflow: hidden;
 }
 
@@ -78,11 +78,6 @@ header {
   font-size: small;
 }
 
-/* background-color */
-.bg-dark-blue {
-  background-color: #1f253d;
-}
-
 /* object-cover */
 .object-cover {
   object-fit: cover;
@@ -102,7 +97,7 @@ header {
 /* -------------------- Navbar -------------------- */
 .navbar {
   height: 60px;
-  background-color: #111827;
+  background-color: #000;
   color: #9ca3af;
 }
 
@@ -178,21 +173,6 @@ header {
   list-style: none;
   padding: 0;
 }
-
-/* .notification-list li {
-  display: flex;
-  align-items: center;
-  height: 80px;
-  background-color: rgba(0, 0, 0, 0.45);
-  border-bottom: 1px solid hsla(0, 0%, 100%, 0.25);
-} */
-
-/* .notification-list li a {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: #fff;
-} */
 
 .notification {
   display: flex;
@@ -317,7 +297,7 @@ header {
   flex-direction: column;
   width: 180px;
   align-items: center;
-  background-color: #111827;
+  background-color: #000;
   color: #9ca3af;
 }
 

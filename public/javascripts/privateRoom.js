@@ -1,7 +1,7 @@
 import { searchPrivateChats } from "./api/chats.js"
 import { appendPrivateChat } from "./chatUtils.js"
 
-const usersList = document.getElementById("users-list")
+const privateChatroomsList = document.getElementById("private-chatrooms-list")
 
 const searchPrivateChatsInput = document.getElementById(
   "search-private-chats-input"
@@ -30,18 +30,18 @@ searchPrivateChatsInput.addEventListener("keyup", async function (e) {
     try {
       const response = await searchPrivateChats(inputValue)
       const filterPrivateChats = response.data
-      usersList.innerHTML = ""
+      privateChatroomsList.innerHTML = ""
 
       if (filterPrivateChats?.length > 0) {
         filterPrivateChats.forEach((chat) =>
-          appendPrivateChat(usersList, chat, receiverId)
+          appendPrivateChat(privateChatroomsList, chat, receiverId)
         )
       } else {
-        usersList.innerHTML = `<p style="color:white">沒有符合的搜尋結果<p>`
+        privateChatroomsList.innerHTML = `<p style="color:white">沒有符合的搜尋結果<p>`
       }
     } catch (err) {
       console.error(err)
-      usersList.innerHTML = `<p style="color:red">資料庫錯誤，請稍後再試<<p>`
+      privateChatroomsList.innerHTML = `<p style="color:red">資料庫錯誤，請稍後再試<<p>`
     }
   }
 })

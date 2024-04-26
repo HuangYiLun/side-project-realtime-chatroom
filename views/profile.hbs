@@ -1,53 +1,64 @@
 
-<div class="container profile-container">
-  <div class="profile-content rounded mx-auto w-75">
-    <div class="d-flex justify-content-between">
-      <h4>Modify your Profile</h4>
-      <button class="btn btn-secondary rounded-pill" id="edit-user-data" data-bs-toggle="modal" data-bs-target="#edit-modal">Edit Profile</button>
-    </div>
-
-    <div class="row pt-5">
-      <div class="col-4">
-        <div class="profile-img-block">
-          <img class="profile-user-img" src="{{avatar}}" onerror="this.src='https://i.imgur.com/VUhtTKV.png'" />
+<div class="container overflow-auto h-100">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+          <h4>Your Profile</h4>
+        </div>
+        <div class="card-body bg-dark">
+            <div class="mb-3">
+              <div class="profile-img-block text-center">
+                <img
+                  class="profile-user-img rounded-circle"
+                  src="{{avatar}}"
+                  onerror="this.src='https://i.imgur.com/VUhtTKV.png'"
+                  alt="User Avatar"
+                />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="user-name" class="form-label text-white">Username</label>
+              <input
+                type="text"
+                class="form-control"
+                id="user-name"
+                placeholder="Enter your username"
+                value="{{name}}"
+                readonly
+              />
+            </div>
+            <div class="mb-3">
+              <label for="user-email" class="form-label text-white">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="user-email"
+                placeholder="Enter your email"
+                value="{{email}}"
+                readonly
+              />
+            </div>
+            <div class="mb-3">
+              <label
+                for="user-introduction"
+                class="form-label text-white"
+              >Introduction</label>
+              <textarea
+                class="form-control"
+                id="user-introduction"
+                rows="3"
+                placeholder="Tell us about yourself"
+                readonly
+              >{{introduction}}</textarea>
+            </div>
+            <button class="btn btn-secondary rounded-pill" id="edit-user-data" data-bs-toggle="modal" data-bs-target="#edit-modal">Edit Profile</button>
         </div>
       </div>
-
-      <div class="col-8">
-        <div class="row">
-          <label class="col-4">User Name</label>
-          <div class="col-8">
-            <p>{{name}}</p>
-          </div>
-        </div>
-
-        <div class="row mt-2">
-          <label class="col-4">Email</label>
-          <div class="col-8">
-            <p>{{email}}</p>
-          </div>
-        </div>
-
-        <div class="row mt-2">
-          <label class="col-4">Password</label>
-          <div class="col-8">
-            <p>************</p>
-          </div>
-        </div>
-
-        <div class="row mt-2">
-          <label class="col-4">Introduction</label>
-          <div class="col-8">
-            <p>{{introduction}}</p>
-          </div>
-        </div>
-      </div>
     </div>
-
   </div>
 </div>
 
 
 {{> modal/modal-edit}}
-
 <script type="module" src="/javascripts/profile.js"></script>
