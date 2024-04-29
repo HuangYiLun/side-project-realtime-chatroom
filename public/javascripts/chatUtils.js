@@ -1,4 +1,3 @@
-
 function createElementWithClass(tagName, className) {
   const element = document.createElement(tagName)
   element.className = className
@@ -86,6 +85,7 @@ export function appendChatMessage(
     li.appendChild(div)
   }
   list.appendChild(li)
+  
   // 滑到對話底部
   list.scrollTop = list.scrollHeight
 }
@@ -135,7 +135,7 @@ export function hidePreviewImg(imgBox, attachmentInput) {
 }
 
 // 更新public聊天室 online users
-export function updateUserList(list, users) {
+export function updateOnlineUserList(list, users) {
   list.innerHTML = ""
   users.forEach((user) => appendUser(list, user))
 }
@@ -143,17 +143,24 @@ export function updateUserList(list, users) {
 // 添加public聊天室 list item
 function appendUser(list, user) {
   const li = document.createElement("li")
-  li.className = "d-flex align-items-center border-bottom pb-2 pt-2"
+  li.className = "list-item d-flex align-items-center border-bottom pb-2 pt-2"
+  li.dataset.id = user._id
+  li.dataset.name = user.name
+  li.dataset.email = user.email
+  li.dataset.avatar = user.avatar
+  li.dataset.introduction = user.introduction
 
   const img = document.createElement("img")
-  img.className = "h-40px w-40px rounded-circle"
+  img.className = "user-avatar-img h-40px w-40px rounded-circle pointer"
   img.src = user.avatar
   img.dataset.bsToggle = "modal"
   img.dataset.bsTarget = "#show-modal"
   img.onerror = () => (img.src = "https://i.imgur.com/VUhtTKV.png")
 
   const div = document.createElement("div")
-  div.className = "flex-grow-1 ms-3 text-white-50"
+  div.className = "user-name flex-grow-1 ms-3 text-white-50 pointer"
+  div.dataset.bsToggle = "modal"
+  div.dataset.bsTarget = "#show-modal"
   div.textContent = user.name
 
   li.appendChild(img)

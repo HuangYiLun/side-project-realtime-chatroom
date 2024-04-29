@@ -56,6 +56,7 @@ module.exports = (io) => {
       const user = userJoinRoom(
         activeUser._id,
         activeUser.name,
+        activeUser.email,
         activeUser.avatar,
         activeUser.introduction,
         room
@@ -107,8 +108,8 @@ module.exports = (io) => {
 }
 
 // 加入聊天室
-function userJoinRoom(id, name, avatar, introduction, room) {
-  const user = { id, name, avatar, introduction, room }
+function userJoinRoom(id, name, email, avatar, introduction, room) {
+  const user = { id, name, email, avatar, introduction, room }
   usersState.setUsers([
     ...usersState.users.filter((user) => user.id !== id),
     user,

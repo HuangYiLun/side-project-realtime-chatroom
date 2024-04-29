@@ -86,12 +86,18 @@ header {
 .btn-regular:hover {
   background-color: #374151;
 }
+
 /* 超出文字 */
 .ellipsis {
   width: 80px;
   overflow: hidden; /* 隱藏超出容器的文字 */
   text-overflow: ellipsis; /* 在文字超出時顯示省略符號 */
   white-space: nowrap; /* 防止文字換行 */
+}
+
+/* cursor */
+.pointer {
+  cursor: pointer;
 }
 
 /* -------------------- Navbar -------------------- */
