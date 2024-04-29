@@ -26,7 +26,9 @@ module.exports = (io) => {
       console.log("data", data)
       const user = getOnlineUser(data.userId)
       console.log("onlineuser", user)
-      socket.to(user.socketId).emit("receiveNotification", data)
+      if (user) {
+        socket.to(user.socketId).emit("receiveNotification", data)
+      }
     })
 
     const activeUser = socket.request.user

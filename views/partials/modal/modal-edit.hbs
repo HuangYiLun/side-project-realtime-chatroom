@@ -7,7 +7,7 @@
   aria-hidden="true"
 >
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content bg-dark text-white">
       <form
         class="input-form needs-validation"
         id="form"
@@ -19,16 +19,18 @@
         <div class="modal-header">
           <button
             type="button"
-            class="btn-close"
+            class="btn-close btn-close-white"
             data-bs-dismiss="modal"
             aria-label="Close"
           ></button>
-          <h5 class="modal-title flex-grow-1" id="editModalLabel">Modify Profile</h5>
+          <h5 
+          class="modal-title ms-2 flex-grow-1" id="editModalLabel">Modify Profile</h5>
           <button
             type="submit"
             id="btn-submit"
             class="btn btn-primary rounded-pill"
-          >Save</button>
+          >Save
+          </button>
         </div>
         <div class="modal-body p-0">
           <div class="avatar-edit">
@@ -38,9 +40,11 @@
               onerror="this.src='https://i.imgur.com/VUhtTKV.png'"
             />
             <div class="avatar">
-              <label class="form-label" for="avatar"><i
-                  class="fa-solid fa-camera"
-                ></i></label>
+              <label 
+              class="form-label" 
+              for="avatar">
+                <i class="fa-solid fa-camera"></i>
+              </label>
               <input
                 class="form-control input-upload-img"
                 type="file"

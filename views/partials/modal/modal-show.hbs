@@ -1,20 +1,36 @@
-<div class='modal fade user-show-modal' id='show-modal' tabindex='-1' aria-labelledby='showModalLabel'
-  aria-hidden='true'>
-  <div class='modal-dialog modal-sm'>
-    <div class='modal-content'>
-      <div class='modal-header'>
-        <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+<div
+  class="modal fade user-show-modal"
+  id="show-modal"
+  tabindex="-1"
+  aria-labelledby="showModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
 
-      <div class='modal-body p-0'>
-        <div class='text-center pt-2'>
-          <img class='avatar-img profile-user-img' src='' onerror="this.src='https://i.imgur.com/VUhtTKV.png'"/>
+      <div class="modal-body p-0">
+        <div class="text-center pt-2">
+          <img
+            class="avatar-img profile-user-img"
+            src=""
+            onerror="this.src='https://i.imgur.com/VUhtTKV.png'"
+          />
           <p class="show-user-name"></p>
+          <p class="show-user-email"></p>
+          <div class="modal-friend-btn"></div>
         </div>
 
-        <hr class="mx-3">
+        <hr class="mx-3" />
 
-        <div>
+        <div class="px-3">
           <h4>About me</h4>
           <p class="show-user-introduction"></p>
         </div>

@@ -2,6 +2,11 @@ const User = require("../models/user")
 const bcrypt = require("bcryptjs")
 const helpers = require("../helpers/auth-helper")
 const { imgurFileHelper } = require("../helpers/file-helper")
+const {
+  sendErrorResponse,
+  CustomError,
+} = require("../helpers/error-response-helper")
+const userService = require("../services/user-serivces")
 const mongoose = require("mongoose")
 
 const FRIENDS_URL = "/friends"
@@ -180,7 +185,6 @@ const userController = {
   search: async (req, res, next) => {
     const keyword = req.query.keyword ? req.query.keyword.trim() : ""
     const loginUser = helpers.getUser(req)
-    const { sentFriendsRequest, friends } = loginUser
 
     // 沒有搜尋關鍵字
     if (!keyword) {
@@ -189,42 +193,12 @@ const userController = {
     }
 
     try {
-      const usersMongoDB = await User.find(
-        {
-          // 搜尋條件
-          $or: [
-            { name: { $regex: keyword, $options: "i" } },
-            { email: keyword },
-          ],
-          // 回傳資料欄位
-        },
-        { name: 1, avatar: 1, introduction: 1 }
-      ).sort({ name: 1 }) //降冪排序
-
-      const users = usersMongoDB.map((user) => {
-        const userObject = user.toObject()
-        userObject._id = userObject._id.toString()
-        // 判斷是否已發送邀請/朋友/本人
-        userObject.hasSentRequest = sentFriendsRequest.some(
-          (invitation) => invitation._id.toString() === userObject._id
-        )
-        userObject.isFriend = friends.some(
-          (friend) => friend._id.toString() === userObject._id
-        )
-        userObject.isLoginUser = loginUser._id.toString() === userObject._id
-
-        // 如果都不是已發送邀請/朋友/本人
-        userObject.isDefault =
-          !userObject.hasSentRequest &&
-          !userObject.isFriend &&
-          !userObject.isLoginUser
-
-        return userObject
-      })
+      const users = await userService.searchUsers(keyword, loginUser)
+      console.log("searchusers", users)
       return res.render("search", { users, keyword })
     } catch (err) {
       console.error(err)
-      res.status(500).json({ error: "Internal Server Error" })
+      next(err)
     }
   },
   getFriendPage: (req, res) => {
@@ -266,49 +240,26 @@ const userController = {
   sendRequest: async (req, res) => {
     const friendId = req.params.userId
     const userId = helpers.getUser(req)._id.toString()
-    //確認邀請對象不是自己
-    if (friendId !== userId) {
-      //開啟新的session
-      const session = await mongoose.startSession()
-      try {
-        //使用session執行all or noting
-        await session.withTransaction(async () => {
-          // 定義session中的操作
-          const operations = [
-            {
-              updateOne: {
-                filter: { _id: userId },
-                update: { $push: { sentFriendsRequest: friendId } },
-              },
-            },
-            {
-              updateOne: {
-                filter: { _id: friendId },
-                update: { $push: { getFriendsRequest: userId } },
-              },
-            },
-          ]
-          // 使用 bulkWrite 執行操作
-          await User.bulkWrite(operations, { session })
-          res.status(200).json({
-            message: "friend request sent successfully.",
-            success: true,
-          })
-        })
-      } catch (err) {
-        console.error("Bulk write failed. Error:", err)
-        res
-          .status(500)
-          .json({ message: "failed to send friend request.", success: false })
-      } finally {
-        try {
-          // 關閉mongoose session
-          await session.endSession()
-        } catch (sessionErr) {
-          console.error("Error ending session:", sessionErr)
-          return next(sessionErr)
-        }
+
+    try {
+      //確認邀請對象不是自己
+      if (friendId === userId) {
+        throw new CustomError(400, "不能傳送交友邀請給自己")
       }
+
+      const result = await userService.sendFriendRequest(friendId, userId)
+
+      if (!result) {
+        throw new CustomError(500, "fail to send friend request!")
+      }
+
+      return res.json({
+        status: "success",
+        message: "friend request sent successfully.",
+      })
+    } catch (err) {
+      console.error("sendRequest:", err)
+      sendErrorResponse(res, err.status, err.message)
     }
   },
   cancelRequest: async (req, res) => {

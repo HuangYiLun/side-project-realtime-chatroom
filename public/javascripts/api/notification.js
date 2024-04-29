@@ -3,7 +3,6 @@ const API_NOTIFICATION_URL = "/api/notifications/"
 
 export const postNotification = async (
   toUserId,
-  toUserName,
   type = "friendRequest",
   redirectUrl
 ) => {
@@ -15,7 +14,7 @@ export const postNotification = async (
     headers: {
       "Content-Type": "application/json",
     },
-    data: JSON.stringify({ toUserId, toUserName, type, redirectUrl }),
+    data: JSON.stringify({ toUserId, type, redirectUrl }),
   }
 
   try {

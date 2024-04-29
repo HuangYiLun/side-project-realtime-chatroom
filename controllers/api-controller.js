@@ -4,6 +4,8 @@ const Notification = require("../models/notification")
 const { getUser } = require("../helpers/auth-helper")
 const formatTime = require("../utilities/formatTime")
 const User = require("../models/user")
+const userService = require("../services/user-serivces")
+const { sendErrorResponse } = require("../helpers/error-response-helper")
 
 const apiController = {
   getUserAccount: async (req, res) => {
@@ -110,27 +112,36 @@ const apiController = {
   },
   postNotification: async (req, res) => {
     const currentUser = getUser(req)
-    const { toUserId, toUserName, type, redirectUrl } = req.body
+    const { toUserId, type, redirectUrl } = req.body
 
-    if (type === "friendRequest") {
-      try {
-        const newNotification = await notificationService.postFriendRequest(
+    if (!toUserId || !type || !redirectUrl) {
+      return sendErrorResponse(res, 400, "Missing required fields")
+    }
+
+    try {
+      const friendUser = await userService.getUserById(toUserId)
+
+      if (!friendUser) {
+        return sendErrorResponse(
+          res,
+          404,
+          `friendId ${toUserId} doesn't exist!`
+        )
+      }
+
+      const toUserName = friendUser.name
+      let createdNotification
+
+      if (type === "friendRequest") {
+        createdNotification = await notificationService.postFriendRequest(
           currentUser._id,
           currentUser.name,
           toUserId,
           type,
           redirectUrl
         )
-        console.log("api new sent notification", newNotification)
-        return res.json({ status: "success", message: "新增通知成功" })
-      } catch (err) {
-        return res
-          .status(500)
-          .json({ status: "error", message: "新增通知失敗" })
-      }
-    } else if (type === "friendAccepted") {
-      try {
-        const newNotifications = await notificationService.postAcceptFriend(
+      } else if (type === "friendAccepted") {
+        createdNotification = await notificationService.postAcceptFriend(
           currentUser._id,
           currentUser.name,
           toUserId,
@@ -138,14 +149,17 @@ const apiController = {
           type,
           redirectUrl
         )
-        console.log("api new accept notification", newNotifications)
-        return res.json({ status: "success", message: "新增通知成功" })
-      } catch (err) {
-        console.error("accept notification error", err)
-        return res
-          .status(500)
-          .json({ status: "error", message: "新增通知失敗" })
+      } else {
+        return sendErrorResponse(res, 400, "Invalid notification type")
       }
+      return res.json({
+        status: "success",
+        message: "新增通知成功",
+        data: createdNotification,
+      })
+    } catch (err) {
+      console.error("accept notification error", err)
+      return sendErrorResponse(res, 500, "新增通知失敗")
     }
   },
   deleteNotification: async (req, res) => {

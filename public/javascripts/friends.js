@@ -40,7 +40,6 @@ function handleListItemClick(e) {
 
 async function acceptFriendRequest(buttonElement, baseUrl, notificationType) {
   const friendId = buttonElement.dataset.friendId
-  const friendName = buttonElement.dataset.friendName
   const redirectUrl = "/friends"
 
   try {
@@ -53,7 +52,6 @@ async function acceptFriendRequest(buttonElement, baseUrl, notificationType) {
     if (acceptResponse.data.status === "success") {
       const notificationResponse = await postNotification(
         friendId,
-        friendName,
         notificationType,
         redirectUrl
       )

@@ -17,8 +17,17 @@
     {{/if}}
     <ul class="search-list">
       {{#each users}}
-      <li class="search-list-item d-flex align-items-center justify-content-between" data-id="{{this._id}}" data-name="
-          {{this.name}}" data-avatar="{{this.avatar}}" data-introduction="{{this.introduction}}">
+      <li class="search-list-item d-flex align-items-center justify-content-between"
+          id="{{this._id}}"
+          data-id="{{this._id}}" 
+          data-name="{{this.name}}" 
+          data-email="{{this.email}}"
+          data-avatar="{{this.avatar}}" 
+          data-introduction="{{this.introduction}}" 
+          data-hasSentRequest="{{this.status.hasSentRequest}}"
+          data-isFriend="{{this.status.isFriend}}" 
+          data-isLoginUser="{{this.status.isLoginUser}}" 
+          data-isDefault="{{this.status.isDefault}}">
         <div class="search-user-avatar">
           <img class="search-user-avatar-img" src="{{this.avatar}}" data-bs-toggle="modal" data-bs-target="#show-modal"
             onerror="this.src=' https://i.imgur.com/VUhtTKV.png'">
@@ -28,7 +37,7 @@
           <h4 class="user-name-h4" data-bs-toggle="modal" data-bs-target="#show-modal">{{this.name}}</h4>
         </div>
 
-        {{#if this.hasSentRequest}}
+        {{#if this.status.hasSentRequest}}
         <div class="friend-btn">
           <button class="btn btn-outline-secondary none-pointer-friend-btn">
             Add Friend
@@ -36,7 +45,7 @@
         </div>
         {{/if}}
 
-        {{#if this.isFriend}}
+        {{#if this.status.isFriend}}
         <div class="friend-btn">
           <button class="btn btn-outline-success none-pointer-friend-btn">
             Friend
@@ -44,7 +53,7 @@
         </div>
         {{/if}}
 
-        {{#if this.isLoginUser}}
+        {{#if this.status.isLoginUser}}
         <div class="friend-btn">
           <button class="btn btn-outline-light none-pointer-friend-btn">
             Yourself
@@ -52,9 +61,9 @@
         </div>
         {{/if}}
 
-        {{#if this.isDefault}}
+        {{#if this.status.isDefault}}
         <div class="friend-btn">
-          <button class="btn btn-outline-info add-friend-btn" data-id="{{this._id}}" data-name="{{loginUser.name}}">
+          <button class="btn btn-outline-info add-friend-btn" data-id="{{this._id}}">
             <i class="fa-solid fa-heart-circle-plus"></i>Add Friend
           </button>
         </div>

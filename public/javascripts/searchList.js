@@ -1,71 +1,119 @@
 import { showModal } from "./showModal.js"
 import { postNotification } from "./api/notification.js"
 import { sendNotification } from "./socketManger.js"
+import { putAddFriendRequest } from "./api/friend.js"
+
 const searchForm = document.querySelector(".form-search")
 const searchInput = document.querySelector(".input-search")
 const searchList = document.querySelector(".search-list")
+const modalFriendBtn = document.querySelector(".modal-friend-btn")
 
-const BASE_URL = "http://localhost:3100"
+searchForm.addEventListener("submit", onSearchFormSubmited)
+searchList.addEventListener("click", onSearchListClicked)
+modalFriendBtn.addEventListener("click", onModalButtonClicked)
 
-searchForm.addEventListener("submit", function onSearchFormSubmited(e) {
+function onSearchFormSubmited(e) {
   const inputValue = searchInput.value.trim()
-  // 全是空白鍵則停止輸入
   if (!inputValue) {
     e.preventDefault()
   }
-})
+}
 
-// showList 監聽器
-searchList.addEventListener("click", function onSearchListClicked(e) {
+async function onSearchListClicked(e) {
   const target = e.target
+  // 點擊list item avatar or name 顯示modal
+  if (target.matches(".search-user-avatar-img, .user-name-h4")) {
+    const {
+      id,
+      name,
+      email,
+      avatar,
+      introduction,
+      hassentrequest,
+      isfriend,
+      isloginuser,
+      isdefault,
+    } = target.closest(".search-list-item").dataset
 
-  if (
-    target.matches(".search-user-avatar-img") ||
-    target.matches(".user-name-h4")
-  ) {
-    const { name, avatar, introduction } =
-      target.closest(".search-list-item").dataset
-      
-    showModal(name, avatar, introduction)
-  }
-
-  if (target.matches(".add-friend-btn")) {
-    addFriendRequest(target)
-  }
-})
-
-//加入朋友
-async function addFriendRequest(self) {
-  const friendId = self.dataset.id
-  const userName = self.dataset.name
-  const notificationType = "friendRequest"
-  const redirectUrl = "/friends?type=received"
-
-  // 修改user model sentfriendsrequest
-  const result = await axios.put(`${BASE_URL}/friends/${friendId}/send`)
-
-  // 發出交友邀請通知
-  if (result.data.success) {
-    renderFriendButton(self)
-    const response = await postNotification(
-      friendId,
-      userName,
-      notificationType,
-      redirectUrl
+    showModal(
+      id,
+      name,
+      email,
+      avatar,
+      introduction,
+      hassentrequest === "true",
+      isfriend === "true",
+      isloginuser === "true",
+      isdefault === "true"
     )
-    console.log("post notification response", response)
+  }
 
-    if ((response.status = "success")) {
-      sendNotification({ userId: friendId })
-    }
+  // 點擊加入朋友按鈕
+  if (target.matches(".add-friend-btn")) {
+    const listItem = target.closest(".search-list-item")
+    handleAddFriendRequest(listItem)
   }
 }
 
-function renderFriendButton(self) {
-  const friendButton = self.closest(".friend-btn")
+async function handleAddFriendRequest(listItem) {
+  const friendId = listItem.dataset.id
+  const success = await sendFriendRequest(friendId)
+  if (success) {
+    postNotificationAndSend(friendId)
+    updateFriendButton(listItem)
+  }
+}
+
+async function sendFriendRequest(friendId) {
+  const putAddFriendResponse = await putAddFriendRequest(friendId)
+  return putAddFriendResponse.status === "success"
+}
+
+async function postNotificationAndSend(friendId) {
+  const notificationType = "friendRequest"
+  const redirectUrl = "/friends?type=received"
+  const postedNotificationResponse = await postNotification(
+    friendId,
+    notificationType,
+    redirectUrl
+  )
+  if (postedNotificationResponse.status === "success") {
+    sendNotification({ userId: friendId })
+  }
+}
+
+function updateFriendButton(listItem) {
+  const friendButton = listItem.querySelector(".friend-btn")
+  listItem.dataset.hassentrequest = true
+  listItem.dataset.isdefault = false
   friendButton.innerHTML = `
     <button class="btn btn-outline-secondary none-pointer-friend-btn">
       Add Friend
     </button>
   `
+}
+
+async function onModalButtonClicked(e) {
+  const target = e.target
+  if (target.matches(".add-friend-btn")) {
+    const listId = target.dataset.id
+    const listItem = document.getElementById(listId)
+    if (listItem) {
+      const friendId = listItem.dataset.id
+      const success = await sendFriendRequest(friendId)
+      if (success) {
+        postNotificationAndSend(friendId)
+        updateFriendButton(listItem)
+        updateModalFriendButton(target)
+      }
+    }
+  }
+}
+
+function updateModalFriendButton(target) {
+  const modalfriendButton = target.closest(".modal-friend-btn")
+  modalfriendButton.innerHTML = `
+    <button class="btn btn-outline-secondary none-pointer-friend-btn">
+      Add Friend
+    </button> `
 }
