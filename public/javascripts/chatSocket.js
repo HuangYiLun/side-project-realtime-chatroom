@@ -48,7 +48,9 @@ chatForm.addEventListener("submit", async (e) => {
   if (!msg && !file) return
 
   const response = await postMessage(roomId, msg, file)
-  const { message, attachment, time } = response
+  if (response.status !== "success") return
+
+  const { message, attachment, time } = response.data
 
   // 透過socket傳送message
   sendMessage(message, attachment, time)

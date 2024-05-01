@@ -1,5 +1,5 @@
 const API_PRIVATE_URL = "/api/chatroom/private"
-const API_SEARCH_PRIVATE_URL = "/api/search/chatroom/private"
+const API_SEARCH_PRIVATE_URL = "/api/chatroom/search/private"
 
 export const getAllPrivateChats = async () => {
   try {

@@ -10,7 +10,8 @@ const session = require("express-session")
 const flash = require("connect-flash")
 const handlebarsHelpers = require("./helpers/handlebars-helper")
 const helpers = require("./helpers/auth-helper")
-const routes = require("./routes")
+// const routes = require("./routes/pages")
+const { pages, apis } = require("./routes")
 const onlyForHandshake = require("./utilities/socketio-passport")
 
 //連接mongodb
@@ -78,7 +79,9 @@ io.engine.use(
 )
 require("./socket/socket")(io)
 
-app.use(routes)
+// app.use(routes)
+app.use("/api", apis)
+app.use(pages)
 
 server.listen(port, () => {
   console.log(`server is running on http://localhost:${port}`)

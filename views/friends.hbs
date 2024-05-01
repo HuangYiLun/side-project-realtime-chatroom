@@ -24,7 +24,7 @@
         <!-- 在這裡顯示朋友列表的內容 -->
         {{#each users}}
         <li class="list-item d-flex align-items-center justify-content-between" data-id="{{this._id}}" data-name="
-          {{this.name}}" data-avatar="{{this.avatar}}" data-introduction="{{this.introduction}}">
+          {{this.name}}" data-email="{{this.email}}" data-avatar="{{this.avatar}}" data-introduction="{{this.introduction}}">
           <div class="user-avatar">
             <img class="user-avatar-img" src="{{this.avatar}}" data-bs-toggle="modal" data-bs-target="#show-modal"
               onerror="this.src=' https://i.imgur.com/VUhtTKV.png'">
@@ -64,6 +64,7 @@
             <button class="btn btn-outline-success accept-friend-btn" data-friend-id="{{this._id}}" data-friend-name="{{this.name}}" data-user-id="{{loginUser._id}}" data-user-name="{{loginUser.name}}">
                 Accept
             </button>
+
             <form action="/friends/{{this._id}}/reject?_method=PUT" method="POST">
               <button class="btn btn-outline-warning reject-friend-btn">
                 Reject

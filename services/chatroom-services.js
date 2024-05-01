@@ -20,6 +20,10 @@ const populatePrivateOptions = (currentId) => ({
 })
 
 const chatroomService = {
+  checkChatroomExistsById: async (chatroomId) => {
+    const chatroomExist = await Chatroom.exists({ _id: chatroomId })
+    return chatroomExist
+  },
   findOrCreatePrivateChatroom: async (currentId, receivedId) => {
     // 查看聊天記錄
     const foundChatroom = await Chatroom.findOne({

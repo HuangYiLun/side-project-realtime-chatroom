@@ -9,22 +9,22 @@ const messageServices = {
       attachmentUrl = await imgurFileHelper(attachment)
     }
 
-    const msg = await Message.create({
+    const createdMessage = await Message.create({
       senderId,
       chatroomId,
       message,
       attachment: attachmentUrl,
-    }).then((doc) => ({
-      message: doc.message,
-      attachment: doc.attachment,
-      time: doc.createdAt,
-    }))
+    })
 
-    return msg
+    return {
+      message: createdMessage.message,
+      attachment: createdMessage.attachment,
+      time: createdMessage.createdAt,
+    }
   },
   getMessages: async (chatroomId) => {
     const foundMessages = await Message.find({
-      chatroomId
+      chatroomId,
     })
       .populate({
         path: "senderId",

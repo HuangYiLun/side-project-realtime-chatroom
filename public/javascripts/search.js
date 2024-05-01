@@ -1,7 +1,7 @@
 import { showModal } from "./showModal.js"
 import { postNotification } from "./api/notification.js"
 import { sendNotification } from "./socketManger.js"
-import { putAddFriendRequest } from "./api/friend.js"
+import { putAddFriendRequest } from "./api/friends.js"
 
 const searchForm = document.querySelector(".form-search")
 const searchInput = document.querySelector(".input-search")

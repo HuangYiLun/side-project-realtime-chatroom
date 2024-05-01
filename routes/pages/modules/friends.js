@@ -1,17 +1,11 @@
 const express = require('express')
 const router = express.Router()
-const userController = require('../../controllers/user-controller')
-const { authenticated } = require('../../middleware/auth')
+const userController = require('../../../controllers/user-controller')
+const { authenticated } = require('../../../middleware/auth')
 
 router.use('/', authenticated)
 
 router.get('/', userController.getFriendPage)
-
-// 發送朋友邀請
-router.put('/:userId/send', userController.sendRequest)
-
-// 接受朋友邀請
-router.put('/:userId/accept', userController.acceptRequest)
 
 // 取消朋友邀請
 router.put('/:userId/cancel', userController.cancelRequest)

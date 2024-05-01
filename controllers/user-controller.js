@@ -212,9 +212,10 @@ const userController = {
     let isReceivedInvitation = false
 
     //解構賦值取出user屬性
-    const mapUser = ({ _id, name, avatar, introduction }) => ({
+    const mapUser = ({ _id, name, email, avatar, introduction }) => ({
       _id: _id.toString(),
       name,
+      email,
       avatar,
       introduction,
     })
@@ -236,31 +237,6 @@ const userController = {
       isSendInvitation,
       isReceivedInvitation,
     })
-  },
-  sendRequest: async (req, res) => {
-    const friendId = req.params.userId
-    const userId = helpers.getUser(req)._id.toString()
-
-    try {
-      //確認邀請對象不是自己
-      if (friendId === userId) {
-        throw new CustomError(400, "不能傳送交友邀請給自己")
-      }
-
-      const result = await userService.sendFriendRequest(friendId, userId)
-
-      if (!result) {
-        throw new CustomError(500, "fail to send friend request!")
-      }
-
-      return res.json({
-        status: "success",
-        message: "friend request sent successfully.",
-      })
-    } catch (err) {
-      console.error("sendRequest:", err)
-      sendErrorResponse(res, err.status, err.message)
-    }
   },
   cancelRequest: async (req, res) => {
     const friendId = req.params.userId
@@ -298,61 +274,6 @@ const userController = {
       } catch (sessionErr) {
         console.error("Error ending session:", sessionErr)
         return next(sessionErr)
-      }
-    }
-  },
-  acceptRequest: async (req, res) => {
-    const friendId = req.params.userId
-    const userId = helpers.getUser(req)._id.toString()
-    //開啟新的session
-    const session = await mongoose.startSession()
-    try {
-      //使用session執行all or noting
-      await session.withTransaction(async () => {
-        // 定義session中的操作
-        const operations = [
-          // 本人同意收到的朋友請求，更新friends跟getFriendsRequest
-          {
-            updateOne: {
-              filter: { _id: userId },
-              update: {
-                $pull: { getFriendsRequest: friendId },
-                $addToSet: { friends: friendId },
-              },
-            },
-          },
-          // 對方的發出的朋友請求被接受，更新friends跟sentFriendsRequest
-          {
-            updateOne: {
-              filter: { _id: friendId },
-              update: {
-                $pull: { sentFriendsRequest: userId },
-                $addToSet: { friends: userId },
-              },
-            },
-          },
-        ]
-        // 使用 bulkWrite 執行操作
-        await User.bulkWrite(operations, { session })
-        // res.redirect(`${FRIENDS_URL}?type=${RECEIVED_FRIENDS_TYPE}`)
-        res.json({
-          status: "success",
-          message: "accept friend successfully.",
-        })
-      })
-    } catch (err) {
-      return res
-        .status(500)
-        .json({ status: "error", message: "accept friend error" })
-    } finally {
-      try {
-        // 關閉mongoose session
-        await session.endSession()
-      } catch (sessionErr) {
-        console.error("Error ending session:", sessionErr)
-        return res
-          .status(500)
-          .json({ status: "error", message: "資料庫錯誤，請稍後再試" })
       }
     }
   },

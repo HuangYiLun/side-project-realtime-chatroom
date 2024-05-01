@@ -1,30 +1,21 @@
-const BASE_URL = "http://localhost:3100"
+import { BASE_URL, API_POST_MESSAGE_URL } from "../config.js"
 
 export const postMessage = async (chatroomId, message, attachment) => {
-  const URL = `${BASE_URL}/messages/`
+  const URL = `${BASE_URL}/${API_POST_MESSAGE_URL}`
 
   const formData = new FormData()
   formData.append("chatroomId", chatroomId)
   formData.append("message", message)
   formData.append("attachment", attachment)
 
-  const config = {
-    method: "post",
-    url: URL,
-    data: formData,
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+  try {
+    const response = await axios.post(URL, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    console.log("message.js data", response.data)
+    return response.data
+  } catch (err) {
+    console.error("postMssage Error", err)
+    throw err
   }
-
-  const response = await axios(config)
-    .then((data) => {
-      console.log("message.js data", data.data.data)
-      return data.data.data
-    })
-    .catch((err) => {
-      console.log("err", err)
-      return err
-    })
-  return response
 }

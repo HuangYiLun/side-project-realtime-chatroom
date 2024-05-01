@@ -42,7 +42,7 @@ async function loadNotifications(notificationList) {
   } catch (err) {
     console.error("Failed to load notifications:", err)
     notificationList.innerHTML = ""
-    notificationList.innerHTML = `<li class="notification d-flex align-items-center justify-content-center px-2 gap-2"><p style="color:red">資料庫錯誤，請稍後再試<<p></li>`
+    notificationList.innerHTML = `<li class="notification d-flex align-items-center justify-content-center px-2 gap-2"><p style="color:red">資料庫錯誤，請稍後再試<p></li>`
   }
 }
 

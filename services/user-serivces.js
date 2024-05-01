@@ -4,7 +4,9 @@ const { CustomError } = require("../helpers/error-response-helper")
 
 const userService = {
   getUserById: async (userId) => {
-    const user = await User.findById(userId)
+    const user = await User.findById(userId).select(
+      "email name avatar introduction"
+    )
     return user
   },
   searchUsers: async (keyword, loginUser) => {
@@ -42,6 +44,13 @@ const userService = {
       return userObject
     })
   },
+  checkBothUsersExist: async (friendId, userId) => {
+    // 確認雙方存在
+    const usersCount = await User.countDocuments({
+      _id: { $in: [userId, friendId] },
+    })
+    return usersCount === 2
+  },
   sendFriendRequest: async (friendId, userId) => {
     //開啟新的session
     const session = await mongoose.startSession()
@@ -51,13 +60,6 @@ const userService = {
     try {
       //使用session執行all or noting
       await session.withTransaction(async () => {
-        // 確認用户存在
-        const usersCount = await User.countDocuments({
-          _id: { $in: [userId, friendId] },
-        }).session(session)
-        if (usersCount !== 2) {
-          throw new CustomError(400, "One or both users not found.")
-        }
 
         // 定義session中的操作
         const operations = [
@@ -71,6 +73,60 @@ const userService = {
             updateOne: {
               filter: { _id: friendId },
               update: { $push: { getFriendsRequest: userId } },
+            },
+          },
+        ]
+
+        // 使用 bulkWrite 執行操作
+        bulkWriteResult = await User.bulkWrite(operations, {
+          session,
+        })
+
+        // 檢查是否所有操作都成功
+        if (bulkWriteResult.modifiedCount !== 2) {
+          throw new CustomError(500, "One or more operations failed.")
+        }
+      })
+
+      // 如果所有操作成功，返回成功訊息
+      return bulkWriteResult
+    } catch (err) {
+      throw err
+    } finally {
+      // 關閉mongoose session
+      session.endSession()
+    }
+  },
+  acceptFriendRequest: async (friendId, userId) => {
+    //開啟新的session
+    const session = await mongoose.startSession()
+
+    let bulkWriteResult
+
+    try {
+      //使用session執行all or noting
+      await session.withTransaction(async () => {
+
+        // 定義session中的操作
+        const operations = [
+          // 本人同意收到的朋友請求，更新friends跟getFriendsRequest
+          {
+            updateOne: {
+              filter: { _id: userId },
+              update: {
+                $pull: { getFriendsRequest: friendId },
+                $addToSet: { friends: friendId },
+              },
+            },
+          },
+          // 對方的發出的朋友請求被接受，更新friends跟sentFriendsRequest
+          {
+            updateOne: {
+              filter: { _id: friendId },
+              update: {
+                $pull: { sentFriendsRequest: userId },
+                $addToSet: { friends: userId },
+              },
             },
           },
         ]
