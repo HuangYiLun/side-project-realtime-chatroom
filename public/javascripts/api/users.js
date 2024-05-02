@@ -1,6 +1,8 @@
-export const getProfile = async (userId) => {
+
+
+export const getProfile = async () => {
   try {
-    const response = await axios.get(`/api/users/${userId}`)
+    const response = await axios.get(`/api/users/`)
     return response.data
   } catch (err) {
     throw err

@@ -1,7 +1,7 @@
 module.exports = {
   generalErrorHandler: (err, req, res, next) => {
     if (err instanceof Error) {
-      req.flash('danger_msg', `${err.name}: ${err.message}`)
+      req.flash('danger_msg', `${err.message}`)
     }else {
       req.flash('danger_msg', `${err}`)
     }

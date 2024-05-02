@@ -7,7 +7,7 @@ const { authenticated } = require("../../../middleware/auth")
 
 router.use(authenticated)
 
-router.get("/:userId", userController.getUserAccount)
+router.get("/", userController.getUserAccount)
 
 
 module.exports = router

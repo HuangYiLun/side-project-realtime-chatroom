@@ -1,85 +1,58 @@
-const User = require("../models/user")
-const bcrypt = require("bcryptjs")
-const helpers = require("../helpers/auth-helper")
+const { CustomError } = require("../helpers/error-response-helper")
 const { imgurFileHelper } = require("../helpers/file-helper")
-const {
-  sendErrorResponse,
-  CustomError,
-} = require("../helpers/error-response-helper")
 const userService = require("../services/user-serivces")
-const mongoose = require("mongoose")
-
-const FRIENDS_URL = "/friends"
-const SENT_FRIENDS_TYPE = "sent"
-const RECEIVED_FRIENDS_TYPE = "received"
+const { getUser } = require("../helpers/auth-helper")
+const bcrypt = require("bcryptjs")
 
 const userController = {
   getSignIn: (req, res) => {
-    return res.render("signin")
+    res.render("signin")
   },
   signIn: (req, res) => {
     req.flash("success_msg", "成功登入")
     res.redirect("/friends")
   },
   getSignUp: (req, res) => {
-    return res.render("signup")
+    res.render("signup")
   },
   signUp: async (req, res, next) => {
     const { name, email, password, confirmPassword } = req.body
-    if (!name.trim() || !email.trim() || !password.trim()) {
-      return res.render("signup", {
+
+    // 重新渲染時，顯示使用者已輸入的data
+    const renderSignup = (msg) =>
+      res.render("signup", {
         name,
         email,
         password,
         confirmPassword,
-        danger_msg: "欄位不得空白",
+        danger_msg: msg,
       })
+
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      return renderSignup("欄位不得空白")
     }
     if (password !== confirmPassword) {
-      return res.render("signup", {
-        name,
-        email,
-        password,
-        confirmPassword,
-        danger_msg: "密碼不一致",
-      })
+      return renderSignup("密碼不一致")
     }
 
     try {
-      const usedEmail = await User.findOne({ email })
+      const usedEmail = await userService.getUserByEmail(email)
       if (usedEmail) {
-        return res.render("signup", {
-          name,
-          email,
-          password,
-          confirmPassword,
-          danger_msg: "信箱已被使用",
-        })
-      }
-      const usedName = await User.findOne({ name })
-      if (usedName) {
-        return res.render("signup", {
-          name,
-          email,
-          password,
-          confirmPassword,
-          danger_msg: "名稱已被使用",
-        })
+        return renderSignup("信箱已被使用")
       }
 
       const hashPassword = await bcrypt.hash(password, 10)
-      await User.create({
-        name,
-        email,
-        password: hashPassword,
-      })
+      const newUser = await userService.createUser(name, email, hashPassword)
+
+      if (!newUser) throw new CustomError(500, "創建帳號失敗")
+
       req.flash("success_msg", "註冊成功，請重新登入")
       res.redirect("/signin")
     } catch (err) {
-      return next(err)
+      next(err)
     }
   },
-  signOut: (req, res) => {
+  signOut: (req, res, next) => {
     req.logout(function (err) {
       if (err) {
         return next(err)
@@ -88,47 +61,18 @@ const userController = {
       res.redirect("/signin")
     })
   },
-  getProfile: async (req, res, next) => {
-    const { userId } = req.params
-    const loginUser = helpers.getUser(req)
-    // 判斷是否本人
-    if (loginUser._id.toString() !== userId) return res.redirect("back")
+  getProfile: async (req, res) => {
+    const loginUser = getUser(req)
+    const { email, name, avatar, introduction } = loginUser
 
-    try {
-      const user = await User.findById(userId)
-      const {
-        _id,
-        email,
-        name,
-        password,
-        avatar,
-        introduction,
-        createdAt,
-        updatedAt,
-      } = user
-      // 是否查詢到user
-      if (!user) {
-        req.flash("danger_msg", "該使用者不存在")
-        return res.redirect("back")
-      }
-      // 查詢成功
-      return res.render("profile", {
-        userId: _id,
-        email,
-        name,
-        password,
-        avatar,
-        introduction,
-        createdAt,
-        updatedAt,
-      })
-    } catch (err) {
-      next(err)
-    }
+    return res.render("profile", {
+      email,
+      name,
+      avatar,
+      introduction,
+    })
   },
   putProfile: async (req, res, next) => {
-    // 取得form 資料
-    const { userId } = req.params
     const avatar = req.file
     let { name, email, password, confirmPassword, introduction } = req.body
 
@@ -138,64 +82,68 @@ const userController = {
     confirmPassword = confirmPassword.trim()
     introduction = introduction.trim()
 
-    // 取得目前登入使用者
-    const loginUser = helpers.getUser(req)
-    // 判斷是否本人
-    if (loginUser._id.toString() !== userId) throw new Error("不具修改權限")
+    const userId = getUser(req)._id
 
     try {
-      // 查詢對應user
-      const userMongoDB = await User.findById(userId)
-      //user不存在就拋錯
-      if (!userMongoDB) throw new Error("帳號不存在")
-      //轉換javascript objects,方便使用
-      const user = userMongoDB.toObject()
+      const mongoDBUser = await userService.getUserById(userId)
+      if (!mongoDBUser) throw new CustomError(404, "使用者不存在")
+
       // 查詢email是否重複
-      if (email && email !== user.email) {
-        const sameEmailCount = await User.countDocuments({
-          email,
-          _id: { $ne: userId },
-        })
-        if (sameEmailCount > 0) throw new Error("信箱已重複註冊")
+      if (email && email !== mongoDBUser.email) {
+        const isEmailUsed = await userService.isEmailUsedByOthers(userId, email)
+        if (isEmailUsed) throw new CustomError(400, "信箱被使用")
       }
+
       // 檢查資料是否正確
-      if (avatar?.size > 10485760) throw new Error("圖片大小超出10MB")
-      if (name?.length > 20) throw new Error("名稱字數超出上限")
-      if (introduction?.length > 160) throw new Error("自介字數超出上限")
-      if (password?.length > 12) throw new Error("密碼長度超出上限")
-      if (password !== confirmPassword) throw new Error("密碼不一致")
+      if (avatar?.size > 10485760)
+        throw new CustomError(400, "圖片大小超出10MB")
+
+      if (name?.length > 20) throw new CustomError(400, "名稱字數超出上限")
+
+      if (introduction?.length > 160)
+        throw new CustomError(400, "自介字數超出上限")
+
+      if (password?.length > 12) throw new CustomError(400, "密碼長度超出上限")
+
+      if (password !== confirmPassword) throw new CustomError(400, "密碼不一致")
+
       // update
-      userMongoDB.name = name || user.name
-      userMongoDB.email = email || user.email
-      userMongoDB.introduction = introduction || user.introduction
+      mongoDBUser.name = name || mongoDBUser.name
+      mongoDBUser.email = email || mongoDBUser.email
+      mongoDBUser.introduction = introduction || mongoDBUser.introduction
+
       //如果avatar存在，則上傳imgur
       if (avatar) {
-        userMongoDB.avatar = (await imgurFileHelper(avatar)) || user.avatar
+        mongoDBUser.avatar =
+          (await imgurFileHelper(avatar)) || mongoDBUser.avatar
       }
       if (password) {
-        userMongoDB.password =
-          (await bcrypt.hash(password, 10)) || user.password
+        mongoDBUser.password =
+          (await bcrypt.hash(password, 10)) || mongoDBUser.password
       }
-      await userMongoDB.save()
+
+      await mongoDBUser.save()
+
+      req.flash("success_msg", "編輯個人資料成功！")
       res.redirect("back")
     } catch (err) {
       next(err)
     }
   },
   search: async (req, res, next) => {
+    const partialName = "search"
     const keyword = req.query.keyword ? req.query.keyword.trim() : ""
-    const loginUser = helpers.getUser(req)
-
+    const loginUser = getUser(req)
     // 沒有搜尋關鍵字
-    if (!keyword) {
-      console.log("enter search query")
-      return res.render("search")
-    }
+    if (!keyword) return res.render("search", { partialName })
 
     try {
       const users = await userService.searchUsers(keyword, loginUser)
-      console.log("searchusers", users)
-      return res.render("search", { users, keyword })
+      return res.render("search", {
+        partialName,
+        users,
+        keyword,
+      })
     } catch (err) {
       console.error(err)
       next(err)
@@ -203,33 +151,31 @@ const userController = {
   },
   getFriendPage: (req, res) => {
     const partialName = "friends"
-    const loginUser = helpers.getUser(req)
     const type = req.query.type || ""
-    const { friends, sentFriendsRequest, getFriendsRequest } = loginUser
+    const loginUser = getUser(req)
+
+    // 預備回傳的users
     let users = []
+
+    // 回傳users跟使用者的關係
     let isFriends = false
     let isSendInvitation = false
     let isReceivedInvitation = false
 
-    //解構賦值取出user屬性
-    const mapUser = ({ _id, name, email, avatar, introduction }) => ({
-      _id: _id.toString(),
-      name,
-      email,
-      avatar,
-      introduction,
-    })
+    const { friends, sentFriendsRequest, getFriendsRequest } = loginUser
 
+    // 依照type決定回傳資料
     if (type === "sent") {
       isSendInvitation = true
-      users = sentFriendsRequest.map(mapUser)
+      users = sentFriendsRequest
     } else if (type === "received") {
       isReceivedInvitation = true
-      users = getFriendsRequest.map(mapUser)
+      users = getFriendsRequest
     } else {
       isFriends = true
-      users = friends.map(mapUser)
+      users = friends
     }
+
     return res.render("friends", {
       partialName,
       users,
@@ -238,132 +184,49 @@ const userController = {
       isReceivedInvitation,
     })
   },
-  cancelRequest: async (req, res) => {
+  cancelRequest: async (req, res, next) => {
     const friendId = req.params.userId
-    const userId = helpers.getUser(req)._id.toString()
-    //開啟新的session
-    const session = await mongoose.startSession()
+    const userId = getUser(req)._id
+
     try {
-      //使用session執行all or noting
-      await session.withTransaction(async () => {
-        // 定義session中的操作
-        const operations = [
-          {
-            updateOne: {
-              filter: { _id: userId },
-              update: { $pull: { sentFriendsRequest: friendId } },
-            },
-          },
-          {
-            updateOne: {
-              filter: { _id: friendId },
-              update: { $pull: { getFriendsRequest: userId } },
-            },
-          },
-        ]
-        // 使用 bulkWrite 執行操作
-        await User.bulkWrite(operations, { session })
-        res.redirect(`${FRIENDS_URL}?type=${SENT_FRIENDS_TYPE}`)
-      })
-    } catch (err) {
-      return next(err)
-    } finally {
-      try {
-        // 關閉session
-        await session.endSession()
-      } catch (sessionErr) {
-        console.error("Error ending session:", sessionErr)
-        return next(sessionErr)
+      const result = await userService.cancelFriendRequest(friendId, userId)
+
+      if (!result) {
+        throw new CustomError(500, "fail to cancel friend request!")
       }
+      res.redirect("back")
+    } catch (err) {
+      next(err)
     }
   },
-  rejectRequest: async (req, res) => {
+  rejectRequest: async (req, res, next) => {
     const friendId = req.params.userId
-    const userId = helpers.getUser(req)._id.toString()
-    //開啟新的session
-    const session = await mongoose.startSession()
+    const userId = getUser(req)._id
+
     try {
-      //使用session執行all or noting
-      await session.withTransaction(async () => {
-        // 定義session中的操作
-        const operations = [
-          // 本人拒絕收到的朋友請求，更新本人的getFriendsRequest array
-          {
-            updateOne: {
-              filter: { _id: userId },
-              update: {
-                $pull: { getFriendsRequest: friendId },
-              },
-            },
-          },
-          // 對方的發出的朋友請求被拒絕，更新對方的sentFriendsRequest array
-          {
-            updateOne: {
-              filter: { _id: friendId },
-              update: {
-                $pull: { sentFriendsRequest: userId },
-              },
-            },
-          },
-        ]
-        // 使用 bulkWrite 執行操作
-        await User.bulkWrite(operations, { session })
-        res.redirect(`${FRIENDS_URL}?type=${RECEIVED_FRIENDS_TYPE}`)
-      })
-    } catch (err) {
-      return next(err)
-    } finally {
-      try {
-        // 關閉mongoose session
-        await session.endSession()
-      } catch (sessionErr) {
-        console.error("Error ending session:", sessionErr)
-        return next(sessionErr)
+      const result = await userService.rejectFriendRequest(friendId, userId)
+
+      if (!result) {
+        throw new CustomError(500, "fail to reject friend request!")
       }
+      res.redirect("back")
+    } catch (err) {
+      next(err)
     }
   },
-  removeFriend: async (req, res) => {
+  removeFriend: async (req, res, next) => {
     const friendId = req.params.userId
-    const userId = helpers.getUser(req)._id.toString()
-    //開啟新的session
-    const session = await mongoose.startSession()
+    const userId = getUser(req)._id
+
     try {
-      //使用session執行all or noting
-      await session.withTransaction(async () => {
-        // 定義session中的操作
-        const operations = [
-          {
-            updateOne: {
-              filter: { _id: userId },
-              update: {
-                $pull: { friends: friendId },
-              },
-            },
-          },
-          {
-            updateOne: {
-              filter: { _id: friendId },
-              update: {
-                $pull: { friends: userId },
-              },
-            },
-          },
-        ]
-        // 使用 bulkWrite 執行操作
-        await User.bulkWrite(operations, { session })
-        res.redirect(`${FRIENDS_URL}`)
-      })
-    } catch (err) {
-      console.error(err)
-      return next(err)
-    } finally {
-      try {
-        // 關閉mongoose session
-        await session.endSession()
-      } catch (sessionErr) {
-        console.error("Error ending session:", sessionErr)
-        return next(sessionErr)
+      const result = await userService.removeFriendRequest(friendId, userId)
+
+      if (!result) {
+        throw new CustomError(500, "fail to remove friend!")
       }
+      res.redirect("back")
+    } catch (err) {
+      next(err)
     }
   },
 }

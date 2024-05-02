@@ -54,7 +54,6 @@ const notificationService = {
       { _id: { $in: notificationIds } },
       { isRead: true }
     )
-    console.log("notification services patchnotification", patchNotification)
     return patchNotification
   },
 }

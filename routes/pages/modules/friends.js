@@ -3,7 +3,7 @@ const router = express.Router()
 const userController = require('../../../controllers/user-controller')
 const { authenticated } = require('../../../middleware/auth')
 
-router.use('/', authenticated)
+router.use(authenticated)
 
 router.get('/', userController.getFriendPage)
 

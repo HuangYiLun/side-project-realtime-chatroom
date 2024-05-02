@@ -1,16 +1,24 @@
-const express = require('express')
+const express = require("express")
 const router = express.Router()
-const passport = require('../../../config/passport')
-const userController = require('../../../controllers/user-controller')
+const passport = require("../../../config/passport")
+const userController = require("../../../controllers/user-controller")
 
-// 登入登出
-router.get('/signin', userController.getSignIn)
-router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin' }), userController.signIn)
-router.post('/signout', userController.signOut)
+// 登入
+router
+  .route("/signin")
+  .get(userController.getSignIn)
+  .post(
+    passport.authenticate("local", { failureRedirect: "/signin" }),
+    userController.signIn
+  )
+
+// 登出
+router.post("/signout", userController.signOut)
 
 // 註冊
-router.get('/signup', userController.getSignUp)
-router.post('/signup', userController.signUp)
-
+router
+  .route("/signup")
+  .get(userController.getSignUp)
+  .post(userController.signUp)
 
 module.exports = router

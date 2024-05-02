@@ -11,7 +11,7 @@
       <form
         class="input-form needs-validation"
         id="form"
-        action="/users/{{userId}}?_method=PUT"
+        action="/users/profile?_method=PUT"
         method="POST"
         enctype="multipart/form-data"
         novalidate
@@ -35,8 +35,8 @@
         <div class="modal-body p-0">
           <div class="avatar-edit">
             <img
-              src=""
               class="avatar-img profile-user-img"
+              src="{{avatar}}"
               onerror="this.src='https://i.imgur.com/VUhtTKV.png'"
             />
             <div class="avatar">
@@ -66,7 +66,7 @@
                 name="name"
                 id="name"
                 value=""
-                placeholder=""
+                placeholder="{{name}}"
                 maxlength="20"
               />
               <div class="invalid-feedback">字數超過上限 !</div>
@@ -82,7 +82,7 @@
                 name="email"
                 id="email"
                 value=""
-                placeholder=""
+                placeholder="{{email}}"
               />
               <div class="invalid-feedback">請輸入信箱地址</div>
             </div>
@@ -123,7 +123,7 @@
                 name="introduction"
                 rows="3"
                 maxlength="161"
-              ></textarea>
+              >{{introduction}}</textarea>
               <div class="invalid-feedback">字數超過上限 !</div>
               <div class="input-minmax"></div>
             </div>

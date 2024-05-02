@@ -25,7 +25,7 @@ async function handleAcceptFriendRequest(listItem) {
   const friendId = listItem.dataset.id
   const success = await acceptFriendRequest(friendId)
   if (success) {
-    postNotificationAndSend(friendId)
+    await postNotificationAndSend(friendId)
     location.reload()
   }
 }
