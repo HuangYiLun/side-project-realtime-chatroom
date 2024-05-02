@@ -54,7 +54,7 @@
               </a>
             </button>
 
-            <form action="/friends/{{this._id}}/remove?_method=PUT" method="POST">
+            <form action="/friends/remove/{{this._id}}?_method=PUT" method="POST">
               <button class="btn btn-outline-warning remove-friend-btn">
                 Remove
               </button>
@@ -62,7 +62,7 @@
             {{/if}}
 
             {{#if ../isSendInvitation}}
-            <form action="/friends/{{this._id}}/cancel?_method=PUT" method="POST">
+            <form action="/friends/cancel/{{this._id}}?_method=PUT" method="POST">
               <button type="submit" class="btn btn-outline-warning cancel-friend-btn">
                 Cancel
               </button>
@@ -74,7 +74,7 @@
                 Accept
             </button>
 
-            <form action="/friends/{{this._id}}/reject?_method=PUT" method="POST">
+            <form action="/friends/reject/{{this._id}}?_method=PUT" method="POST">
               <button class="btn btn-outline-warning reject-friend-btn">
                 Reject
               </button>

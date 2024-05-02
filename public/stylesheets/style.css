@@ -100,6 +100,10 @@ header {
   cursor: pointer;
 }
 
+.none-pointer {
+  pointer-events: none;
+}
+
 /* -------------------- Navbar -------------------- */
 .navbar {
   height: 60px;
@@ -425,9 +429,9 @@ header {
   cursor: pointer;
 }
 
-.none-pointer-friend-btn {
+/* .none-pointer-friend-btn {
   pointer-events: none;
-}
+} */
 
 /* -------------------- friends -------------------- */
 .friends .nav-link:not(.active) {

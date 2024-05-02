@@ -20,19 +20,19 @@ export function showModal(
 
   if (hasSentRequest) {
     rawHTML = `
-    <button class="btn btn-outline-secondary none-pointer-friend-btn">
-      Add Friend
+    <button class="btn btn-outline-warning cancel-friend-btn" data-id=${id}>
+      <i class="fa-solid fa-heart-circle-plus"></i>Cancel Friend Request
     </button>`
   }
   if (isFriend) {
     rawHTML = `
-    <button class="btn btn-outline-success none-pointer-friend-btn">
+    <button class="btn btn-outline-success none-pointer">
       Friend
     </button>`
   }
   if (isLoginUser) {
     rawHTML = `
-    <button class="btn btn-outline-light none-pointer-friend-btn">
+    <button class="btn btn-outline-light none-pointer">
       Yourself
     </button>`
   }

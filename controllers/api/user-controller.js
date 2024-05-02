@@ -92,6 +92,26 @@ const userController = {
       sendErrorResponse(res, err.status, err.message)
     }
   },
+  cancelFriendRequest: async (req, res) => {
+    const friendId = req.params.userId
+    const userId = getUser(req)._id
+
+    try {
+      const result = await userService.cancelFriendRequest(friendId, userId)
+
+      if (!result) {
+        throw new CustomError(500, "fail to cancel friend request!")
+      }
+
+      return res.json({
+        status: "success",
+        message: "friend request cancel successfully.",
+      })
+    } catch (err) {
+      console.error("cancelFriendRequest:", err)
+      sendErrorResponse(res, err.status, err.message)
+    }
+  },
 }
 
 module.exports = userController

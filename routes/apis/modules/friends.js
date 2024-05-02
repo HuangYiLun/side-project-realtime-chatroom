@@ -8,8 +8,11 @@ const { authenticated } = require("../../../middleware/auth")
 router.use(authenticated)
 
 // 發送朋友邀請
-router.put("/:userId/send", userController.sendFriendRequest)
+router.put("/send/:userId", userController.sendFriendRequest)
 // 接受朋友邀請
-router.put("/:userId/accept", userController.acceptRequest)
+router.put("/accept/:userId", userController.acceptRequest)
+
+// 取消朋友邀請
+router.put("/cancel/:userId", userController.cancelFriendRequest)
 
 module.exports = router
