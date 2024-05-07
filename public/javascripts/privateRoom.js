@@ -1,5 +1,6 @@
 import { searchPrivateChats } from "./api/chats.js"
 import { appendPrivateChat } from "./chatUtils.js"
+import { handleError } from "./errorHandler.js"
 
 const privateChatroomsList = document.getElementById("private-chatrooms-list")
 
@@ -41,8 +42,8 @@ searchPrivateChatsInput.addEventListener("keyup", async function (e) {
       }
     } catch (err) {
       console.error(err)
+      handleError(err)
       privateChatroomsList.innerHTML = `<p style="color:red">資料庫錯誤，請稍後再試<<p>`
     }
   }
 })
-

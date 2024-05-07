@@ -57,8 +57,6 @@ app.use(methodOverride("_method"))
 app.use((req, res, next) => {
   res.locals.danger_msg = req.flash("danger_msg")
   res.locals.success_msg = req.flash("success_msg")
-  res.locals.warning_msg = req.flash("warning_msg")
-  res.locals.info_msg = req.flash("info_msg")
   res.locals.loginUser = helpers.getUser(req)
   next()
 })

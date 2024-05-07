@@ -1,10 +1,10 @@
+import { API_USERS_URL } from "../config.js"
 
-
-export const getProfile = async () => {
+export const getUser = async (userId) => {
   try {
-    const response = await axios.get(`/api/users/`)
+    const response = await axios.get(`${API_USERS_URL}${userId}`)
     return response.data
   } catch (err) {
-    throw err
+    throw err.response.data
   }
 }

@@ -1,7 +1,7 @@
-import { BASE_URL, API_POST_MESSAGE_URL } from "../config.js"
+import { BASE_URL, API_MESSAGES_URL } from "../config.js"
 
 export const postMessage = async (chatroomId, message, attachment) => {
-  const URL = `${BASE_URL}/${API_POST_MESSAGE_URL}`
+  const URL = `${BASE_URL}${API_MESSAGES_URL}`
 
   const formData = new FormData()
   formData.append("chatroomId", chatroomId)
@@ -12,10 +12,9 @@ export const postMessage = async (chatroomId, message, attachment) => {
     const response = await axios.post(URL, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     })
-    console.log("message.js data", response.data)
     return response.data
   } catch (err) {
-    console.error("postMssage Error", err)
-    throw err
+    console.error("postMssage Error", err.response.data)
+    throw err.response.data
   }
 }

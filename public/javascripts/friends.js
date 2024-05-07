@@ -1,7 +1,8 @@
-import { postNotification } from "./api/notification.js"
-import { sendNotification } from "./socketManger.js"
 import { showModal } from "./showModal.js"
-import {putAcceptFriendRequest} from "./api/friends.js"
+import { putAcceptFriendRequest } from "./api/friends.js"
+import { postNotificationAndSend } from "./friendUtils.js"
+import { handleError } from "./errorHandler.js"
+
 const tabContent = document.querySelector(".content")
 
 tabContent.addEventListener("click", handleTabContentClick)
@@ -17,34 +18,25 @@ function handleTabContentClick(e) {
 
   if (target.matches(".accept-friend-btn")) {
     const listItem = target.closest(".list-item")
-    handleAcceptFriendRequest(listItem)
+    const friendId = listItem.dataset.id
+    handleAcceptFriendRequest(friendId)
   }
 }
 
-async function handleAcceptFriendRequest(listItem) {
-  const friendId = listItem.dataset.id
-  const success = await acceptFriendRequest(friendId)
-  if (success) {
-    await postNotificationAndSend(friendId)
-    location.reload()
-  }
-}
+async function handleAcceptFriendRequest(friendId) {
+  try {
+    const response = await putAcceptFriendRequest(friendId)
 
-async function postNotificationAndSend(friendId) {
-  const notificationType = "friendAccepted"
-  const redirectUrl = "/friends"
-  const postedNotificationResponse = await postNotification(
-    friendId,
-    notificationType,
-    redirectUrl
-  )
-  if (postedNotificationResponse.status === "success") {
-    sendNotification({ userId: friendId })
-  }
-}
+    if (response.status === "success") {
+      const notificationType = "friendAccepted"
+      const redirectUrl = "/friends"
 
-async function acceptFriendRequest(friendId) {
-  const putAcceptFriendResponse = await putAcceptFriendRequest(friendId)
-  return putAcceptFriendResponse.status === "success"
+      await postNotificationAndSend(friendId, notificationType, redirectUrl)
+
+      location.reload()
+    }
+  } catch (err) {
+    handleError(err)
+  }
 }
 

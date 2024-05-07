@@ -24,19 +24,15 @@
       </div>
       <span class="message-text">{{success_msg}}</span>
   </div>
-
 {{/if}}
 
  <script>
 $(document).ready(function() {
  // 檢查是否有錯誤訊息
  if ($('.flash-message').length) {
-  console.log('message-text', $('.message-text').value)
-  console.log('exe flash-message')
     // 在 3 秒後自動消失
     setTimeout(function() {
       $('.flash-message').fadeOut('slow', function() {
-        console.log('exe remove')
         $(this).remove();
       });
     }, 1500);

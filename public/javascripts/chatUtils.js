@@ -85,7 +85,7 @@ export function appendChatMessage(
     li.appendChild(div)
   }
   list.appendChild(li)
-  
+
   // 滑到對話底部
   list.scrollTop = list.scrollHeight
 }
@@ -94,9 +94,7 @@ export function appendChatMessage(
 export function previewImg(e, imgBox, attachmentImg) {
   const file = e.target.files[0]
 
-  if (!file) {
-    return
-  }
+  if (!file) return
 
   if (!file.type.startsWith("image/")) {
     alert("請選擇圖片檔案")
@@ -118,7 +116,7 @@ export function previewImg(e, imgBox, attachmentImg) {
 
   // show圖片容器
   const imgBoxClassList = imgBox.classList
-  console.log("contains d-none", imgBoxClassList.contains("d-none"))
+
   if (imgBoxClassList.contains("d-none")) {
     imgBoxClassList.replace("d-none", "d-flex")
   }
@@ -130,7 +128,7 @@ export function hidePreviewImg(imgBox, attachmentInput) {
 
   if (imgBoxClassList.contains("d-flex")) {
     imgBoxClassList.replace("d-flex", "d-none")
-    attachmentInput.value = ""
+    attachmentInput.src = ""
   }
 }
 
@@ -144,11 +142,8 @@ export function updateOnlineUserList(list, users) {
 function appendUser(list, user) {
   const li = document.createElement("li")
   li.className = "list-item d-flex align-items-center border-bottom pb-2 pt-2"
-  li.dataset.id = user._id
-  li.dataset.name = user.name
-  li.dataset.email = user.email
-  li.dataset.avatar = user.avatar
-  li.dataset.introduction = user.introduction
+  li.id = user.id
+  li.dataset.id = user.id
 
   const img = document.createElement("img")
   img.className = "user-avatar-img h-40px w-40px rounded-circle pointer"

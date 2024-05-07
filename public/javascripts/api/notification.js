@@ -1,12 +1,11 @@
-const BASE_URL = "http://localhost:3100"
-const API_NOTIFICATION_URL = "/api/notifications/"
+import { BASE_URL, API_NOTIFICATIONS_URL } from "../config.js"
 
 export const postNotification = async (
   toUserId,
   type = "friendRequest",
   redirectUrl
 ) => {
-  const URL = `${BASE_URL}${API_NOTIFICATION_URL}`
+  const URL = `${BASE_URL}${API_NOTIFICATIONS_URL}`
 
   const config = {
     method: "post",
@@ -21,32 +20,32 @@ export const postNotification = async (
     const response = await axios(config)
     return response.data
   } catch (err) {
-    throw err
+    throw err.response.data
   }
 }
 
 export const getNotifications = async () => {
   try {
-    const response = await axios.get(API_NOTIFICATION_URL)
+    const response = await axios.get(API_NOTIFICATIONS_URL)
     return response.data
   } catch (err) {
-    throw err
+    throw err.response.data
   }
 }
 
 export const deleteNotification = async (notificationId) => {
   try {
     const response = await axios.delete(
-      `${API_NOTIFICATION_URL}${notificationId}`
+      `${API_NOTIFICATIONS_URL}${notificationId}`
     )
     return response.data
   } catch (err) {
-    throw err
+    throw err.response.data
   }
 }
 
 export const patchNotifications = async (unReadNotificationIds) => {
-  const URL = `${BASE_URL}${API_NOTIFICATION_URL}`
+  const URL = `${BASE_URL}${API_NOTIFICATIONS_URL}`
 
   const config = {
     method: "patch",
@@ -61,6 +60,6 @@ export const patchNotifications = async (unReadNotificationIds) => {
     const response = await axios(config)
     return response.data
   } catch (err) {
-    throw err
+    throw err.response.data
   }
 }

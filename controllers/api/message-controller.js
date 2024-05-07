@@ -30,7 +30,7 @@ const messageController = {
 
       res.status(200).json({ status: "success", data: msg })
     } catch (err) {
-      console.error("API message-controller postMessage:", err)
+      console.error("API_MESSAGE_CONTROLLER postMessage:", err)
       sendErrorResponse(res, err.status, err.message)
     }
   },

@@ -11,19 +11,39 @@ const userController = {
   getUserAccount: async (req, res) => {
     const { userId } = req.params
     const loginUser = getUser(req)
+    const { sentFriendsRequest, friends } = loginUser
 
     try {
       const user = await userService.getUserById(userId)
 
-      if (!user) {
-        throw new CustomError(404, "帳號不存在")
+      if (!user) throw new CustomError(404, "該用戶不存在")
+      const userObject = user.toObject()
+      userObject._id = userObject._id.toString()
+
+      delete userObject.password
+      delete userObject.friends
+      delete userObject.sentFriendsRequest
+      delete userObject.getFriendsRequest
+      delete userObject.isAdmin
+      delete userObject.createdAt
+      delete userObject.updatedAt
+      delete userObject.__v
+
+      userObject.status = {
+        hasSentRequest: sentFriendsRequest.some(
+          (invitation) => invitation._id === userObject._id
+        ),
+        isFriend: friends.some((friend) => friend._id === userObject._id),
+        isLoginUser: loginUser._id === userObject._id,
       }
 
-      if (loginUser._id !== userId) {
-        throw new CustomError(403, "非本人不能操做")
-      }
-
-      return res.json({ status: "success", data: user })
+      // 如果status都不是已發送邀請/已經是朋友/是本人，則設定isDefault
+      userObject.status.isDefault = !(
+        userObject.status.hasSentRequest ||
+        userObject.status.isFriend ||
+        userObject.status.isLoginUser
+      )
+      return res.json({ status: "success", data: userObject })
     } catch (err) {
       console.error("API user-controller getUserAccount:", err)
       sendErrorResponse(res, err.status, err.message)

@@ -1,25 +1,29 @@
 import { showModal } from "./showModal.js"
-import { postNotification } from "./api/notification.js"
-import { sendNotification } from "./socketManger.js"
+import {
+  postNotificationAndSend,
+  updateModalAddFriendButton,
+  updateModalCancelFriendButton,
+} from "./friendUtils.js"
 import { putAddFriendRequest, putCancelFriendRequest } from "./api/friends.js"
+import { handleError } from "./errorHandler.js"
 
 const searchForm = document.querySelector(".form-search")
 const searchInput = document.querySelector(".input-search")
 const searchList = document.querySelector(".search-list")
 const modalFriendBtn = document.querySelector(".modal-friend-btn")
 
-searchForm.addEventListener("submit", onSearchFormSubmited)
-searchList.addEventListener("click", onSearchListClicked)
-modalFriendBtn.addEventListener("click", onModalButtonClicked)
+searchForm.addEventListener("submit", handleSearchFormSubmited)
+searchList.addEventListener("click", handleSearchListClicked)
+modalFriendBtn.addEventListener("click", handleModalButtonClicked)
 
-function onSearchFormSubmited(e) {
+function handleSearchFormSubmited(e) {
   const inputValue = searchInput.value.trim()
   if (!inputValue) {
     e.preventDefault()
   }
 }
 
-async function onSearchListClicked(e) {
+async function handleSearchListClicked(e) {
   const target = e.target
   // 點擊list item avatar or name 顯示modal
   if (target.matches(".search-user-avatar-img, .user-name-h4")) {
@@ -48,56 +52,38 @@ async function onSearchListClicked(e) {
     )
   }
 
-  // 點擊加入朋友按鈕
-  if (target.matches(".add-friend-btn")) {
+  // 點擊加入朋友/取消邀請按鈕
+  if (target.matches(".add-friend-btn, .cancel-friend-btn")) {
     const listItem = target.closest(".search-list-item")
-    handleAddFriendRequest(listItem)
-  }
+    if (!listItem) return
 
-  // 點擊取消朋友邀請按鈕
-  if (target.matches(".cancel-friend-btn")) {
-    const listItem = target.closest(".search-list-item")
-    handleCancelFriendRequest(listItem)
-  }
-}
+    const friendId = listItem.dataset.id
 
-async function handleAddFriendRequest(listItem) {
-  const friendId = listItem.dataset.id
-  const success = await sendFriendRequest(friendId)
-  if (success) {
-    postNotificationAndSend(friendId)
-    updateCancelFriendButton(listItem, friendId)
+    const action = target.matches(".add-friend-btn") ? "add" : "cancel"
+
+    await handleFriendRequest(friendId, action, listItem)
   }
 }
 
-async function handleCancelFriendRequest(listItem) {
-  const friendId = listItem.dataset.id
-  const success = await cancelFriendRequest(friendId)
-  if (success) {
-    updateAddFriendButton(listItem, friendId)
-  }
-}
+async function handleFriendRequest(friendId, action, listItem) {
+  try {
+    const response =
+      action === "add"
+        ? await putAddFriendRequest(friendId)
+        : await putCancelFriendRequest(friendId)
 
-async function sendFriendRequest(friendId) {
-  const putAddFriendResponse = await putAddFriendRequest(friendId)
-  return putAddFriendResponse.status === "success"
-}
-
-async function cancelFriendRequest(friendId) {
-  const putCancelFriendResponse = await putCancelFriendRequest(friendId)
-  return putCancelFriendResponse.status === "success"
-}
-
-async function postNotificationAndSend(friendId) {
-  const notificationType = "friendRequest"
-  const redirectUrl = "/friends?type=received"
-  const postedNotificationResponse = await postNotification(
-    friendId,
-    notificationType,
-    redirectUrl
-  )
-  if (postedNotificationResponse.status === "success") {
-    sendNotification({ userId: friendId })
+    if (response.status === "success") {
+      if (action === "add") {
+        const notificationType = "friendRequest"
+        const redirectUrl = "/friends?type=received"
+        postNotificationAndSend(friendId, notificationType, redirectUrl)
+        updateCancelFriendButton(listItem, friendId)
+      } else {
+        updateAddFriendButton(listItem, friendId)
+      }
+    }
+  } catch (err) {
+    handleError(err)
   }
 }
 
@@ -123,48 +109,43 @@ function updateAddFriendButton(listItem, friendId) {
   `
 }
 
-async function onModalButtonClicked(e) {
+async function handleModalButtonClicked(e) {
   const target = e.target
-  if (target.matches(".add-friend-btn")) {
+
+  if (target.matches(".add-friend-btn, .cancel-friend-btn")) {
     const listId = target.dataset.id
     const listItem = document.getElementById(listId)
-    if (listItem) {
-      const friendId = listItem.dataset.id
-      const success = await sendFriendRequest(friendId)
-      if (success) {
-        postNotificationAndSend(friendId)
+
+    if (!listItem) return
+
+    const friendId = listItem.dataset.id
+
+    const action = target.matches(".add-friend-btn") ? "add" : "cancel"
+
+    await handleModalFriendRequest(friendId, action, target, listItem)
+  }
+}
+
+async function handleModalFriendRequest(friendId, action, target, listItem) {
+  try {
+    const response =
+      action === "add"
+        ? await putAddFriendRequest(friendId)
+        : await putCancelFriendRequest(friendId)
+
+    if (response.status === "success") {
+      if (action === "add") {
+        const notificationType = "friendRequest"
+        const redirectUrl = "/friends?type=received"
+        postNotificationAndSend(friendId, notificationType, redirectUrl)
         updateCancelFriendButton(listItem, friendId)
         updateModalCancelFriendButton(target, friendId)
-      }
-    }
-  }
-
-  if (target.matches(".cancel-friend-btn")) {
-    const listId = target.dataset.id
-    const listItem = document.getElementById(listId)
-    if (listItem) {
-      const friendId = listItem.dataset.id
-      const success = await cancelFriendRequest(friendId)
-      if (success) {
+      } else {
         updateAddFriendButton(listItem, friendId)
         updateModalAddFriendButton(target, friendId)
       }
     }
+  } catch (err) {
+    handleError(err)
   }
-}
-
-function updateModalCancelFriendButton(target, friendId) {
-  const modalfriendButton = target.closest(".modal-friend-btn")
-  modalfriendButton.innerHTML = `
-    <button class="btn btn-outline-warning cancel-friend-btn" data-id=${friendId}>
-      <i class="fa-solid fa-heart-circle-plus"></i>Cancel Friend Request
-    </button> `
-}
-
-function updateModalAddFriendButton(target, friendId) {
-  const modalfriendButton = target.closest(".modal-friend-btn")
-  modalfriendButton.innerHTML = `
-    <button class="btn btn-outline-info add-friend-btn" data-id=${friendId}>
-      <i class="fa-solid fa-heart-circle-plus"></i>Add Friend
-    </button> `
 }
