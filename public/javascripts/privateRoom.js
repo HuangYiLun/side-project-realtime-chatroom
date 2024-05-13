@@ -1,6 +1,6 @@
 import { searchPrivateChats } from "./api/chats.js"
 import { appendPrivateChat } from "./chatUtils.js"
-import { handleError } from "./errorHandler.js"
+import { handleError } from "./apiResponseHandler.js"
 
 const privateChatroomsList = document.getElementById("private-chatrooms-list")
 

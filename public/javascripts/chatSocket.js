@@ -14,18 +14,20 @@ import {
   updateModalCancelFriendButton,
   postNotificationAndSend,
 } from "./friendUtils.js"
-import { handleError } from "./errorHandler.js"
+import { showLoadingSpinner, hideLoadingSpinner } from "./loader.js"
+import { handleError } from "./apiResponseHandler.js"
 
+const onlineUsersList = document.getElementById("online-users-list")
 const attachmentImg = document.getElementById("attachment-image")
-const hideImgIcon = document.querySelector(".hide-image-icon")
-const onlineNumber = document.getElementById("online-number")
 const attachmentInput = document.getElementById("attachment")
+const onlineNumber = document.getElementById("online-number")
 const msgInput = document.getElementById("message-input")
 const msgList = document.getElementById("message-list")
-const onlineUsersList = document.getElementById("online-users-list")
 const chatForm = document.getElementById("chat-form")
-const imgBox = document.querySelector(".image-box")
+
 const modalFriendBtn = document.querySelector(".modal-friend-btn")
+const hideImgIcon = document.querySelector(".hide-image-icon")
+const imgBox = document.querySelector(".image-box")
 
 const roomId = chatForm ? chatForm.dataset.roomid : ""
 
@@ -99,7 +101,7 @@ async function handleChatFormSumbit(e) {
 
   // 沒有文字也沒有圖片
   if (!msg && !file) return
-
+  showLoadingSpinner()
   try {
     const response = await postMessage(roomId, msg, file)
     const { message, attachment, time } = response.data
@@ -107,11 +109,13 @@ async function handleChatFormSumbit(e) {
     sendMessage(message, attachment, time)
     // 清空input
     msgInput.value = ""
+    attachmentInput.value = ""
     // 隱藏預覽圖片
     hidePreviewImg(imgBox, attachmentInput)
   } catch (err) {
     handleError(err)
   }
+  hideLoadingSpinner()
 }
 
 // 顯示預覽圖片
@@ -123,9 +127,10 @@ if (attachmentInput) {
 
 // 隱藏預覽圖片
 if (hideImgIcon) {
-  hideImgIcon.addEventListener("click", () =>
+  hideImgIcon.addEventListener("click", () => {
+    attachmentInput.value = ""
     hidePreviewImg(imgBox, attachmentInput)
-  )
+  })
 }
 
 if (modalFriendBtn) {

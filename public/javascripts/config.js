@@ -5,6 +5,7 @@ export const GET_PROFILE_URL = "users/profile/"
 export const API_MESSAGES_URL = "/api/messages/"
 
 export const API_USERS_URL = "/api/users/"
+export const API_USERS_PROFILE_URL = "/api/users/profile/"
 
 export const API_NOTIFICATIONS_URL = "/api/notifications/"
 

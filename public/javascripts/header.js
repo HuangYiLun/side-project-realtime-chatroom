@@ -3,7 +3,7 @@ import {
   getNotifications,
   patchNotifications,
 } from "./api/notification.js"
-import { handleError } from "./errorHandler.js"
+import { handleError } from "./apiResponseHandler.js"
 import { socket } from "./socketManger.js"
 
 const notificationList = document.querySelector(".notification-list")

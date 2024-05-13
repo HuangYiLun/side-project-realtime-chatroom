@@ -1,7 +1,7 @@
 import { showModal } from "./showModal.js"
 import { putAcceptFriendRequest } from "./api/friends.js"
 import { postNotificationAndSend } from "./friendUtils.js"
-import { handleError } from "./errorHandler.js"
+import { handleError } from "./apiResponseHandler.js"
 
 const tabContent = document.querySelector(".content")
 

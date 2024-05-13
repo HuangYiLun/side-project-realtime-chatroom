@@ -291,6 +291,7 @@ header {
 }
 
 .profile-img-block {
+  position: relative;
   text-align: center;
 }
 
@@ -299,6 +300,40 @@ header {
   height: 200px;
   object-fit: cover;
   border-radius: 50%;
+}
+
+.profile-img-block .avatar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(10%, 40%);
+}
+
+.profile-img-block .avatar .form-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 56px;
+  width: 56px;
+
+  color: #ffffff;
+  background-color: lightseagreen;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+}
+
+.profile-img-block .avatar .form-control {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.profile-edit-button {
+  background-color: lightseagreen;
+  color: white;
+  border: none;
 }
 
 /* -------------------- sidebar-------------------- */
@@ -429,10 +464,6 @@ header {
   cursor: pointer;
 }
 
-/* .none-pointer-friend-btn {
-  pointer-events: none;
-} */
-
 /* -------------------- friends -------------------- */
 .friends .nav-link:not(.active) {
   color: white;
@@ -540,7 +571,7 @@ header {
   height: 120px;
   width: 100%;
 
-  background-color: gray;
+  background-color: rgba(0, 0, 0, 0.45);
 }
 
 .chatroom .image-wrapper {
@@ -574,54 +605,6 @@ header {
   color: white;
 }
 
-/* -------------------- Modals -------------------- */
-
-/* --------------------Modal Edit -------------------- */
-.user-edit-modal .modal-body > .avatar-edit {
-  position: relative;
-  text-align: center;
-  margin-top: 12px;
-}
-
-.user-edit-modal .modal-body .avatar-img {
-  -webkit-filter: brightness(0.5);
-  filter: brightness(0.5);
-}
-
-.user-edit-modal .modal-body > .avatar-edit > .avatar {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.user-edit-modal .modal-body > .avatar-edit > .avatar > .form-label {
-  margin: 0;
-  top: 0;
-  color: #ffffff;
-  cursor: pointer;
-}
-
-.user-edit-modal .modal-body > .avatar-edit > .avatar > .form-control {
-  top: 0;
-  width: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.user-edit-modal .modal-body > .form-text {
-  margin: 16px;
-}
-
-.user-edit-modal .modal-body > .form-text .name-amount,
-.user-edit-modal .modal-body > .form-text .introduction-amount {
-  text-align: right;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 20px;
-  color: #696974;
-}
-
 /* -------------------- Partial Messages -------------------- */
 
 .flash-message {
@@ -634,4 +617,30 @@ header {
   height: 80px;
 
   font-weight: 700;
+}
+
+/* -------------------- Loader -------------------- */
+.loader {
+  position: fixed; /* 使其固定在視窗的某個位置 */
+  top: 50%;
+  left: 50%;
+
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+
+  width: 120px;
+  height: 120px;
+
+  animation: spin 2s linear infinite;
+  z-index: 9999;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

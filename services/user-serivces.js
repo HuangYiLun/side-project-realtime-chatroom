@@ -2,7 +2,6 @@ const User = require("../models/user")
 const mongoose = require("mongoose")
 const { CustomError } = require("../helpers/error-response-helper")
 
-
 const userService = {
   getUserById: async (userId) => {
     const user = await User.findById(userId)
@@ -315,6 +314,21 @@ const userService = {
       // 關閉mongoose session
       session.endSession()
     }
+  },
+  cleanUserData: (user) => {
+    const userObject = user.toObject()
+    userObject._id = userObject._id.toString()
+
+    delete userObject.password
+    delete userObject.friends
+    delete userObject.sentFriendsRequest
+    delete userObject.getFriendsRequest
+    delete userObject.isAdmin
+    delete userObject.createdAt
+    delete userObject.updatedAt
+    delete userObject.__v
+
+    return userObject
   },
 }
 

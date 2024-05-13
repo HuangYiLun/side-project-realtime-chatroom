@@ -25,7 +25,8 @@
   {{/if}}
 
   {{> messages}}
-  <div id="error-messages"></div>
+  <div id="success-error-messages"></div>
+  <div class="loader" id="loadingSpinner" style="display: none;"></div>
   <div class="body-wrapper">
     {{#if loginUser}}
     {{>sidebar route = (lookupPartial partialName)}}

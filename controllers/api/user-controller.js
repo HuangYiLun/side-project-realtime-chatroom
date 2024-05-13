@@ -1,9 +1,10 @@
 const { getUser } = require("../../helpers/auth-helper")
-
 const {
   sendErrorResponse,
   CustomError,
 } = require("../../helpers/error-response-helper")
+const { imgurFileHelper } = require("../../helpers/file-helper")
+const bcrypt = require("bcryptjs")
 
 const userService = require("../../services/user-serivces")
 
@@ -17,17 +18,7 @@ const userController = {
       const user = await userService.getUserById(userId)
 
       if (!user) throw new CustomError(404, "該用戶不存在")
-      const userObject = user.toObject()
-      userObject._id = userObject._id.toString()
-
-      delete userObject.password
-      delete userObject.friends
-      delete userObject.sentFriendsRequest
-      delete userObject.getFriendsRequest
-      delete userObject.isAdmin
-      delete userObject.createdAt
-      delete userObject.updatedAt
-      delete userObject.__v
+      const userObject = userService.cleanUserData(user)
 
       userObject.status = {
         hasSentRequest: sentFriendsRequest.some(
@@ -46,6 +37,70 @@ const userController = {
       return res.json({ status: "success", data: userObject })
     } catch (err) {
       console.error("API user-controller getUserAccount:", err)
+      sendErrorResponse(res, err.status, err.message)
+    }
+  },
+  putProfile: async (req, res) => {
+    const avatar = req.file
+    let { name, email, password, confirmPassword, introduction } = req.body
+
+    name = name.trim()
+    email = email.trim()
+    password = password.trim()
+    confirmPassword = confirmPassword.trim()
+    introduction = introduction.trim()
+
+    const userId = getUser(req)._id
+
+    try {
+      const mongoDBUser = await userService.getUserById(userId)
+      if (!mongoDBUser) throw new CustomError(404, "使用者不存在")
+
+      // 查詢email是否重複
+      if (email && email !== mongoDBUser.email) {
+        const isEmailUsed = await userService.isEmailUsedByOthers(userId, email)
+        if (isEmailUsed) throw new CustomError(400, "信箱被使用")
+      }
+
+      // 檢查資料是否正確
+      if (avatar?.size > 10485760)
+        throw new CustomError(400, "圖片大小超出10MB")
+
+      if (name?.length > 20) throw new CustomError(400, "名稱字數超出上限")
+
+      if (introduction?.length > 160)
+        throw new CustomError(400, "自介字數超出上限")
+
+      if (password?.length > 12) throw new CustomError(400, "密碼長度超出上限")
+
+      if (password !== confirmPassword) throw new CustomError(400, "密碼不一致")
+
+      // update
+      mongoDBUser.name = name || mongoDBUser.name
+      mongoDBUser.email = email || mongoDBUser.email
+      mongoDBUser.introduction = introduction || mongoDBUser.introduction
+
+      //如果avatar存在，則上傳imgur
+      if (avatar) {
+        mongoDBUser.avatar =
+          (await imgurFileHelper(avatar)) || mongoDBUser.avatar
+      }
+      if (password) {
+        mongoDBUser.password =
+          (await bcrypt.hash(password, 10)) || mongoDBUser.password
+      }
+
+      await mongoDBUser.save()
+
+      const user = userService.cleanUserData(mongoDBUser)
+
+      return res.json({
+        status: "success",
+        message: "編輯個人資料成功",
+        data: user,
+      })
+    } catch (err) {
+      console.error("API user-controller putProfile:", err)
       sendErrorResponse(res, err.status, err.message)
     }
   },

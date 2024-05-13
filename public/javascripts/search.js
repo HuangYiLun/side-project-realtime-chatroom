@@ -5,7 +5,7 @@ import {
   updateModalCancelFriendButton,
 } from "./friendUtils.js"
 import { putAddFriendRequest, putCancelFriendRequest } from "./api/friends.js"
-import { handleError } from "./errorHandler.js"
+import { handleError } from "./apiResponseHandler.js"
 
 const searchForm = document.querySelector(".form-search")
 const searchInput = document.querySelector(".input-search")
