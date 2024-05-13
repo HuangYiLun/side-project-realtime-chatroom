@@ -1,38 +1,22 @@
 const { getUser } = require("../../helpers/auth-helper")
 const notificationService = require("../../services/notification-services")
 const userService = require("../../services/user-serivces")
-const Notification = require("../../models/notification")
-const formatTime = require("../../utilities/formatTime")
-
-const {
-  sendErrorResponse,
-  CustomError,
-} = require("../../helpers/error-response-helper")
+const { sendErrorResponse } = require("../../helpers/error-response-helper")
 
 const notificationController = {
   getNotifications: async (req, res) => {
     const userId = getUser(req)._id
 
     try {
-      const notifications = await Notification.find({
-        toUserId: userId,
-      })
-        .populate({
-          path: "fromUserId",
-          select: "_id avatar name",
-        })
-        .lean()
+      const notifications = await notificationService.getNotifications(userId)
 
-      notifications.forEach((notification) => {
-        notification.createdAt = formatTime(notification.createdAt)
-      })
+      const formatedTimeNotifications =
+        notificationService.formatTime(notifications)
 
-      return res.json({ status: "success", data: notifications })
+      return res.json({ status: "success", data: formatedTimeNotifications })
     } catch (err) {
-      console.error("api notification controller getNotifications",err)
-      return res
-        .status(500)
-        .json({ status: "error", message: "資料庫錯誤，請稍後再試" })
+      console.error("api notification controller getNotifications", err)
+      return sendErrorResponse(res, 500, "資料庫錯誤，請稍後再試")
     }
   },
   postNotification: async (req, res) => {
@@ -46,13 +30,12 @@ const notificationController = {
     try {
       const friendUser = await userService.getUserById(toUserId)
 
-      if (!friendUser) {
+      if (!friendUser)
         return sendErrorResponse(
           res,
           404,
           `friendId ${toUserId} doesn't exist!`
         )
-      }
 
       const toUserName = friendUser.name
       let createdNotification
@@ -83,7 +66,7 @@ const notificationController = {
         data: createdNotification,
       })
     } catch (err) {
-      console.error("accept notification error", err)
+      console.error("api notification controller postNotification", err)
       return sendErrorResponse(res, 500, "新增通知失敗")
     }
   },
@@ -91,38 +74,37 @@ const notificationController = {
     const { deleteId } = req.params
 
     try {
-      const deletedNotification = await Notification.deleteOne({
-        _id: deleteId,
-      })
+      const deletedNotification = await notificationService.deleteNotification(
+        deleteId
+      )
+
       if (deletedNotification.deletedCount > 0) {
         return res.json({ status: "success", message: "刪除通知成功" })
       } else {
-        return res
-          .status(500)
-          .json({ status: "error", message: "刪除通知失敗" })
+        return sendErrorResponse(res, 500, "刪除通知失敗")
       }
     } catch (err) {
-      return res.status(500).json({ status: "error", message: "刪除通知失敗" })
+      console.error("api notification controller deleteNotification", err)
+      return sendErrorResponse(res, 500, "刪除通知失敗")
     }
   },
   patchNotification: async (req, res) => {
     const { unReadNotificationIds } = req.body
-    console.log("enter pach notificationIds", unReadNotificationIds)
+
     try {
       const patchNotifications =
         await notificationService.updateMultipleNotificationsToRead(
           unReadNotificationIds
         )
-      console.log("patchNotifications", patchNotifications)
+
       if (patchNotifications.modifiedCount > 0) {
         return res.json({ status: "success", message: "已讀通知成功" })
       } else {
-        return res
-          .status(500)
-          .json({ status: "error", message: "已讀通知失敗" })
+        return sendErrorResponse(res, 500, "已讀通知失敗")
       }
     } catch (err) {
-      return res.status(500).json({ status: "error", message: "已讀通知失敗" })
+      console.error("api notification controller patchNotification", err)
+      return sendErrorResponse(res, 500, "已讀通知失敗")
     }
   },
 }

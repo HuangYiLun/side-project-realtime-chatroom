@@ -1,4 +1,5 @@
 const Notification = require("../models/notification")
+const formatTime = require("../utilities/formatTime")
 
 const notificationService = {
   postFriendRequest: async (userId, userName, friendId, type, redirectUrl) => {
@@ -55,6 +56,31 @@ const notificationService = {
       { isRead: true }
     )
     return patchNotification
+  },
+  getNotifications: async (userId) => {
+    const notifications = await Notification.find({
+      toUserId: userId,
+    })
+      .populate({
+        path: "fromUserId",
+        select: "_id avatar name",
+      })
+      .sort({ createdAt: -1 })
+      .lean()
+
+    return notifications
+  },
+  formatTime: (notifications) => {
+    notifications.forEach((notification) => {
+      notification.createdAt = formatTime(notification.createdAt)
+    })
+    return notifications
+  },
+  deleteNotification: async (deleteId) => {
+    const deletedNotification = await Notification.deleteOne({
+      _id: deleteId,
+    })
+    return deletedNotification
   },
 }
 
