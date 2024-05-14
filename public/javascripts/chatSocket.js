@@ -31,9 +31,12 @@ const imgBox = document.querySelector(".image-box")
 
 const roomId = chatForm ? chatForm.dataset.roomid : ""
 
-// 自動滑到聊天訊息列表底部
+// 自動滾動聊天列表底部
 if (msgList) {
-  msgList.scrollTop = msgList.scrollHeight
+  // 等待內容加載，延遲滾動
+  setTimeout(() => {
+    msgList.scrollTop = msgList.scrollHeight
+  }, 1000) // 延遲 1000 毫秒
 }
 
 // 加入聊天室
@@ -87,6 +90,16 @@ socket.on("message", (data) => {
   const { user, message, attachment, time } = data
   //顯示訊息
   appendChatMessage(msgList, userId, user, message, attachment, time)
+
+  // 如果有 attachment，等待圖片加載，延遲滾動到底部
+  if (attachment) {
+    setTimeout(() => {
+      msgList.scrollTop = msgList.scrollHeight
+    }, 1000) // 延遲 1000 毫秒
+  } else {
+    // 如果没有 attachment，立即滾動到底部
+    msgList.scrollTop = msgList.scrollHeight
+  }
 })
 
 if (chatForm) {

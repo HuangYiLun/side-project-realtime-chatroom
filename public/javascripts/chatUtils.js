@@ -85,9 +85,6 @@ export function appendChatMessage(
     li.appendChild(div)
   }
   list.appendChild(li)
-
-  // 滑到對話底部
-  list.scrollTop = list.scrollHeight
 }
 
 // show 聊天室預覽圖片
