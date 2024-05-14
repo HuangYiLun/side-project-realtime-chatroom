@@ -21,6 +21,27 @@ function handleTabContentClick(e) {
     const friendId = listItem.dataset.id
     handleAcceptFriendRequest(friendId)
   }
+
+  if (target.matches(".remove-friend-btn")) {
+    e.preventDefault()
+    if (confirm("Are you sure you want to remove this friend?")) {
+      e.target.closest("form").submit()
+    }
+  }
+
+  if (target.matches(".cancel-friend-btn")) {
+    e.preventDefault()
+    if (confirm("Are you sure you want to delete this request?")) {
+      e.target.closest("form").submit()
+    }
+  }
+
+  if (target.matches(".reject-friend-btn")) {
+    e.preventDefault()
+    if (confirm("Are you sure you want to reject this request?")) {
+      e.target.closest("form").submit()
+    }
+  }
 }
 
 async function handleAcceptFriendRequest(friendId) {
@@ -39,4 +60,3 @@ async function handleAcceptFriendRequest(friendId) {
     handleError(err)
   }
 }
-

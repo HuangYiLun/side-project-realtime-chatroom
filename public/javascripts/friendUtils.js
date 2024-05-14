@@ -5,7 +5,7 @@ export function updateModalCancelFriendButton(target, friendId) {
   const modalfriendButton = target.closest(".modal-friend-btn")
   modalfriendButton.innerHTML = `
     <button class="btn btn-outline-warning cancel-friend-btn" data-id=${friendId}>
-      <i class="fa-solid fa-heart-circle-minus"></i>Cancel Friend Request
+      <i class="fa-solid fa-heart-circle-minus"></i>Delete Request
     </button> `
 }
 

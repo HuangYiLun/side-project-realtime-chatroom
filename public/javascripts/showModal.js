@@ -21,7 +21,7 @@ export function showModal(
   if (hasSentRequest) {
     rawHTML = `
     <button class="btn btn-outline-warning cancel-friend-btn" data-id=${id}>
-      <i class="fa-solid fa-heart-circle-plus"></i>Cancel Friend Request
+      <i class="fa-solid fa-heart-circle-plus"></i>Delete Request
     </button>`
   }
   if (isFriend) {

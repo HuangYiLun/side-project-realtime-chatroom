@@ -93,7 +93,7 @@ function updateCancelFriendButton(listItem, friendId) {
   listItem.dataset.isdefault = false
   friendButton.innerHTML = `
     <button class="btn btn-outline-warning cancel-friend-btn" data-id=${friendId}>
-      <i class="fa-solid fa-heart-circle-plus"></i>Cancel Friend Request
+      <i class="fa-solid fa-heart-circle-plus"></i>Delete Request
     </button>
   `
 }
