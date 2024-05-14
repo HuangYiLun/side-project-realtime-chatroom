@@ -24,7 +24,17 @@ document.addEventListener("DOMContentLoaded", loadNotifications)
 
 // 顯示notification-list按鈕
 notificationBtn.addEventListener("click", () => {
-  notificationList.classList.toggle("d-none")
+  notificationList.style.display =
+    notificationList.style.display === "none" ? "block" : "none"
+})
+
+document.addEventListener("click", (e) => {
+  if (
+    !notificationBtn.contains(e.target) &&
+    !notificationList.contains(e.target)
+  ) {
+    notificationList.style.display = "none"
+  }
 })
 
 notificationList.addEventListener("click", handleNotificationsListClick)
@@ -50,7 +60,7 @@ function renderNotifications(notifications, notificationList) {
   notificationList.innerHTML = ""
   if (notifications?.length > 0) {
     appendNotificationTop(notificationList)
-    
+
     notifications.forEach((notification) =>
       appendNotification(notificationList, notification)
     )
