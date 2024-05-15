@@ -21,7 +21,7 @@ router.use("/chatroom", chatrooms)
 
 router.use("/", generalErrorHandler)
 router.get("/", authenticated, (req, res) => {
-  res.redirect("/friends")
+  res.redirect("/search")
 })
 
 module.exports = router
