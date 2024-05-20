@@ -16,6 +16,12 @@ export function showModal(
   const showUserAvatar = document.querySelector(".avatar-img")
   const modalFriendBtn = document.querySelector(".modal-friend-btn")
 
+  showUserAvatar.src = ""
+  showUserName.innerText = ""
+  showUserEmail.innerText = ""
+  showUserIntroduction.innerText = ""
+  modalFriendBtn.innerHTML = ""
+
   let rawHTML = ""
 
   if (hasSentRequest) {
