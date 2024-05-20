@@ -38,6 +38,11 @@ app.set("view engine", "hbs")
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+// for aws deploy health check
+app.use("/healthcheck",(req,res) => {
+  res.status(200).send("ok")
+})
+
 app.use(express.static("public"))
 
 const sessionMiddleware = session({

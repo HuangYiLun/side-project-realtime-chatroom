@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "dev": "NODE_ENV=development nodemon app.js"
+    "seed": "node --no-warnings ./seeders/userSeeder.js && node --no-warnings ./seeders/chatroomSeeder.js",
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
