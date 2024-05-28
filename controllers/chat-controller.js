@@ -19,7 +19,7 @@ const chatController = {
     res.render("roomsList", { partialName, publicChatrooms })
   },
   getChatRoom: async (req, res, next) => {
-    const partialName = "room"
+    const partialName = "roomsList"
     const roomId = req.params.roomId
     const foundChatroom = await Chatroom.findById(roomId, { name: 1 }).lean()
     const foundMessages = await Message.find({
@@ -81,8 +81,6 @@ const chatController = {
     }
   },
   postPrivateRoom: async (req, res, next) => {
-    console.log("enter post room")
-    console.log("req.body", req.body)
     const currentId = getUser(req)._id
     // 選擇要聊天的朋友id
     const { selectedFriendId } = req.body
