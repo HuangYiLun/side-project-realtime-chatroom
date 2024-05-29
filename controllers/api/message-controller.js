@@ -1,5 +1,5 @@
 const { getUser } = require("../../helpers/auth-helper")
-const messageServices = require("../../services/message-services")
+const messageService = require("../../services/message-services")
 const chatroomService = require("../../services/chatroom-services")
 const {
   sendErrorResponse,
@@ -21,7 +21,7 @@ const messageController = {
       const chatroomExists = chatroomService.checkChatroomExistsById(chatroomId)
       if (!chatroomExists) throw new CustomError(404, "chatroom didn't exist!")
 
-      const msg = await messageServices.postMessage(
+      const msg = await messageService.postMessage(
         senderId,
         chatroomId,
         message,

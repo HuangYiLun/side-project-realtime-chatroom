@@ -1,7 +1,7 @@
 const Message = require("../models/message")
 const { imgurFileHelper } = require("../helpers/file-helper")
 
-const messageServices = {
+const messageService = {
   postMessage: async (senderId, chatroomId, message, attachment) => {
     let attachmentUrl
 
@@ -40,4 +40,4 @@ const messageServices = {
   },
 }
 
-module.exports = messageServices
+module.exports = messageService

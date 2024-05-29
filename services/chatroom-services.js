@@ -1,3 +1,4 @@
+
 const Chatroom = require("../models/chatroom")
 
 const privateChatroomName = "1on1"
@@ -23,6 +24,12 @@ const chatroomService = {
   checkChatroomExistsById: async (chatroomId) => {
     const chatroomExist = await Chatroom.exists({ _id: chatroomId })
     return chatroomExist
+  },
+  getChatroomById: async (chatroomId) => {
+    const foundChatroom = await Chatroom.findById(chatroomId, {
+      name: 1,
+    }).lean()
+    return foundChatroom
   },
   findOrCreatePrivateChatroom: async (currentId, receivedId) => {
     // 查看聊天記錄
@@ -51,6 +58,16 @@ const chatroomService = {
 
       return processedNewChatroom
     }
+  },
+  getPublicChatroomNames: async () => {
+    const foundPublicChatrooms = await Chatroom.find(
+      { isPublic: true },
+      "name createdAt"
+    )
+      .lean()
+      .sort({ createdAt: 1 })
+
+    return foundPublicChatrooms
   },
   getAllPrivateChats: async (currentId) => {
     // 搜尋包含currentId的所有私人聊天

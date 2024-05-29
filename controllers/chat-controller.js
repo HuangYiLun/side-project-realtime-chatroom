@@ -1,53 +1,47 @@
-const Chatroom = require("../models/chatroom")
-const Message = require("../models/message")
 const { getUser } = require("../helpers/auth-helper")
 const chatroomService = require("../services/chatroom-services")
-const messageServices = require("../services/message-services")
+const messageService = require("../services/message-services")
 
 const chatController = {
   getChatRooms: async (req, res, next) => {
     const partialName = "roomsList"
+    try {
+      const publicChatrooms = await chatroomService.getPublicChatroomNames()
 
-    const foundPublicChatrooms = await Chatroom.find(
-      { isPublic: true },
-      { name: 1 }
-    )
-    const publicChatrooms = foundPublicChatrooms.map((chatroom) =>
-      chatroom.toObject()
-    )
-
-    res.render("roomsList", { partialName, publicChatrooms })
+      res.render("roomsList", { partialName, publicChatrooms })
+    } catch (err) {
+      next(err)
+    }
   },
   getChatRoom: async (req, res, next) => {
     const partialName = "roomsList"
     const roomId = req.params.roomId
-    const foundChatroom = await Chatroom.findById(roomId, { name: 1 }).lean()
-    const foundMessages = await Message.find({
-      chatroomId: foundChatroom._id,
-    })
-      .populate({
-        path: "senderId",
-        select: "_id avatar name",
+
+    try {
+      const foundChatroom = await chatroomService.getChatroomById(roomId)
+      const foundMessages = await messageService.getMessages(foundChatroom._id)
+
+      res.render("room", {
+        partialName,
+        chatroom: foundChatroom,
+        messages: foundMessages,
       })
-      .lean()
-
-    foundMessages.forEach((message) => {
-      message.senderId._id = message.senderId._id.toString()
-    })
-
-    res.render("room", {
-      partialName,
-      chatroom: foundChatroom,
-      messages: foundMessages,
-    })
+    } catch (err) {
+      next(err)
+    }
   },
   getPrivateRooms: async (req, res, next) => {
     const partialName = "1on1"
     const currentId = getUser(req)._id
+    try {
+      const allPrivateChats = await chatroomService.getAllPrivateChats(
+        currentId
+      )
 
-    const allPrivateChats = await chatroomService.getAllPrivateChats(currentId)
-
-    res.render("1on1", { partialName, allPrivateChats })
+      res.render("1on1", { partialName, allPrivateChats })
+    } catch (err) {
+      next(err)
+    }
   },
   getPrivateRoom: async (req, res, next) => {
     const partialName = "1on1"
@@ -68,7 +62,7 @@ const chatController = {
       const allPrivateChats = await chatroomService.getAllPrivateChats(
         currentId
       )
-      const messages = await messageServices.getMessages(currentChat.chatId)
+      const messages = await messageService.getMessages(currentChat.chatId)
 
       return res.render("1on1", {
         partialName,
