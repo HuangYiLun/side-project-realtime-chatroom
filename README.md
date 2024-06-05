@@ -6,10 +6,14 @@
 
 部署於 AWS:[QuickTalk](https://www.quicktalk.xyz/)
 
-可使用此帳號進行操作：
+可使用下列測試帳號進行操作：
 
 ```
 使用者email: user1@example.com
+使用者密碼：12345678
+```
+```
+使用者email: user2@example.com
 使用者密碼：12345678
 ```
 
@@ -23,22 +27,22 @@
 ## 功能
 
 登入:  
-![demo 登入](https://github.com/HuangYiLun/side-project-realtime-chatroom/public/assets/demo-login.gif)
+![demo 登入](https://github.com/HuangYiLun/side-project-realtime-chatroom/blob/main/public/assets/demo-login.gif)
 
 註冊:
-![demo 註冊](https://github.com/HuangYiLun/side-project-realtime-chatroom/public/assets/demo-register.gif)
+![demo 註冊](https://github.com/HuangYiLun/side-project-realtime-chatroom/blob/main/public/assets/demo-register.gif)
 
 編輯個人頁面:
-![demo 編輯個人頁面](https://github.com/HuangYiLun/side-project-realtime-chatroom/public/assets/demo-edit.gif)
+![demo 編輯個人頁面](https://github.com/HuangYiLun/side-project-realtime-chatroom/blob/main/public/assets/demo-edit.gif)
 
 交友功能
-![demo 交友功能](https://github.com/HuangYiLun/side-project-realtime-chatroom/public/assets/demo-friends.gif)
+![demo 交友功能](https://github.com/HuangYiLun/side-project-realtime-chatroom/blob/main/public/assets/demo-friends.gif)
 
 公開聊天室:
-![demo 公開聊天室](https://github.com/HuangYiLun/side-project-realtime-chatroom/public/assets/demo-public-chats.gif)
+![demo 公開聊天室](https://github.com/HuangYiLun/side-project-realtime-chatroom/blob/main/public/assets/demo-public-chats.gif)
 
 1on1 聊天室:
-![demo 私人聊天是](https://github.com/HuangYiLun/side-project-realtime-chatroom/public/assets/demo-1on1-chats.gif)
+![demo 私人聊天是](https://github.com/HuangYiLun/side-project-realtime-chatroom/blob/main/public/assets/demo-1on1-chats.gif)
 
 ## 安裝 (如果打算在本地運行)
 
