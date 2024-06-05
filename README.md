@@ -55,7 +55,7 @@
    Sorry, your browser doesn't support embedded videos.
 </video>
 
-## 安裝 (如果打算在本地運行)
+## 安裝
 
 1. 請先確認安裝 Node.js (18.17.1) 與 npm
 2. 創建一個資料夾, 打開 Terminal, 使用`cd`指令進入剛創建的資料夾
