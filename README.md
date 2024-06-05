@@ -27,22 +27,23 @@
 ## 功能
 
 登入:  
-![demo 登入](https://github.com/HuangYiLun/side-project-realtime-chatroom/blob/main/public/assets/demo-login.gif)
+![demo 登入](https://github.com/HuangYiLun/side-project-realtime-chatroom/assets/38514183/615b58a4-d400-48a7-a668-1d60134ab5f5)
 
 註冊:
-![demo 註冊](https://github.com/HuangYiLun/side-project-realtime-chatroom/blob/main/public/assets/demo-register.gif)
+![demo 註冊](https://github.com/HuangYiLun/side-project-realtime-chatroom/assets/38514183/caf26257-9ae7-4625-9937-9f88cf5497e3)
 
 編輯個人頁面:
-![demo 編輯個人頁面](https://github.com/HuangYiLun/side-project-realtime-chatroom/blob/main/public/assets/demo-edit.gif)
+![demo 編輯個人頁面](https://github.com/HuangYiLun/side-project-realtime-chatroom/assets/38514183/ffe8d6a5-bf42-41de-8543-92dcf9c4188f
+)
 
 交友功能
-![demo 交友功能](https://github.com/HuangYiLun/side-project-realtime-chatroom/blob/main/public/assets/demo-friends.gif)
+![demo 交友功能](https://github.com/HuangYiLun/side-project-realtime-chatroom/assets/38514183/aa0528e1-41a6-47b1-a9dc-911e1d6102db)
 
 公開聊天室:
-![demo 公開聊天室](https://github.com/HuangYiLun/side-project-realtime-chatroom/blob/main/public/assets/demo-public-chats.gif)
+![demo 公開聊天室](https://github.com/HuangYiLun/side-project-realtime-chatroom/assets/38514183/0377bc59-1e34-4b90-8284-8ad9e9baa0db)
 
 1on1 聊天室:
-![demo 私人聊天是](https://github.com/HuangYiLun/side-project-realtime-chatroom/blob/main/public/assets/demo-1on1-chats.gif)
+![demo 私人聊天是](https://github.com/HuangYiLun/side-project-realtime-chatroom/assets/38514183/5923a2eb-04ec-493c-8838-3fda84614300)
 
 ## 安裝 (如果打算在本地運行)
 
